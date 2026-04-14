@@ -17,6 +17,7 @@ function getSokSkjemaPath() {
 
 /* ─── CSS (injiseres én gang) ─── */
 var BASKET_CSS = '\
+.uTMhMIeN0bDXVFVIysSa::after{display:none!important}\
 #sok-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;transition:opacity .3s;opacity:0}\
 #sok-panel{display:none;position:fixed;top:0;right:0;height:100%;width:460px;max-width:100vw;background:#fff;z-index:1201;box-shadow:-4px 0 32px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);flex-direction:column;font-family:inherit;overflow:hidden}\
 .hk-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0}\

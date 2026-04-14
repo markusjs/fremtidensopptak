@@ -8,6 +8,8 @@
 /* ── State ── */
 var _ssPending = [];   // [{btn, code, name, pts, price}, …]
 var _ssStyleInjected = false;
+var _ssCalYear, _ssCalMonth, _ssCalSelected = null;
+var _ssCalMin, _ssCalMax;
 
 /* ── CSS injection ── */
 function injectStyles() {
@@ -38,9 +40,9 @@ function injectStyles() {
 .ss-radio-link{color:#06f;text-decoration:underline;font-size:13px}\
 .ss-calendar-wrap{display:none;padding:4px 0 0}\
 .ss-calendar-wrap.open{display:block}\
-.ss-date-input{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:14px 16px;font-size:15px;font-family:inherit;outline:none;transition:border-color .15s;cursor:pointer}\
+.ss-date-input{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:14px 16px;font-size:15px;font-family:inherit;outline:none;transition:border-color .15s;cursor:pointer;box-sizing:border-box}\
 .ss-date-input:focus{border-color:#06f}\
-.ss-hint{font-size:12px;color:#888;margin-top:6px}\
+.ss-hint{font-size:13px;color:#888;margin-top:6px}\
 .ss-checkbox-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer}\
 .ss-checkbox-box{width:22px;height:22px;border:1.5px solid #c7c8ca;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}\
 .ss-checkbox-box.checked{background:#06f;border-color:#06f}\
@@ -51,13 +53,36 @@ function injectStyles() {
 .ss-warning p:last-child{margin-bottom:0}\
 .ss-warning strong{color:#121212}\
 .ss-warning-email-label{font-size:13px;color:#888;margin-bottom:6px}\
-.ss-warning-email{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff}\
+.ss-warning-email{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff;box-sizing:border-box}\
 .ss-warning-email:focus{border-color:#06f}\
 .ss-or-text{font-size:13px;color:#888}\
 .ss-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;background:#111;color:#fff;font-family:inherit;font-size:16px;font-weight:600;border:none;border-radius:40px;cursor:pointer;width:100%;transition:background .15s}\
 .ss-btn:hover{background:#333}\
 .ss-btn:disabled{background:#ccc;cursor:not-allowed}\
 .ss-btn svg{flex-shrink:0}\
+.ss-cal{background:#fff;border-radius:12px;padding:16px;border:1px solid #e8e8e8}\
+.ss-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}\
+.ss-cal-month{font-size:16px;font-weight:600;color:#121212}\
+.ss-cal-arrows{display:flex;gap:4px}\
+.ss-cal-arrow{width:32px;height:32px;border:none;background:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#555;font-size:18px;transition:background .15s}\
+.ss-cal-arrow:hover{background:#f0f0f0}\
+.ss-cal-arrow:disabled{opacity:.3;cursor:not-allowed}\
+.ss-cal-arrow:disabled:hover{background:none}\
+.ss-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}\
+.ss-cal-dow{font-size:12px;font-weight:600;color:#888;padding:4px 0 8px;text-transform:capitalize}\
+.ss-cal-dow.ss-weekend{color:#d94040}\
+.ss-cal-day{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:none;background:none;font-size:14px;color:#121212;cursor:pointer;margin:0 auto;transition:background .12s,color .12s;font-family:inherit}\
+.ss-cal-day:hover:not(:disabled):not(.ss-cal-today){background:#f0f0f0}\
+.ss-cal-day:disabled{color:#ccc;cursor:not-allowed}\
+.ss-cal-day.ss-weekend{color:#d94040}\
+.ss-cal-day:disabled.ss-weekend{color:#e8c0c0}\
+.ss-cal-day.ss-cal-today{background:#e0edff;color:#06f;font-weight:600}\
+.ss-cal-day.ss-cal-selected{background:#121212;color:#fff!important;font-weight:600}\
+.ss-cal-day.ss-cal-empty{cursor:default}\
+.ss-between-calendar{transition:max-height .3s ease,opacity .3s ease;overflow:hidden}\
+.ss-between-warning{transition:max-height .3s ease,opacity .3s ease;overflow:hidden}\
+.ss-date-row{position:relative}\
+.ss-date-row .ss-date-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#888;pointer-events:none}\
 @media(max-width:640px){\
 .ss-modal{top:auto;bottom:0;left:0;right:0;transform:translateY(20px);width:100%;max-width:100%;border-radius:16px 16px 0 0;max-height:85vh}\
 .ss-backdrop.open .ss-modal{transform:translateY(0)}\
@@ -138,6 +163,99 @@ function getCalendarMinMax() {
   };
 }
 
+/* ── Custom calendar widget ── */
+var _ssMonthNames = ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
+var _ssDowLabels = ['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
+
+function ssRenderCalendar() {
+  var container = document.getElementById('ss-cal-widget');
+  if (!container) return;
+
+  var y = _ssCalYear, m = _ssCalMonth;
+  var firstDay = new Date(y, m, 1).getDay(); // 0=Sun
+  // Convert to Mon-based: Mon=0 … Sun=6
+  var startOffset = (firstDay === 0) ? 6 : firstDay - 1;
+  var daysInMonth = new Date(y, m + 1, 0).getDate();
+  var today = new Date(); today.setHours(0,0,0,0);
+
+  var minD = new Date(_ssCalMin + 'T00:00:00');
+  var maxD = new Date(_ssCalMax + 'T00:00:00');
+
+  // Month nav
+  var prevDisabled = (new Date(y, m, 0) < minD) ? ' disabled' : '';
+  var nextDisabled = (new Date(y, m + 1, 1) > maxD) ? ' disabled' : '';
+
+  var html = '<div class="ss-cal-nav">'
+    + '<span class="ss-cal-month">' + _ssMonthNames[m] + ' ' + y + '</span>'
+    + '<div class="ss-cal-arrows">'
+    + '<button class="ss-cal-arrow" onclick="ssCalPrev()"' + prevDisabled + '>&lsaquo;</button>'
+    + '<button class="ss-cal-arrow" onclick="ssCalNext()"' + nextDisabled + '>&rsaquo;</button>'
+    + '</div></div>';
+
+  html += '<div class="ss-cal-grid">';
+  // Day-of-week headers
+  for (var i = 0; i < 7; i++) {
+    var wkend = (i >= 5) ? ' ss-weekend' : '';
+    html += '<div class="ss-cal-dow' + wkend + '">' + _ssDowLabels[i] + '</div>';
+  }
+  // Empty cells before 1st
+  for (var e = 0; e < startOffset; e++) {
+    html += '<button class="ss-cal-day ss-cal-empty" disabled></button>';
+  }
+  // Day cells
+  for (var d = 1; d <= daysInMonth; d++) {
+    var dt = new Date(y, m, d);
+    var dow = (startOffset + d - 1) % 7; // 0=Mon..6=Sun
+    var isWeekend = dow >= 5;
+    var isToday = dt.getTime() === today.getTime();
+    var isSelected = _ssCalSelected && dt.getTime() === _ssCalSelected.getTime();
+    var isDisabled = dt < minD || dt > maxD;
+
+    var cls = 'ss-cal-day';
+    if (isWeekend) cls += ' ss-weekend';
+    if (isToday && !isSelected) cls += ' ss-cal-today';
+    if (isSelected) cls += ' ss-cal-selected';
+
+    if (isDisabled) {
+      html += '<button class="' + cls + '" disabled>' + d + '</button>';
+    } else {
+      html += '<button class="' + cls + '" onclick="ssCalSelect(' + y + ',' + m + ',' + d + ')">' + d + '</button>';
+    }
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+window.ssCalPrev = function() {
+  _ssCalMonth--;
+  if (_ssCalMonth < 0) { _ssCalMonth = 11; _ssCalYear--; }
+  ssRenderCalendar();
+};
+
+window.ssCalNext = function() {
+  _ssCalMonth++;
+  if (_ssCalMonth > 11) { _ssCalMonth = 0; _ssCalYear++; }
+  ssRenderCalendar();
+};
+
+window.ssCalSelect = function(y, m, d) {
+  _ssCalSelected = new Date(y, m, d);
+  ssRenderCalendar();
+  // Enable confirm button
+  var btn = document.getElementById('ss-confirm-btn');
+  if (btn) btn.disabled = false;
+};
+
+function ssInitCalendarState() {
+  var mm = getCalendarMinMax();
+  _ssCalMin = mm.min;
+  _ssCalMax = mm.max;
+  var now = new Date();
+  _ssCalYear = now.getFullYear();
+  _ssCalMonth = now.getMonth();
+  _ssCalSelected = null;
+}
+
 /* ── Build modal HTML ── */
 function buildApproachingHTML(sc) {
   var mm = getCalendarMinMax();
@@ -179,22 +297,27 @@ function buildBetweenHTML(sc) {
     + '<h2 class="ss-title">Velg studiestart</h2>'
     + '<div class="ss-body">'
     // Checkbox
-    + '<div class="ss-checkbox-row" onclick="ssToggleCheckbox(this)">'
+    + '<div class="ss-checkbox-row" onclick="ssBetweenToggle()">'
     + '<div class="ss-checkbox-box" id="ss-lk-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
     + '<span class="ss-checkbox-label">Jeg planlegger å søke støtte hos Lånekassen</span>'
     + '</div>'
-    // Warning banner
+    // Warning banner (hidden by default)
+    + '<div class="ss-between-warning" id="ss-between-warning" style="max-height:0;opacity:0">'
     + '<div class="ss-warning">'
     + '<div class="ss-warning-title">Utenfor Lånekassens semester</div>'
     + '<p>Semesteret er i gang, og oppstart nå vil muligens ikke gi støtte fra Lånekassen.</p>'
     + '<p>Neste semester (' + sc.nextSemester + ') har oppstart <strong>' + sc.nextDateBold + '</strong> og kan bestilles fra <strong>' + sc.orderOpensBold + '</strong>.</p>'
     + '<div class="ss-warning-email-label">Bli varslet når du kan bestille for ' + sc.nextSemester + '</div>'
-    + '<input type="email" class="ss-warning-email" id="ss-notify-email" placeholder="mail@epost.com">'
+    + '<input type="email" class="ss-warning-email" id="ss-notify-email" placeholder="mail@epost.com" onclick="event.stopPropagation()">'
     + '</div>'
-    // Or pick date
-    + '<p class="ss-or-text">Du kan likevel velge en startdato og studere uten støtte:</p>'
-    + '<div style="position:relative;">'
+    + '<p class="ss-or-text" style="margin-top:16px">Du kan likevel velge en startdato og studere uten støtte:</p>'
+    + '<div class="ss-date-row">'
     + '<input type="date" class="ss-date-input" id="ss-custom-date" min="' + mm.min + '" max="' + mm.max + '" onchange="ssDateChanged()">'
+    + '</div>'
+    + '</div>'
+    // Calendar (visible by default)
+    + '<div class="ss-between-calendar" id="ss-between-calendar" style="max-height:800px;opacity:1">'
+    + '<div id="ss-cal-widget" class="ss-cal"></div>'
     + '</div>'
     + '<p class="ss-hint">Du kan kun velge oppstart tre måneder frem i tid.</p>'
     + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()" disabled>'
@@ -232,7 +355,14 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride) {
   backdrop._ssScenario = sc;
 
   // Trigger open animation
-  requestAnimationFrame(function() { backdrop.classList.add('open'); });
+  requestAnimationFrame(function() {
+    backdrop.classList.add('open');
+    // Init custom calendar for between scenario
+    if (sc.id === 'between') {
+      ssInitCalendarState();
+      ssRenderCalendar();
+    }
+  });
 };
 
 window.closeStudiestartModal = function() {
@@ -269,6 +399,35 @@ window.ssToggleCheckbox = function(row) {
   if (box) box.classList.toggle('checked');
 };
 
+window.ssBetweenToggle = function() {
+  var box = document.getElementById('ss-lk-check');
+  if (!box) return;
+  var isChecked = box.classList.toggle('checked');
+
+  var warning = document.getElementById('ss-between-warning');
+  var calendar = document.getElementById('ss-between-calendar');
+  var btn = document.getElementById('ss-confirm-btn');
+
+  if (isChecked) {
+    // Show warning + date input, hide calendar
+    if (warning) { warning.style.maxHeight = '600px'; warning.style.opacity = '1'; }
+    if (calendar) { calendar.style.maxHeight = '0'; calendar.style.opacity = '0'; }
+    // Reset selected date from calendar
+    _ssCalSelected = null;
+    // Disable button until date input has value
+    var dateInput = document.getElementById('ss-custom-date');
+    if (btn) btn.disabled = !(dateInput && dateInput.value);
+  } else {
+    // Show calendar, hide warning
+    if (warning) { warning.style.maxHeight = '0'; warning.style.opacity = '0'; }
+    if (calendar) { calendar.style.maxHeight = '800px'; calendar.style.opacity = '1'; }
+    // Re-check if calendar has selection
+    if (btn) btn.disabled = !_ssCalSelected;
+    // Re-render calendar
+    ssRenderCalendar();
+  }
+};
+
 window.ssDateChanged = function() {
   var dateInput = document.getElementById('ss-custom-date');
   var btn = document.getElementById('ss-confirm-btn');
@@ -294,11 +453,24 @@ window.confirmStudiestart = function() {
       dateStr = parts[2] + '.' + parts[1] + '.' + parts[0].slice(-2);
     }
   } else {
-    // Between semesters — must pick a custom date
-    var dateInput2 = document.getElementById('ss-custom-date');
-    if (!dateInput2 || !dateInput2.value) return;
-    var parts2 = dateInput2.value.split('-');
-    dateStr = parts2[2] + '.' + parts2[1] + '.' + parts2[0].slice(-2);
+    // Between semesters — check if Lånekasse checkbox is checked
+    var lkBox = document.getElementById('ss-lk-check');
+    var lkChecked = lkBox && lkBox.classList.contains('checked');
+
+    if (lkChecked) {
+      // Date from input field
+      var dateInput2 = document.getElementById('ss-custom-date');
+      if (!dateInput2 || !dateInput2.value) return;
+      var parts2 = dateInput2.value.split('-');
+      dateStr = parts2[2] + '.' + parts2[1] + '.' + parts2[0].slice(-2);
+    } else {
+      // Date from calendar widget
+      if (!_ssCalSelected) return;
+      var dd = String(_ssCalSelected.getDate()).padStart(2, '0');
+      var mm = String(_ssCalSelected.getMonth() + 1).padStart(2, '0');
+      var yy = String(_ssCalSelected.getFullYear()).slice(-2);
+      dateStr = dd + '.' + mm + '.' + yy;
+    }
   }
 
   // Add all pending courses with start date

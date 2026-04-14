@@ -56,21 +56,48 @@ body {
 
 .login-section {
   padding: 24px 24px 16px;
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex; flex-direction: column; gap: 16px;
   border-bottom: 1px solid #f0f0f0;
 }
 
-.btn-login {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  height: 48px; background: #06f; color: #fff;
-  font-family: 'Graphik', sans-serif; font-size: 15px; font-weight: 600;
-  border: none; border-radius: 40px; cursor: pointer; width: 100%; transition: background 0.15s;
+.feide-card {
+  border: 1.5px solid #d4d8ff; background: #f5f7ff; border-radius: 12px;
+  padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px;
 }
-.btn-login:hover { background: #0052d4; }
+.feide-card-title { font-size: 16px; font-weight: 700; color: #121212; }
+.feide-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 15px; color: #555; background: none; border: none; cursor: pointer;
+  font-family: inherit; padding: 0;
+}
+.feide-btn:hover { color: #121212; }
+.feide-btn img, .feide-btn svg { flex-shrink: 0; }
 
-.eller-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+.eller-row { display: flex; align-items: center; gap: 12px; padding: 0; }
 .eller-line { flex: 1; height: 1px; background: #c7c8ca; }
-.eller-text { font-size: 12px; color: #3f3f3f; white-space: nowrap; }
+.eller-text { font-size: 13px; color: #999; white-space: nowrap; }
+
+.phone-card {
+  background: #f5f5f5; border-radius: 12px; padding: 20px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.phone-card-title { font-size: 15px; font-weight: 700; color: #121212; }
+.phone-card-row { display: flex; gap: 10px; align-items: stretch; }
+.phone-card-input {
+  flex: 1; border: 1.5px solid #c7c8ca; border-radius: 10px; padding: 0 16px;
+  font-size: 15px; font-family: inherit; background: #fff; outline: none;
+  height: 48px; min-width: 0;
+}
+.phone-card-input:focus { border-color: #06f; }
+.phone-card-input::placeholder { color: #aaa; }
+.phone-card-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #121212; color: #fff; border: none; border-radius: 10px;
+  padding: 0 20px; height: 48px; font-size: 14px; font-weight: 600;
+  font-family: inherit; cursor: pointer; white-space: nowrap; transition: background .15s;
+}
+.phone-card-btn:hover { background: #333; }
+.phone-card-btn svg { flex-shrink: 0; }
 
 .form-section {
   padding: 24px; display: flex; flex-direction: column; gap: 16px;
@@ -321,6 +348,8 @@ body {
   .form-submit-section { padding: 16px; }
   .topbar-inner { padding: 0 16px; }
   .receipt-card { padding: 32px 20px; }
+  .phone-card-row { flex-direction: column; }
+  .phone-card-btn { justify-content: center; }
 }
 </style>
 </head>
@@ -363,23 +392,37 @@ body {
       <div class="form-col">
         <!-- Login -->
         <div class="login-section">
-          <button class="btn-login" onclick="simulateLogin()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="7" r="4" stroke="#fff" stroke-width="1.5"/></svg>
-            Logg inn på Kristiania
-          </button>
+          <!-- FEIDE card -->
+          <div class="feide-card">
+            <span class="feide-card-title">Tidligere student ved Kristiania</span>
+            <button class="feide-btn" onclick="simulateLogin()">
+              Fortsett med FEIDE
+              <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="#4e0000" stroke-width="1.5"/><rect x="11" y="14" width="10" height="8" rx="1.5" stroke="#4e0000" stroke-width="1.5"/><path d="M13 14v-3a3 3 0 016 0v3" stroke="#4e0000" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="18.5" r="1.5" fill="#4e0000"/></svg>
+            </button>
+          </div>
+
           <div class="eller-row">
             <div class="eller-line"></div>
-            <span class="eller-text">ELLER FYLL UT MANUELT</span>
+            <span class="eller-text">eller</span>
             <div class="eller-line"></div>
+          </div>
+
+          <!-- Phone lookup card -->
+          <div class="phone-card">
+            <span class="phone-card-title">Telefonnummer</span>
+            <div class="phone-card-row">
+              <input type="tel" class="phone-card-input" id="telefon-lookup" placeholder="+47 123 45 678">
+              <button class="phone-card-btn" onclick="hentFraTelefon()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Hent opplysninger
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Kontakt -->
         <div class="form-section">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;">
-            <h2 class="section-title">Kontakt</h2>
-            <a href="javascript:void(0)" onclick="hentFraTelefon()" style="font-size:13px;color:#06f;text-decoration:underline;white-space:nowrap;">Hent personopplysninger fra telefonnummer</a>
-          </div>
+          <h2 class="section-title">Kontakt</h2>
 
           <div>
             <div class="input-wrap" id="wrap-telefon">
@@ -562,7 +605,7 @@ body {
           <div>
             <button class="rabattkode-toggle" onclick="toggleRabattkode()">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg>
-              Rabattkode
+              Har du en rabattkode?
             </button>
             <div class="rabattkode-row" id="rabattkodeRow">
               <input type="text" id="rabattkode" placeholder="Skriv inn rabattkode">
@@ -983,12 +1026,16 @@ function renderPaymentPrices() {
 
 /* ── Hent personopplysninger fra telefonnummer (1881 lookup simulation) ── */
 function hentFraTelefon() {
-  var tel = document.getElementById('telefon').value.replace(/\s/g, '');
+  var lookupInput = document.getElementById('telefon-lookup');
+  var tel = lookupInput.value.replace(/\s/g, '');
   if (!tel || tel.length < 8) {
-    alert('Skriv inn et gyldig telefonnummer først.');
-    document.getElementById('telefon').focus();
+    lookupInput.focus();
+    lookupInput.style.borderColor = '#c8233f';
     return;
   }
+  lookupInput.style.borderColor = '';
+  // Copy phone to the Kontakt field
+  document.getElementById('telefon').value = tel;
   // Simulate 1881 lookup
   document.getElementById('fornavn').value = 'Ola';
   document.getElementById('etternavn').value = 'Nordmann';
@@ -1000,7 +1047,7 @@ function hentFraTelefon() {
     if (inp.value) inp.dispatchEvent(new Event('input'));
   });
   // Clear errors on filled fields
-  ['fornavn','etternavn','gate','postnr','poststed'].forEach(function(id) {
+  ['telefon','fornavn','etternavn','gate','postnr','poststed'].forEach(function(id) {
     var wrap = document.getElementById('wrap-' + id);
     if (wrap) wrap.classList.remove('error');
     var err = document.getElementById('err-' + id);

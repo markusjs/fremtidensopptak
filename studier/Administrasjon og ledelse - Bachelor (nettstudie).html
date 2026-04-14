@@ -356,15 +356,24 @@ cfg: { // Application Insights Configuration
                         <div class="OnlineStudyPage__studyPlan">
 <style>
 .sp-outer{background:#f0f0f0;padding:48px 24px;box-sizing:border-box}
-.sp-inner{max-width:1200px;margin:0 auto}
-.sp-wrap{display:flex;gap:24px;align-items:flex-start;font-family:inherit}
-.sp-main{flex:1;min-width:0}
-.sp-sidebar{width:300px;flex-shrink:0;position:sticky;top:100px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.sp-inner{max-width:780px;margin:0 auto}
+.sp-wrap{font-family:inherit}
+.sp-main{min-width:0;width:100%}
 .sp-tabs-card{background:#f0f0f0;border-radius:12px;overflow:hidden;margin-bottom:4px}
 .sp-tabs{display:flex;gap:0;background:#f0f0f0;padding:0;border-radius:12px;overflow:hidden;border:1.5px solid #e0e0e0}
 .sp-tab{flex:1;padding:14px 8px;border:none;background:transparent;cursor:pointer;font-size:15px;font-weight:500;color:#444;transition:all .15s;border-radius:0;text-align:center}
 .sp-tab[data-selected=true]{color:#111;background:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.sp-tab-desc{color:#555;font-size:14px;text-align:center;padding:20px 24px 8px}
+.sp-tab-desc{color:#555;font-size:14px;text-align:center;padding:20px 24px 8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sp-info-trigger{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #bbb;background:#fff;cursor:pointer;flex-shrink:0;position:relative;color:#888;transition:border-color .15s,color .15s}
+.sp-info-trigger:hover{border-color:#888;color:#555}
+.sp-info-popover{display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.15);padding:20px;width:280px;z-index:100;text-align:left}
+.sp-info-popover::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:#fff;box-shadow:-2px -2px 4px rgba(0,0,0,.06)}
+.sp-info-trigger.open .sp-info-popover{display:block}
+.sp-info-popover-title{font-size:14px;font-weight:700;color:#121212;margin:0 0 12px}
+.sp-info-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid #ebebeb}
+.sp-info-row:last-child{border-bottom:none}
+.sp-info-label{font-size:13px;color:#555}
+.sp-info-value{font-size:13px;font-weight:700;color:#111;text-align:right}
 .sp-panel{display:none}
 .sp-panel.active{display:block}
 .sp-semester{background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
@@ -383,27 +392,13 @@ cfg: { // Application Insights Configuration
 .sp-sem-footer{background:#f5f5f5;display:flex;justify-content:flex-end;padding:16px 24px}
 .sp-bestill-alle{background:#111;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
 .sp-bestill-alle:hover{background:#444}
-/* Tidsbruk sidebar */
-.sp-tidsbruk{padding:24px 20px}
-.sp-tidsbruk-title{font-size:17px;font-weight:700;margin:0 0 20px}
-.sp-tidsbruk-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid #ebebeb}
-.sp-tidsbruk-row:last-child{border-bottom:none}
-.sp-tidsbruk-label{font-size:14px;color:#555}
-.sp-tidsbruk-value{font-size:14px;font-weight:700;color:#111;text-align:right}
-/* Sticky mobile bottom bar */
-.sp-mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1050;background:#111;color:#fff;padding:14px 20px;align-items:center;justify-content:center}
-.sp-mobile-bar-info{font-size:13px;font-weight:500;line-height:1.4;text-align:center}
-/* Responsive */
-@media(max-width:860px){
-  .sp-wrap{flex-direction:column}
-  .sp-sidebar{display:none}
-  .sp-mobile-bar{display:flex}
-  .sp-mobile-bar-info{font-size:12px}
-  .sp-outer{padding:24px 0 80px;padding-bottom:80px}
+@media(max-width:640px){
+  .sp-outer{padding:24px 0}
   .sp-inner{padding:0 16px}
   .sp-sem-header{padding:16px 20px 10px}
   .sp-course-row{padding:12px 20px;gap:10px}
   .sp-hr{margin:0 20px}
+  .sp-info-popover{width:240px}
 }
 </style>
 
@@ -417,7 +412,7 @@ cfg: { // Application Insights Configuration
       <button class="sp-tab" data-selected="false" data-panel="sp-enkeltemne">Enkeltemne</button>
     </div></div>
     <div id="sp-deltid" class="sp-panel">
-      <p class="sp-tab-desc">Velg deltid hvis du har opptil 20 timer å studere hver uke</p>
+      <p class="sp-tab-desc">Velg deltid hvis du har opptil 20 timer å studere hver uke <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover"><div class="sp-info-popover-title">Tidsbruk – deltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 20 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">15 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">12 semestere over 6 år</span></div></div></span></p>
       <div class="sp-semester">
   <div class="sp-sem-header">
     <h4>1. semester</h4>
@@ -945,7 +940,7 @@ cfg: { // Application Insights Configuration
 </div>
     </div>
     <div id="sp-heltid" class="sp-panel active">
-      <p class="sp-tab-desc">Velg heltid hvis du har ca. 40 timer å studere per uke</p>
+      <p class="sp-tab-desc">Velg heltid hvis du har ca. 40 timer å studere per uke <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover"><div class="sp-info-popover-title">Tidsbruk – heltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">30 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">6 semestere over 3 år</span></div></div></span></p>
       <div class="sp-semester">
   <div class="sp-sem-header">
     <h4>1. semester</h4>
@@ -1446,7 +1441,7 @@ cfg: { // Application Insights Configuration
 </div>
     </div>
     <div id="sp-enkeltemne" class="sp-panel">
-      <p class="sp-tab-desc">Meld deg opp i enkeltemnene du ønsker, i ditt eget tempo</p>
+      <p class="sp-tab-desc">Meld deg opp i enkeltemnene du ønsker, i ditt eget tempo <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover"><div class="sp-info-popover-title">Tidsbruk – enkeltemne</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">10–40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">7,5–30 studiepoeng</span></div></div></span></p>
       <div class="sp-semester">
   <div class="sp-sem-header"><h4>Alle emner</h4><span>Velg fritt</span></div>
   <hr class="sp-hr"><div class="sp-course-row" data-code="6277" data-pts="7.5" data-price="13100" data-name="Akademisk lesing og skriving" data-cat="obligatory">
@@ -1920,21 +1915,9 @@ cfg: { // Application Insights Configuration
 </div>
     </div>
   </div>
-  <div class="sp-sidebar">
-    <div class="sp-tidsbruk" id="sp-tidsbruk">
-      <h4 class="sp-tidsbruk-title">Tidsbruk</h4>
-      <div class="sp-tidsbruk-row"><span class="sp-tidsbruk-label">Studietid per uke</span><span class="sp-tidsbruk-value" id="sp-tid-uke">Ca. 40 timer</span></div>
-      <div class="sp-tidsbruk-row"><span class="sp-tidsbruk-label">Studiepoeng per semester</span><span class="sp-tidsbruk-value" id="sp-tid-stp">30 studiepoeng</span></div>
-      <div class="sp-tidsbruk-row" id="sp-tid-total-row"><span class="sp-tidsbruk-label">Totalt</span><span class="sp-tidsbruk-value" id="sp-tid-total">6 semestere over 3 år</span></div>
-    </div>
-  </div>
+
 </div></div>
 </section>
-
-<!-- Mobile tidsbruk bar -->
-<div class="sp-mobile-bar" id="sp-mobile-bar">
-  <div class="sp-mobile-bar-info" id="sp-mob-tidsbruk">Ca. 40 timer/uke · 30 stp/semester · 6 sem. over 3 år</div>
-</div>
 
 </div>
 
@@ -1973,35 +1956,18 @@ cfg: { // Application Insights Configuration
 /* ── Studieplanlegger (event delegation) ── */
 var spCart = {};
 
-var spTidsbrukData = {
-  'sp-heltid':      { uke: 'Ca. 40 timer', stp: '30 studiepoeng', total: '6 semestere over 3 år', mob: 'Ca. 40 timer/uke · 30 stp/semester · 6 sem. over 3 år' },
-  'sp-deltid':      { uke: 'Ca. 20 timer', stp: '15 studiepoeng', total: '12 semestere over 6 år', mob: 'Ca. 20 timer/uke · 15 stp/semester · 12 sem. over 6 år' },
-  'sp-enkeltemne':  { uke: '10–40 timer', stp: '7,5–30 studiepoeng', total: null, mob: '10–40 timer/uke · 7,5–30 stp/semester' }
-};
-
-function spUpdateTidsbruk(panelId) {
-  var d = spTidsbrukData[panelId];
-  if (!d) return;
-  var elUke = document.getElementById('sp-tid-uke');
-  var elStp = document.getElementById('sp-tid-stp');
-  var elTotal = document.getElementById('sp-tid-total');
-  var elTotalRow = document.getElementById('sp-tid-total-row');
-  var elMob = document.getElementById('sp-mob-tidsbruk');
-  if (elUke) elUke.textContent = d.uke;
-  if (elStp) elStp.textContent = d.stp;
-  if (elTotalRow) elTotalRow.style.display = d.total ? '' : 'none';
-  if (elTotal) elTotal.textContent = d.total || '';
-  if (elMob) elMob.textContent = d.mob;
-}
-
 function spTab(btn, panelId) {
   document.querySelectorAll('.sp-tab').forEach(function(t) { t.setAttribute('data-selected', 'false'); });
   document.querySelectorAll('.sp-panel').forEach(function(p) { p.classList.remove('active'); });
   btn.setAttribute('data-selected', 'true');
   var panel = document.getElementById(panelId);
   if (panel) panel.classList.add('active');
-  spUpdateTidsbruk(panelId);
 }
+
+/* Close info popovers on outside click */
+document.addEventListener('click', function() {
+  document.querySelectorAll('.sp-info-trigger.open').forEach(function(t) { t.classList.remove('open'); });
+});
 
 /* Scenario override: "mellom semestre" — studenten velger oppstartsdato selv */
 var spScenarioOverride = {

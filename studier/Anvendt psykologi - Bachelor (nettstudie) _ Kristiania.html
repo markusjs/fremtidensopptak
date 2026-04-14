@@ -191,363 +191,6 @@ cfg: { // Application Insights Configuration
                                     </div>
                                 </div>
 
-<style>
-.sp-outer{background:#f0f0f0;padding:48px 24px;box-sizing:border-box}
-.sp-inner{max-width:1200px;margin:0 auto}
-.sp-wrap{display:flex;gap:24px;align-items:flex-start;font-family:inherit}
-.sp-main{flex:1;min-width:0}
-.sp-sidebar{width:300px;flex-shrink:0;position:sticky;top:100px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.sp-tabs-card{background:#f0f0f0;border-radius:12px;overflow:hidden;margin-bottom:4px}
-.sp-tabs{display:flex;gap:0;background:#f0f0f0;padding:0;border-radius:12px;overflow:hidden;border:1.5px solid #e0e0e0}
-.sp-tab{flex:1;padding:14px 8px;border:none;background:transparent;cursor:pointer;font-size:15px;font-weight:500;color:#444;transition:all .15s;border-radius:0;text-align:center}
-.sp-tab[data-selected=true]{color:#111;background:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-.sp-tab-desc{color:#555;font-size:14px;text-align:center;padding:20px 24px 8px}
-.sp-panel{display:none}
-.sp-panel.active{display:block}
-.sp-semester{background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.sp-sem-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 12px}
-.sp-sem-header h4{font-size:18px;font-weight:700;margin:0}
-.sp-sem-header span{font-size:13px;color:#555;font-weight:600}
-.sp-hr{display:none}
-.sp-course-row{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #e0e0e0}
-.sp-course-name{color:#111;text-decoration:none;font-size:14px;margin-right:auto}
-.sp-badge{background:#fff;border:1.5px solid #111;border-radius:20px;padding:4px 12px;font-size:13px;white-space:nowrap;font-weight:500}
-.sp-price{font-size:13px;color:#333;white-space:nowrap;min-width:80px;text-align:right}
-.sp-add-btn{width:34px;height:34px;background:#111;color:#fff;border:none;border-radius:8px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;line-height:1;padding-bottom:2px}
-.sp-add-btn:hover{background:#444}
-.sp-add-btn.added{background:#8b1a1a}
-.sp-sem-footer{background:#f5f5f5;display:flex;justify-content:flex-end;padding:16px 24px}
-.sp-bestill-alle{background:#111;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
-.sp-bestill-alle:hover{background:#444}
-/* Tidsbruk sidebar */
-.sp-tidsbruk{padding:24px 20px}
-.sp-tidsbruk-title{font-size:17px;font-weight:700;margin:0 0 20px}
-.sp-tidsbruk-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid #ebebeb}
-.sp-tidsbruk-row:last-child{border-bottom:none}
-.sp-tidsbruk-label{font-size:14px;color:#555}
-.sp-tidsbruk-value{font-size:14px;font-weight:700;color:#111;text-align:right}
-/* Sticky mobile bottom bar */
-.sp-mobile-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1050;background:#111;color:#fff;padding:14px 20px;align-items:center;justify-content:center}
-.sp-mobile-bar-info{font-size:13px;font-weight:500;line-height:1.4;text-align:center}
-@media(max-width:860px){
-  .sp-wrap{flex-direction:column}
-  .sp-sidebar{display:none}
-  .sp-mobile-bar{display:flex}
-  .sp-mobile-bar-info{font-size:12px}
-  .sp-outer{padding:24px 0 80px}
-  .sp-inner{padding:0 16px}
-  .sp-sem-header{padding:16px 20px 10px}
-  .sp-course-row{padding:12px 20px;gap:10px}
-  .sp-hr{margin:0 20px}
-}
-</style>
-
-<section id="emner-seksjon" class="sp-outer">
-<div class="sp-inner"><div style="text-align:center;margin-bottom:32px"><h2 style="font-size:36px;font-weight:900">Studieplanlegger</h2></div>
-<div class="sp-wrap">
-  <div class="sp-main">
-    <div class="sp-tabs-card"><div class="sp-tabs">
-      <button class="sp-tab" data-selected="true"  data-panel="sp-heltid">Heltid</button>
-      <button class="sp-tab" data-selected="false" data-panel="sp-deltid">Deltid</button>
-      <button class="sp-tab" data-selected="false" data-panel="sp-enkeltemne">Enkeltemne</button>
-    </div></div>
-
-    <!-- DELTID: 2 emner per semester -->
-    <div id="sp-deltid" class="sp-panel">
-      <p class="sp-tab-desc">Velg deltid for et roligere studietempo – 2 emner per semester</p>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 1</h4><span>20 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk101" data-pts="10" data-price="6700" data-name="Innføring i psykologi">
-  <span class="sp-course-name">Innføring i psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk102" data-pts="10" data-price="6700" data-name="Kognitiv psykologi">
-  <span class="sp-course-name">Kognitiv psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 2</h4><span>20 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk103" data-pts="10" data-price="6700" data-name="Sosialpsykologi">
-  <span class="sp-course-name">Sosialpsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk104" data-pts="10" data-price="6700" data-name="Biologisk psykologi">
-  <span class="sp-course-name">Biologisk psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 3</h4><span>20 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk105" data-pts="10" data-price="6700" data-name="Utviklingspsykologi">
-  <span class="sp-course-name">Utviklingspsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk106" data-pts="10" data-price="6700" data-name="Personlighetspsykologi">
-  <span class="sp-course-name">Personlighetspsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 4</h4><span>20 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk201" data-pts="10" data-price="6700" data-name="Psykisk helse og lidelser">
-  <span class="sp-course-name">Psykisk helse og lidelser</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk202" data-pts="10" data-price="6700" data-name="Positiv psykologi">
-  <span class="sp-course-name">Positiv psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 5</h4><span>30 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk203" data-pts="10" data-price="6700" data-name="Klinisk psykologi">
-  <span class="sp-course-name">Klinisk psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk204" data-pts="10" data-price="6700" data-name="Helsepsykologi">
-  <span class="sp-course-name">Helsepsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk205" data-pts="10" data-price="6700" data-name="Psykologi og arbeidsliv">
-  <span class="sp-course-name">Psykologi og arbeidsliv</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 6</h4><span>20 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk301" data-pts="20" data-price="13400" data-name="Bacheloroppgave i psykologi">
-  <span class="sp-course-name">Bacheloroppgave i psykologi</span>
-  <span class="sp-badge">20 stp.</span>
-  <span class="sp-price">kr 13 400</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-    </div>
-
-    <!-- HELTID: 4 emner per semester (sem 5 har 3, sem 6 har 1) -->
-    <div id="sp-heltid" class="sp-panel active">
-      <p class="sp-tab-desc">Velg heltid for raskere progresjon – 4 emner per semester</p>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 1</h4><span>40 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk101" data-pts="10" data-price="6700" data-name="Innføring i psykologi">
-  <span class="sp-course-name">Innføring i psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk102" data-pts="10" data-price="6700" data-name="Kognitiv psykologi">
-  <span class="sp-course-name">Kognitiv psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk103" data-pts="10" data-price="6700" data-name="Sosialpsykologi">
-  <span class="sp-course-name">Sosialpsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk104" data-pts="10" data-price="6700" data-name="Biologisk psykologi">
-  <span class="sp-course-name">Biologisk psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 2</h4><span>40 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk105" data-pts="10" data-price="6700" data-name="Utviklingspsykologi">
-  <span class="sp-course-name">Utviklingspsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk106" data-pts="10" data-price="6700" data-name="Personlighetspsykologi">
-  <span class="sp-course-name">Personlighetspsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk201" data-pts="10" data-price="6700" data-name="Psykisk helse og lidelser">
-  <span class="sp-course-name">Psykisk helse og lidelser</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk202" data-pts="10" data-price="6700" data-name="Positiv psykologi">
-  <span class="sp-course-name">Positiv psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Semester 3</h4><span>50 studiepoeng</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk203" data-pts="10" data-price="6700" data-name="Klinisk psykologi">
-  <span class="sp-course-name">Klinisk psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk204" data-pts="10" data-price="6700" data-name="Helsepsykologi">
-  <span class="sp-course-name">Helsepsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk205" data-pts="10" data-price="6700" data-name="Psykologi og arbeidsliv">
-  <span class="sp-course-name">Psykologi og arbeidsliv</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk301" data-pts="20" data-price="13400" data-name="Bacheloroppgave i psykologi">
-  <span class="sp-course-name">Bacheloroppgave i psykologi</span>
-  <span class="sp-badge">20 stp.</span>
-  <span class="sp-price">kr 13 400</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-    </div>
-
-    <!-- ENKELTEMNE: alle emner i flat liste -->
-    <div id="sp-enkeltemne" class="sp-panel">
-      <p class="sp-tab-desc">Velg fritt blant alle emner – ta ett om gangen i ditt tempo</p>
-      <div class="sp-semester">
-        <div class="sp-sem-header"><h4>Alle emner</h4><span>180 studiepoeng totalt</span></div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk101" data-pts="10" data-price="6700" data-name="Innføring i psykologi">
-  <span class="sp-course-name">Innføring i psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk102" data-pts="10" data-price="6700" data-name="Kognitiv psykologi">
-  <span class="sp-course-name">Kognitiv psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk103" data-pts="10" data-price="6700" data-name="Sosialpsykologi">
-  <span class="sp-course-name">Sosialpsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk104" data-pts="10" data-price="6700" data-name="Biologisk psykologi">
-  <span class="sp-course-name">Biologisk psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk105" data-pts="10" data-price="6700" data-name="Utviklingspsykologi">
-  <span class="sp-course-name">Utviklingspsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk106" data-pts="10" data-price="6700" data-name="Personlighetspsykologi">
-  <span class="sp-course-name">Personlighetspsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk201" data-pts="10" data-price="6700" data-name="Psykisk helse og lidelser">
-  <span class="sp-course-name">Psykisk helse og lidelser</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk202" data-pts="10" data-price="6700" data-name="Positiv psykologi">
-  <span class="sp-course-name">Positiv psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk203" data-pts="10" data-price="6700" data-name="Klinisk psykologi">
-  <span class="sp-course-name">Klinisk psykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk204" data-pts="10" data-price="6700" data-name="Helsepsykologi">
-  <span class="sp-course-name">Helsepsykologi</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk205" data-pts="10" data-price="6700" data-name="Psykologi og arbeidsliv">
-  <span class="sp-course-name">Psykologi og arbeidsliv</span>
-  <span class="sp-badge">10 stp.</span>
-  <span class="sp-price">kr 6 700</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div><hr class="sp-hr">
-<div class="sp-course-row" data-code="ap-psyk301" data-pts="20" data-price="13400" data-name="Bacheloroppgave i psykologi">
-  <span class="sp-course-name">Bacheloroppgave i psykologi</span>
-  <span class="sp-badge">20 stp.</span>
-  <span class="sp-price">kr 13 400</span>
-  <button class="sp-add-btn" title="Legg til">+</button>
-</div>
-        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="sp-sidebar">
-    <div class="sp-tidsbruk" id="sp-tidsbruk">
-      <h4 class="sp-tidsbruk-title">Tidsbruk</h4>
-      <div class="sp-tidsbruk-row"><span class="sp-tidsbruk-label">Studietid per uke</span><span class="sp-tidsbruk-value" id="sp-tid-uke">Ca. 40 timer</span></div>
-      <div class="sp-tidsbruk-row"><span class="sp-tidsbruk-label">Studiepoeng per semester</span><span class="sp-tidsbruk-value" id="sp-tid-stp">30 studiepoeng</span></div>
-      <div class="sp-tidsbruk-row" id="sp-tid-total-row"><span class="sp-tidsbruk-label">Totalt</span><span class="sp-tidsbruk-value" id="sp-tid-total">6 semestere over 3 år</span></div>
-    </div>
-  </div>
-</div></div>
-</section>
-
-<!-- Mobile tidsbruk bar -->
-<div class="sp-mobile-bar" id="sp-mobile-bar">
-  <div class="sp-mobile-bar-info" id="sp-mob-tidsbruk">Ca. 40 timer/uke · 30 stp/semester · 6 sem. over 3 år</div>
-</div>
 
 
 <section class="Richtext__block"></section><div class="Richtext__wrapper"><div class="PageLayout__grid"><div class="Richtext__content PageLayout__content">
@@ -640,6 +283,370 @@ cfg: { // Application Insights Configuration
                         <div class="OnlineStudyPage__studyPlan ">
                             <div id="c1b51b22"><section id="55689" class="W1zuL6KqEhA_QztP2y7H"><div class="GmPkVDdUBvO0d_LpMlQn"><h2 class="EdHYHcI0ptkQLSAXMolJ">Studieplanlegger</h2></div><div class="c4EHzShG0bxjcWsv1iba bQiwSN9WwkSFOxA8mB2m o7i_4ji7xZ2pdim0DGGS r6PBO9Z23nGvfMtmlwMK T058yUJ4cQOMIeZW4OMn"><div class="w6rdwzyeKdZC4QEQQdUG"><div class="FQnvPH3eSTnAU6bvrkhn"><div class="IbD8iYA8j6gRUkFt19Qt nUUm_USrpFGrNosOvcCN WBxLPEnOo_h9755u7wGF"><div role="tablist" class="_NQp5NLSF5eDFXAqjrMf" aria-label="Velg fane"><button id="tab_0" role="tab" aria-selected="true" aria-controls="tabPanel_0" type="button" class="wSwA7V6mKnVhr5xFafzq Sqayds_IfbVRGAlPcZz1"><span class="bAoReRDLMgoAniQxqdep">Deltid</span></button><button id="tab_1" role="tab" aria-selected="false" aria-controls="tabPanel_1" type="button" class="wSwA7V6mKnVhr5xFafzq"><span class="bAoReRDLMgoAniQxqdep">Heltid</span></button><button id="tab_2" role="tab" aria-selected="false" aria-controls="tabPanel_2" type="button" class="wSwA7V6mKnVhr5xFafzq"><span class="bAoReRDLMgoAniQxqdep">Enkeltemne</span></button></div></div></div><div id="tabPanel_0" class="xD2nuHiyJc0KNBTM5TWg aaQ981i0EGxeUC7zkFFp" role="tabpanel" aria-labelledby="tab_0"><div class="YGkFBeUURJXwNJtUBqRI"><div class="oOoEJGZLkTI7iKytb4fX">Velg deltid hvis du har opptil 20 timer å studere hver uke</div><div style="will-change:height, margin;overflow:hidden;visibility:hidden;height:0" class="I8OoeNTK4pvMzSUgFgLZ lww9fash7ljBiFxnJttp cFd4gkDTr0RNxkPErJGR"><div class="XjUXAnCLxrJU_S3Faibn"><div id="comboSelect_id552213" class="bbDHU4_JdA0hl9MD1Lrq">Filtrer emner</div><div class="P9dsE4f7OBdAt9CNqFqv" aria-describedby="comboSelect_id552213"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk I0dQ9KoNo8oj51pfedVE _wswsxtbCQt4s_3W3uCM ceZjvr7zHVWiQFt0lt3X">Alle</button><button type="button" class="AMdryBi_G8WFVbcuUzSv HIBx2TMQpGodNFRbYUAk I0dQ9KoNo8oj51pfedVE _wswsxtbCQt4s_3W3uCM">Kjerneemne</button><button type="button" class="AMdryBi_G8WFVbcuUzSv HIBx2TMQpGodNFRbYUAk I0dQ9KoNo8oj51pfedVE _wswsxtbCQt4s_3W3uCM">Spesialisering</button><button type="button" class="AMdryBi_G8WFVbcuUzSv HIBx2TMQpGodNFRbYUAk I0dQ9KoNo8oj51pfedVE _wswsxtbCQt4s_3W3uCM">Valgemne</button></div></div></div><div class="SXN1Uo4iy7Ata_BKJ72L Pf_Zh2bY3Av6jezLRJxq G860znIzRV_KsXvjuk2n Y3AJ9FgvIjTLt2lVmF6T"><div class="Z7K5sZDYQgdQOPvq4Mnc"><div class="f3tqVIGzMwDJgajOJvNh xzDscMTz7ZLpsIKUdQUC"><h4 tabindex="-1" class="Epg14ESDPdCQ6i8yBiqP">Sammendrag</h4><div tabindex="-1"><div class="q8TDTi13owDY05RHaBFz"><div class="jmSxFiWll5cXgwp0W8Ch"><div style="will-change:height;overflow:hidden;visibility:hidden;height:0" class="dO1nmHShA_nt4HijAyJ1"><div class="u0BPAn3BOFfK2_NbjaRz"><div class="KeKBoR0iLYC2TnDKbaPA"><h4 class="KpxZHnmi9F9RRHydLCEg">Sammendrag</h4><button type="button" class="yEK9biWpMxeKit4W3SEn LVwfmt8Qy2xfZW7GrHx_ I0dQ9KoNo8oj51pfedVE EIzSDz5pvMdZtfaxSz6u"><span class="visuallyHidden">Skjul innhold</span><span class="SvgIcon pBmfcn46jP30ejRxgekc"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-chevron-right"></use></svg></span></button></div><div class="HTRHGR7W8AIfP6dakjHF"><span class="HsLBsVLKilPTdyoNFCDA">Legg til emner for å fortsette</span></div></div></div></div><div style="will-change:height;overflow:hidden;visibility:hidden;height:0" class="dO1nmHShA_nt4HijAyJ1"><div class="RpTIT4WWwG3mFuJwTOj0"><div class="E98QTVufBVQuq3J9BOjt"><span class="JC74jzs_WavNEUc7041d">Totalt 0 studiepoeng</span><span class="bKQJ0K9CLdGzznzWg2Xa">0 </span></div><button type="button" class="yEK9biWpMxeKit4W3SEn hk2sUgQrAH9UK8YJmMUQ DKSTnxlifpUboSUUkkBn I0dQ9KoNo8oj51pfedVE">Utvid innholdet</button></div></div></div></div></div></div></div><div class="SXN1Uo4iy7Ata_BKJ72L NIB3jhtS2u276da4GZzf Y3AJ9FgvIjTLt2lVmF6T"><div class="Z7K5sZDYQgdQOPvq4Mnc"><div class="f3tqVIGzMwDJgajOJvNh xzDscMTz7ZLpsIKUdQUC"><h4 tabindex="-1" class="Epg14ESDPdCQ6i8yBiqP">Sammendrag</h4><div tabindex="-1"><div class="q8TDTi13owDY05RHaBFz"><div class="jmSxFiWll5cXgwp0W8Ch"><div style="will-change:height;overflow:visible;height:auto" class="dO1nmHShA_nt4HijAyJ1"><div class="u0BPAn3BOFfK2_NbjaRz"><div class="KeKBoR0iLYC2TnDKbaPA"><h4 class="KpxZHnmi9F9RRHydLCEg">Sammendrag</h4><button type="button" class="yEK9biWpMxeKit4W3SEn LVwfmt8Qy2xfZW7GrHx_ I0dQ9KoNo8oj51pfedVE EIzSDz5pvMdZtfaxSz6u"><span class="visuallyHidden">Skjul innhold</span><span class="SvgIcon pBmfcn46jP30ejRxgekc"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-chevron-right"></use></svg></span></button></div><div class="HTRHGR7W8AIfP6dakjHF"><span class="HsLBsVLKilPTdyoNFCDA">Legg til emner for å fortsette</span></div></div></div></div><div style="will-change:height;overflow:visible;height:auto" class="dO1nmHShA_nt4HijAyJ1"><div class="RpTIT4WWwG3mFuJwTOj0"><div class="E98QTVufBVQuq3J9BOjt"><span class="JC74jzs_WavNEUc7041d">Totalt 0 studiepoeng</span><span class="bKQJ0K9CLdGzznzWg2Xa">0 </span></div><button disabled="" type="button" class="yEK9biWpMxeKit4W3SEn hk2sUgQrAH9UK8YJmMUQ DKSTnxlifpUboSUUkkBn I0dQ9KoNo8oj51pfedVE">Gå videre</button></div></div></div></div></div></div></div><ul class="rV0pmDj755DKVIUrKcLr"><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">1. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/innforing-i-psykologi/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Innføring i psykologi</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">2. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/psykologisk-historie-og-forskningsmetode/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Psykologisk historie og forskningsmetode</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">3. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/sosial-og-personlighetspsykologi/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Sosial- og personlighetspsykologi</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">4. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/utviklingspsykologi-og-emosjoner/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Utviklingspsykologi og emosjoner</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">5. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/kognitiv-psykologi-og-hjernen/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Kognitiv psykologi og hjernen</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">6. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/psykiske-lidelser-og-psykisk-helsearbeid/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Psykiske lidelser og psykisk helsearbeid</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">7. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng valgemner</span></div></div></div><div><ul class="QhNJNe3F6wCjoSwx5zee"><li class="E3SXYKlp6hg80OhB5zCG"><div class="PQUq9ULdfZtRaKM85xjP"><div class="IwFUcB57MlFBnob9VBaL o80VkuFKdpLspcd2K6XW zZs10hoF5FcqDJOkSLsY"><button aria-expanded="false" aria-controls="AccordionItem__552214" type="button" class="NtmtjnwY8FdZxOUBkRwT GNG_gRf6Dl3NsaHoWAUO NcVBerSqctjTNIFktrBz UM1jfJqOS1COdaoBDFKC MwYy5cAMNdOKnO7Bywcv"><div class="YSRmfctHOQ5noBfQfMH5"><div class="DnD1xRazitrvmLCwsQvo"><div class="fpvaxzXQRa10eM7A0r9U"><div class="_K0xIiBSgfd9jgypMVh8"><span class="XCWGsBol7Vs4KIJxk5OS">Valgemner</span><span class="mexBOTBF5tMUl9OpQbgY zvEk2viHXg7qevEmSvg9">0 valgt</span></div><div><span class="xXYOK3HuiPVoy9t7hpmA">0</span><span class="ayIyY89dSJZFk6SWF9dR">av 15 studiepoeng</span></div></div></div><span class="SvgIcon MFUfNtxb_KMTBmiHESl8"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-chevron-down"></use></svg></span></div></button><div style="will-change:height;overflow:hidden;visibility:hidden;height:0" class="ZgXVgEgkOVHpOr6mpnZu"><div id="AccordionItem__552214" class="pxYchGNIM3U95N_8sY2T"></div></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">8. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng valgemner</span></div></div></div><div><ul class="QhNJNe3F6wCjoSwx5zee"><li class="E3SXYKlp6hg80OhB5zCG"><div class="PQUq9ULdfZtRaKM85xjP"><div class="IwFUcB57MlFBnob9VBaL o80VkuFKdpLspcd2K6XW zZs10hoF5FcqDJOkSLsY"><button aria-expanded="false" aria-controls="AccordionItem__552215" type="button" class="NtmtjnwY8FdZxOUBkRwT GNG_gRf6Dl3NsaHoWAUO NcVBerSqctjTNIFktrBz UM1jfJqOS1COdaoBDFKC MwYy5cAMNdOKnO7Bywcv"><div class="YSRmfctHOQ5noBfQfMH5"><div class="DnD1xRazitrvmLCwsQvo"><div class="fpvaxzXQRa10eM7A0r9U"><div class="_K0xIiBSgfd9jgypMVh8"><span class="XCWGsBol7Vs4KIJxk5OS">Valgemner</span><span class="mexBOTBF5tMUl9OpQbgY zvEk2viHXg7qevEmSvg9">0 valgt</span></div><div><span class="xXYOK3HuiPVoy9t7hpmA">0</span><span class="ayIyY89dSJZFk6SWF9dR">av 15 studiepoeng</span></div></div></div><span class="SvgIcon MFUfNtxb_KMTBmiHESl8"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-chevron-down"></use></svg></span></div></button><div style="will-change:height;overflow:hidden;visibility:hidden;height:0" class="ZgXVgEgkOVHpOr6mpnZu"><div id="AccordionItem__552215" class="pxYchGNIM3U95N_8sY2T"></div></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">9. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/kvalitativ-og-kvantitativ-metode/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Kvalitativ og kvantitativ metode</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">10. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng spesialiseringsemner</span></div></div></div><div><ul class="QhNJNe3F6wCjoSwx5zee"><li class="E3SXYKlp6hg80OhB5zCG"><div class="PQUq9ULdfZtRaKM85xjP"><div class="IwFUcB57MlFBnob9VBaL o80VkuFKdpLspcd2K6XW zZs10hoF5FcqDJOkSLsY"><button aria-expanded="false" aria-controls="AccordionItem__552216" type="button" class="NtmtjnwY8FdZxOUBkRwT GNG_gRf6Dl3NsaHoWAUO NcVBerSqctjTNIFktrBz UM1jfJqOS1COdaoBDFKC MwYy5cAMNdOKnO7Bywcv"><div class="YSRmfctHOQ5noBfQfMH5"><div class="DnD1xRazitrvmLCwsQvo"><div class="fpvaxzXQRa10eM7A0r9U"><div class="_K0xIiBSgfd9jgypMVh8"><span class="XCWGsBol7Vs4KIJxk5OS">Spesialiseringsemner</span><span class="mexBOTBF5tMUl9OpQbgY zvEk2viHXg7qevEmSvg9">0 valgt</span></div><div><span class="xXYOK3HuiPVoy9t7hpmA">0</span><span class="ayIyY89dSJZFk6SWF9dR">av 15 studiepoeng</span></div></div></div><span class="SvgIcon MFUfNtxb_KMTBmiHESl8"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-chevron-down"></use></svg></span></div></button><div style="will-change:height;overflow:hidden;visibility:hidden;height:0" class="ZgXVgEgkOVHpOr6mpnZu"><div id="AccordionItem__552216" class="pxYchGNIM3U95N_8sY2T"></div></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">11. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng spesialiseringsemner</span></div></div></div><div><ul class="QhNJNe3F6wCjoSwx5zee"><li class="E3SXYKlp6hg80OhB5zCG"><div class="PQUq9ULdfZtRaKM85xjP"><div class="IwFUcB57MlFBnob9VBaL o80VkuFKdpLspcd2K6XW zZs10hoF5FcqDJOkSLsY"><button aria-expanded="false" aria-controls="AccordionItem__552217" type="button" class="NtmtjnwY8FdZxOUBkRwT GNG_gRf6Dl3NsaHoWAUO NcVBerSqctjTNIFktrBz UM1jfJqOS1COdaoBDFKC MwYy5cAMNdOKnO7Bywcv"><div class="YSRmfctHOQ5noBfQfMH5"><div class="DnD1xRazitrvmLCwsQvo"><div class="fpvaxzXQRa10eM7A0r9U"><div class="_K0xIiBSgfd9jgypMVh8"><span class="XCWGsBol7Vs4KIJxk5OS">Spesialiseringsemner</span><span class="mexBOTBF5tMUl9OpQbgY zvEk2viHXg7qevEmSvg9">0 valgt</span></div><div><span class="xXYOK3HuiPVoy9t7hpmA">0</span><span class="ayIyY89dSJZFk6SWF9dR">av 15 studiepoeng</span></div></div></div><span class="SvgIcon MFUfNtxb_KMTBmiHESl8"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-chevron-down"></use></svg></span></div></button><div style="will-change:height;overflow:hidden;visibility:hidden;height:0" class="ZgXVgEgkOVHpOr6mpnZu"><div id="AccordionItem__552217" class="pxYchGNIM3U95N_8sY2T"></div></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div></div></li><li class="B4Un3ZhPH1l64vvxpH68"><div class="aaiBHhqKStwjamKBNCMy VBwXHyaGFQppe1PbI1VK _oAIok8iogwGBPL8T2Un"><div class="fFFR0xoLkOrEGYd5r2GR"><div class="wwZJ8uKYRzQg5chZs6RX"><div class="koZ3ZdWNFzAq949m9U5G"><h3 class="i8eiLKjQzKmZ6aKZn_vM ijAj7jMeVAmrNbjZAuYs">12. semester</h3></div><div class="TJryIw23Mh38BF4IDXZf"><div class="i8eiLKjQzKmZ6aKZn_vM c9h4a3ZzFJxiOLa4UaAa"><span>15 studiepoeng kjerneemner</span></div></div></div><div><ul class="BykR5EOLmnl0V0SBAQnQ vb0njwpyNgGsEMifwP0i OJENtVkJ52naug8H8H6b"><li class="Uh4nTKxwrnkLVPLOjPTA"><div class="cisnExbL3l7C8FG2GxY4 aS47de98J0kBvUrHTNGh bHfgp2kzA6aGHHAI_I28"><div class="nPrqXQ6NSZV_VG9sMYza"><div class="oIkC7L8viepOFcORRviV"><div class="e6cMoMoH4uPu18BDDgCS"><a href="/studier/nettstudier/enkeltemne/bacheloroppgave/" class="XezMfDvRba8HKhHr79wm BaRcrU5NpyAMFJiitXyJ acIUmsBFtHkURrDJnial" data-owned=""><div class="DdPYOTimBd1c8zDeoFgi">Bacheloroppgave</div></a></div></div><div class="kU4XO8oS97WcloAAMSyA"><div class="QfpSu3R9osOn5mtmUmRN lgn5jtFtWmCfY3jJKvE1 i_x18TfEx_kjFRYVMYNV K10DrQZg0Ljzn8q06yUL Iga6BKVCOIbIKJLg1wb5">15 stp.</div></div><div class="VK7uiaaa4e5X4rD6ae0N"><span>kr 25 300</span></div><div class="qBmpJUN5f6zokhwD0WGE"><button title="Bestill" type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk vig35dbpPkTmO944SAkM I0dQ9KoNo8oj51pfedVE tWuEJB5j0YGQ9SC8jMoe PH2QQc9ycfKFG7Ow4vdM EPJ2BwJHk9_bWMdWlkJg"><span class="visuallyHidden">Bestill</span><span class="SvgIcon AiRvHoj0Gfg_cdBuoje_"><svg><use xlink:href="https://www.kristiania.no/dist/iconsSprite.2e8abd481.svg#sprite-plus"></use></svg></span></button></div></div></div></li></ul></div><button type="button" class="xdVeNYhJyNHhTKu5ddjE">Gå til sammendrag</button></div><div class="vd4EL0QGtZdwvCzwM75y"><button type="button" class="yEK9biWpMxeKit4W3SEn HIBx2TMQpGodNFRbYUAk wyUhxzdCNOoIbxwuJ88A I0dQ9KoNo8oj51pfedVE Jz_auoahBbL9uwEQ_8U4">Bestill</button></div></div></li></ul></div></div></div></div></section><script>(window.__reactProps = window.__reactProps || {})['c1b51b22-json'] = {"id":"55689","heading":"Studieplanlegger","teaser":null,"subjects":[{"code":"7100","name":"Innføring i psykologi","order":1,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":1,"semesterEnd":1},"partTime":{"semesterStart":1,"semesterEnd":1}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Innføring i psykologi","href":"/studier/nettstudier/enkeltemne/innforing-i-psykologi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7102","name":"Sosial- og personlighetspsykologi","order":2,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":2,"semesterEnd":2},"partTime":{"semesterStart":3,"semesterEnd":3}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Sosial- og personlighetspsykologi","href":"/studier/nettstudier/enkeltemne/sosial-og-personlighetspsykologi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7103","name":"Utviklingspsykologi og emosjoner","order":2,"educationCategories":["Helse, ernæring og trening","Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":2,"semesterEnd":2},"partTime":{"semesterStart":4,"semesterEnd":4}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Utviklingspsykologi og emosjoner ","href":"/studier/nettstudier/enkeltemne/utviklingspsykologi-og-emosjoner/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7104","name":"Kognitiv psykologi og hjernen","order":3,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":3,"semesterEnd":3},"partTime":{"semesterStart":5,"semesterEnd":5}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Kognitiv psykologi og hjernen","href":"/studier/nettstudier/enkeltemne/kognitiv-psykologi-og-hjernen/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7110","name":"Psykologisk historie og forskningsmetode","order":1,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":1,"semesterEnd":1},"partTime":{"semesterStart":2,"semesterEnd":2}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Psykologisk historie og forskningsmetode","href":"/studier/nettstudier/enkeltemne/psykologisk-historie-og-forskningsmetode/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7138","name":"Psykiske lidelser og psykisk helsearbeid","order":3,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":3,"semesterEnd":3},"partTime":{"semesterStart":6,"semesterEnd":6}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Psykiske lidelser og psykisk helsearbeid","href":"/studier/nettstudier/enkeltemne/psykiske-lidelser-og-psykisk-helsearbeid/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7145","name":"Kvalitativ og kvantitativ metode","order":5,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":5,"semesterEnd":5},"partTime":{"semesterStart":9,"semesterEnd":9}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Kvalitativ og kvantitativ metode","href":"/studier/nettstudier/enkeltemne/kvalitativ-og-kvantitativ-metode/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7146","name":"Bacheloroppgave","order":6,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":6,"semesterEnd":6},"partTime":{"semesterStart":12,"semesterEnd":12}},"subjectCategory":"obligatory","electiveGroupCode":null,"link":{"label":"Bacheloroppgave","href":"/studier/nettstudier/enkeltemne/bacheloroppgave/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7113","name":"Miljøpsykologi","order":5,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":5,"semesterEnd":6},"partTime":{"semesterStart":10,"semesterEnd":11}},"subjectCategory":"specialization","electiveGroupCode":"SPES","link":{"label":"Miljøpsykologi","href":"/studier/nettstudier/enkeltemne/miljopsykologi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7114","name":"Kulturpsykologi og mental helse i digitale tider","order":5,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":5,"semesterEnd":6},"partTime":{"semesterStart":10,"semesterEnd":11}},"subjectCategory":"specialization","electiveGroupCode":"SPES","link":{"label":"Kulturpsykologi og mental helse i digitale tider","href":"/studier/nettstudier/enkeltemne/kulturpsykologi-og-mental-helse-i-digitale-tider/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7142","name":"Idrettspsykologi og prestasjon","order":5,"educationCategories":["Helse, ernæring og trening","Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":5,"semesterEnd":6},"partTime":{"semesterStart":10,"semesterEnd":11}},"subjectCategory":"specialization","electiveGroupCode":"SPES","link":{"label":"Idrettspsykologi og prestasjon","href":"/studier/nettstudier/enkeltemne/idrettspsykologi-og-prestasjon/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5321","name":"Et individ- og systemperspektiv på ulike lærevansker","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Et individ- og systemperspektiv på ulike lærevansker","href":"/studier/nettstudier/enkeltemne/et-individ--og-systemperspektiv-pa-ulike-larevansker/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5322","name":"Spesialpedagogisk rådgivning og veiledning","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Spesialpedagogisk rådgivning og veiledning","href":"/studier/nettstudier/enkeltemne/spesialpedagogisk-radgivning-og-veiledning/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5323","name":"Spesialpedagogiske grunnlagsproblemer","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Spesialpedagogiske grunnlagsproblemer","href":"/studier/nettstudier/enkeltemne/spesialpedagogiske-grunnlagsproblemer/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5345","name":"Læring i digitale kontekster","order":4,"educationCategories":["Informasjonsteknologi og KI","Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Læring i digitale kontekster","href":"/studier/nettstudier/enkeltemne/laring-i-digitale-kontekster/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5347","name":"Flerkulturell pedagogikk","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Flerkulturell pedagogikk","href":"/studier/nettstudier/enkeltemne/flerkulturell-pedagogikk/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5348","name":"Læring, kreativitet og innovasjon","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Læring, kreativitet og innovasjon","href":"/studier/nettstudier/enkeltemne/laring-kreativitet-og-innovasjon2/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5351","name":"Pedagogisk sosiologi","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Pedagogisk sosiologi ","href":"/studier/nettstudier/enkeltemne/pedagogisk-sosiologi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5352","name":"Pedagogisk rådgivning og veiledning","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Pedagogisk rådgivning og veiledning ","href":"/studier/nettstudier/enkeltemne/pedagogisk-radgivning-og-veiledning/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"5353","name":"Arbeidslivspedagogikk","order":4,"educationCategories":["Pedagogikk"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Arbeidslivspedagogikk","href":"/studier/nettstudier/enkeltemne/arbeidslivspedagogikk/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6024","name":"Bedriftsøkonomi","order":4,"educationCategories":["Økonomi og administrasjon"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":13100,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":7.5,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Bedriftsøkonomi","href":"/studier/nettstudier/enkeltemne/bedriftsokonomi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6106","name":"Prosjektledelse","order":4,"educationCategories":["Ledelse"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25900,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Prosjektledelse","href":"/studier/nettstudier/enkeltemne/prosjektledelse/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6331","name":"Prosjekt og prosesstyring","order":4,"educationCategories":["HR og organisasjonspsykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":13100,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":7.5,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Prosjekt og prosesstyring","href":"/studier/nettstudier/enkeltemne/prosjekt-og-prosesstyring/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6335","name":"Arbeidsmiljø og psykologi","order":4,"educationCategories":["HR og organisasjonspsykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":13100,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":7.5,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Arbeidsmiljø og psykologi","href":"/studier/nettstudier/enkeltemne/arbeidsmiljo-og-psykologi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6336","name":"Organisasjon og ledelse","order":4,"educationCategories":["Ledelse"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":13100,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":7.5,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Organisasjon og ledelse","href":"/studier/nettstudier/enkeltemne/organisasjon-og-ledelse/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6383","name":"HRM","order":4,"educationCategories":["HR og organisasjonspsykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":13100,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":7.5,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"HRM","href":"/studier/nettstudier/enkeltemne/hrm/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"6387","name":"Endringsledelse","order":4,"educationCategories":["Ledelse"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":13100,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":7.5,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Endringsledelse","href":"/studier/nettstudier/enkeltemne/endringsledelse4/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7106","name":"Positiv psykologi og livskvalitet","order":1,"educationCategories":["Pedagogikk","Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Positiv psykologi og livskvalitet","href":"/studier/nettstudier/enkeltemne/positiv-psykologi-og-livskvalitet/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true},{"code":"7107","name":"Tenke fort og langsomt - beslutningspsykologi","order":2,"educationCategories":["Psykologi"],"parentStudies":{"fullTimeCode":"BBP","partTimeCode":"NBP"},"price":{"amount":25300,"currencyCode":"NOK","currencySymbol":"kr"},"points":{"amount":15,"creditType":"studyPoints"},"semesterDefinition":{"fullTime":{"semesterStart":4,"semesterEnd":4},"partTime":{"semesterStart":7,"semesterEnd":8}},"subjectCategory":"elective","electiveGroupCode":"VALGEMNE","link":{"label":"Tenke fort og langsomt - beslutningspsykologi","href":"/studier/nettstudier/enkeltemne/tenke-fort-og-langsomt---beslutningspsykologi/","external":false,"showIsExternal":true},"startDate":null,"canBePurchased":true}],"electiveGroupNames":[{"code":"SPES","name":"Spesialiseringsemner"},{"code":"VALGEMNE","name":"Valgemner"}],"timeDetails":{"fullTimeSemesterCredits":30,"partTimeSemesterCredits":15,"fullTimeHoursPerWeek":40,"partTimeHoursPerWeek":20},"translations":{"selectTab":"Velg fane","tabs":{"fullTime":"Heltid","partTime":"Deltid","singleSubjects":"Enkeltemne"},"actions":{"selectTab":"Velg fane","addSubject":"Bestill","removeSubject":"Fjern","addAllSubjects":"Bestill alle","removeAllSubjects":"Fjern alle","expandContent":"Utvid innholdet","hideContent":"Skjul innhold","goToSummary":"Gå til sammendrag"},"filters":{"allSubjects":"Alle","obligatory":"Kjerneemne","elective":"Valgemne","specialization":"Spesialisering"},"subjectCategory":{"specialization":"Spesialisering","elective":"Valgemne","obligatory":"Kjerneemne"},"description":{"fromRecommendedCreditsFormat":"av {credits} {creditsName}","totalCreditsFormat":"Totalt {credits} {creditsName}","singleSubjectsDescription":"For deg som ønsker å gjennomføre studiet i eget tempo og/eller har en tilpasset studieplan.","creditsExceededWarningFormat":"Vi anbefaler at du ikke kjøper mer enn {credits} {creditsName} om gangen.","hoursPerWeekDescriptionFormat":"Velg {studyFormType} hvis du har opptil {hours} timer å studere hver uke","obligatoryCreditsHeadingLabelFormat":"{credits} {creditsName} kjerneemner","electiveCreditsHeadingLabelFormat":"{credits} {creditsName} valgemner","specializationCreditsHeadingLabelFormat":"{credits} {creditsName} spesialiseringsemner","selectedSubjectsFormat":"{subjects} valgt","tooManyCreditsFormat":"For mange {creditsName}","addSubjectsToProceed":"Legg til emner for å fortsette","subjectStarting":"Starter"},"filterSubjects":"Filtrer emner","creditsLabel":"studiepoeng","creditsUnit":"stp.","semester":"semester","summary":{"heading":"Sammendrag","actionLabel":"Gå videre"},"popup":{"clearSummary":"Fjern sammendrag","closePopup":"Lukk","cancel":"Avbryt"}},"popup":{"heading":"Velg emner fra enten deltid, heltid eller enkeltemne","body":{"value":"Du har startet en bestilling med en annen gjennomf&oslash;ringsform. Velg samme kategori, eller start p&aring; nytt."}},"onlineApplicationFormUrl":"/checkout/","nonPurchasableSubjectsLink":null,"type":"view"};</script></div>
                         </div>
+<style>
+.sp-outer{background:#f0f0f0;padding:48px 24px;box-sizing:border-box}
+.sp-inner{max-width:780px;margin:0 auto}.sp-wrap{font-family:inherit}
+.sp-main{min-width:0}
+.sp-tabs-card{background:#f0f0f0;border-radius:12px;overflow:hidden;margin-bottom:4px}
+.sp-tabs{display:flex;gap:0;background:#f0f0f0;padding:0;border-radius:12px;overflow:hidden;border:1.5px solid #e0e0e0}
+.sp-tab{flex:1;padding:14px 8px;border:none;background:transparent;cursor:pointer;font-size:15px;font-weight:500;color:#444;transition:all .15s;border-radius:0;text-align:center}
+.sp-tab[data-selected=true]{color:#111;background:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sp-tab-desc{color:#555;font-size:14px;text-align:center;padding:20px 24px 8px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sp-info-trigger{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #bbb;background:#fff;cursor:pointer;flex-shrink:0;position:relative;color:#888;transition:border-color .15s,color .15s}
+.sp-info-trigger:hover{border-color:#888;color:#555}
+.sp-info-popover{display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.15);padding:20px;width:280px;z-index:100;text-align:left}
+.sp-info-popover::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:#fff;box-shadow:-2px -2px 4px rgba(0,0,0,.06)}
+.sp-info-trigger.open .sp-info-popover{display:block}
+.sp-info-popover-title{font-size:14px;font-weight:700;color:#121212;margin:0 0 12px}
+.sp-info-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid #ebebeb}
+.sp-info-row:last-child{border-bottom:none}
+.sp-info-label{font-size:13px;color:#555}
+.sp-info-value{font-size:13px;font-weight:700;color:#111;text-align:right}
+.sp-panel{display:none}
+.sp-panel.active{display:block}
+.sp-semester{background:#fff;border-radius:12px;margin-bottom:12px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.sp-sem-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 12px}
+.sp-sem-header h4{font-size:18px;font-weight:700;margin:0}
+.sp-sem-header span{font-size:13px;color:#555;font-weight:600}
+.sp-hr{display:none}
+.sp-course-row{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #e0e0e0}
+.sp-course-name{color:#111;text-decoration:none;font-size:14px;margin-right:auto}
+.sp-badge{background:#fff;border:1.5px solid #111;border-radius:20px;padding:4px 12px;font-size:13px;white-space:nowrap;font-weight:500}
+.sp-price{font-size:13px;color:#333;white-space:nowrap;min-width:80px;text-align:right}
+.sp-add-btn{width:34px;height:34px;background:#111;color:#fff;border:none;border-radius:8px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;line-height:1;padding-bottom:2px}
+.sp-add-btn:hover{background:#444}
+.sp-add-btn.added{background:#8b1a1a}
+.sp-sem-footer{background:#f5f5f5;display:flex;justify-content:flex-end;padding:16px 24px}
+.sp-bestill-alle{background:#111;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
+.sp-bestill-alle:hover{background:#444}
+@media(max-width:640px){
+  .sp-outer{padding:24px 0}
+  .sp-inner{padding:0 16px}
+  .sp-sem-header{padding:16px 20px 10px}
+  .sp-course-row{padding:12px 20px;gap:10px}
+  .sp-hr{margin:0 20px}
+  .sp-info-popover{width:240px}
+}
+</style>
+
+<section id="emner-seksjon" class="sp-outer">
+<div class="sp-inner"><div style="text-align:center;margin-bottom:32px"><h2 style="font-size:36px;font-weight:900">Studieplanlegger</h2></div>
+<div class="sp-wrap">
+  <div class="sp-main" style="width:100%">
+    <div class="sp-tabs-card"><div class="sp-tabs">
+      <button class="sp-tab" data-selected="false" data-panel="sp-deltid">Deltid</button>
+      <button class="sp-tab" data-selected="true"  data-panel="sp-heltid">Heltid</button>
+      <button class="sp-tab" data-selected="false" data-panel="sp-enkeltemne">Enkeltemne</button>
+    </div></div>
+
+    <!-- DELTID: 2 emner per semester -->
+
+    <!-- DELTID: 1 emne per semester, 15 stp -->
+    <div id="sp-deltid" class="sp-panel">
+      <p class="sp-tab-desc">Velg deltid for et roligere studietempo – 1 emne per semester <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover" id="sp-info-pop-deltid"><div class="sp-info-popover-title">Tidsbruk – deltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 20 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">15 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">12 semestere over 6 år</span></div></div></span></p>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>1. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk101" data-pts="15" data-price="25300" data-name="Innføring i psykologi">
+  <span class="sp-course-name">Innføring i psykologi</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>2. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk102" data-pts="15" data-price="25300" data-name="Psykologisk historie og forskningsmetode">
+  <span class="sp-course-name">Psykologisk historie og forskningsmetode</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>3. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk103" data-pts="15" data-price="25300" data-name="Sosial- og personlighetspsykologi">
+  <span class="sp-course-name">Sosial- og personlighetspsykologi</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>4. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk104" data-pts="15" data-price="25300" data-name="Utviklingspsykologi og emosjoner">
+  <span class="sp-course-name">Utviklingspsykologi og emosjoner</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>5. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk105" data-pts="15" data-price="25300" data-name="Kognitiv psykologi og hjernen">
+  <span class="sp-course-name">Kognitiv psykologi og hjernen</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>6. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk106" data-pts="15" data-price="25300" data-name="Psykiske lidelser og psykisk helsearbeid">
+  <span class="sp-course-name">Psykiske lidelser og psykisk helsearbeid</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>7. semester</h4><span>15 studiepoeng valgemner</span></div><hr class="sp-hr">
+        <div class="sp-elective-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:#fafafa;border-radius:8px;margin:8px 16px;" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span style="font-size:14px;font-weight:500;">Valgemner</span>
+          <span style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">0 av 15 studiepoeng <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="display:none;padding:0 16px 16px;" class="">
+          <p style="font-size:13px;color:#888;padding:8px;">Valgemner publiseres nærmere semesterstart.</p>
+        </div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>8. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk201" data-pts="15" data-price="25300" data-name="Kvalitativ og kvantitativ metode">
+  <span class="sp-course-name">Kvalitativ og kvantitativ metode</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>9. semester</h4><span>15 studiepoeng spesialiseringsemner</span></div><hr class="sp-hr">
+        <div class="sp-elective-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:#fafafa;border-radius:8px;margin:8px 16px;" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span style="font-size:14px;font-weight:500;">Spesialiseringsemner</span>
+          <span style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">0 av 15 studiepoeng <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="display:none;padding:0 16px 16px;" class="">
+          <p style="font-size:13px;color:#888;padding:8px;">Spesialiseringsemner publiseres nærmere semesterstart.</p>
+        </div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>10. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk301" data-pts="15" data-price="25300" data-name="Bacheloroppgave">
+  <span class="sp-course-name">Bacheloroppgave</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>11. semester</h4><span>15 studiepoeng spesialiseringsemner</span></div><hr class="sp-hr">
+        <div class="sp-elective-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:#fafafa;border-radius:8px;margin:8px 16px;" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span style="font-size:14px;font-weight:500;">Spesialiseringsemner</span>
+          <span style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">0 av 15 studiepoeng <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="display:none;padding:0 16px 16px;" class="">
+          <p style="font-size:13px;color:#888;padding:8px;">Spesialiseringsemner publiseres nærmere semesterstart.</p>
+        </div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>12. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk302" data-pts="15" data-price="25300" data-name="Psykologi og arbeidsliv">
+  <span class="sp-course-name">Psykologi og arbeidsliv</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill</button></div>
+      </div>
+    </div>
+
+    <!-- HELTID: 2 emner per semester, 30 stp -->
+    <div id="sp-heltid" class="sp-panel active">
+      <p class="sp-tab-desc">Velg heltid for raskere progresjon – 2 emner per semester <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover" id="sp-info-pop-heltid"><div class="sp-info-popover-title">Tidsbruk – heltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">30 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">6 semestere over 3 år</span></div></div></span></p>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>1. semester</h4><span>30 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk101" data-pts="15" data-price="25300" data-name="Innføring i psykologi">
+  <span class="sp-course-name">Innføring i psykologi</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk102" data-pts="15" data-price="25300" data-name="Psykologisk historie og forskningsmetode">
+  <span class="sp-course-name">Psykologisk historie og forskningsmetode</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>2. semester</h4><span>30 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk103" data-pts="15" data-price="25300" data-name="Sosial- og personlighetspsykologi">
+  <span class="sp-course-name">Sosial- og personlighetspsykologi</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk104" data-pts="15" data-price="25300" data-name="Utviklingspsykologi og emosjoner">
+  <span class="sp-course-name">Utviklingspsykologi og emosjoner</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>3. semester</h4><span>30 studiepoeng kjerneemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk105" data-pts="15" data-price="25300" data-name="Kognitiv psykologi og hjernen">
+  <span class="sp-course-name">Kognitiv psykologi og hjernen</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk106" data-pts="15" data-price="25300" data-name="Psykiske lidelser og psykisk helsearbeid">
+  <span class="sp-course-name">Psykiske lidelser og psykisk helsearbeid</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>4. semester</h4><span>30 studiepoeng valgemner</span></div><hr class="sp-hr">
+        <div class="sp-elective-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:#fafafa;border-radius:8px;margin:8px 16px;" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span style="font-size:14px;font-weight:500;">Valgemner</span>
+          <span style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">0 av 30 studiepoeng <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="display:none;padding:0 16px 16px;" class="">
+          <p style="font-size:13px;color:#888;padding:8px;">Valgemner publiseres nærmere semesterstart.</p>
+        </div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>5. semester</h4><span>15 studiepoeng kjerneemner<br>+ 15 studiepoeng spesialiseringsemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk201" data-pts="15" data-price="25300" data-name="Kvalitativ og kvantitativ metode">
+  <span class="sp-course-name">Kvalitativ og kvantitativ metode</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-elective-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:#fafafa;border-radius:8px;margin:8px 16px;" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span style="font-size:14px;font-weight:500;">Spesialiseringsemner</span>
+          <span style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">0 av 15 studiepoeng <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="display:none;padding:0 16px 16px;" class="">
+          <p style="font-size:13px;color:#888;padding:8px;">Spesialiseringsemner publiseres nærmere semesterstart.</p>
+        </div>
+      </div>
+
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>6. semester</h4><span>15 studiepoeng kjerneemner<br>+ 15 studiepoeng spesialiseringsemner</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk301" data-pts="15" data-price="25300" data-name="Bacheloroppgave">
+  <span class="sp-course-name">Bacheloroppgave</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-elective-row" style="display:flex;align-items:center;justify-content:space-between;padding:14px 24px;cursor:pointer;background:#fafafa;border-radius:8px;margin:8px 16px;" onclick="this.nextElementSibling.classList.toggle('open')">
+          <span style="font-size:14px;font-weight:500;">Spesialiseringsemner</span>
+          <span style="font-size:13px;color:#555;display:flex;align-items:center;gap:8px;">0 av 15 studiepoeng <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </div>
+        <div style="display:none;padding:0 16px 16px;" class="">
+          <p style="font-size:13px;color:#888;padding:8px;">Spesialiseringsemner publiseres nærmere semesterstart.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENKELTEMNE: alle emner i flat liste -->
+    <div id="sp-enkeltemne" class="sp-panel">
+      <p class="sp-tab-desc">Velg fritt blant alle emner – ta ett om gangen i ditt tempo <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover" id="sp-info-pop-enkeltemne"><div class="sp-info-popover-title">Tidsbruk – enkeltemne</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">10–40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">7,5–30 studiepoeng</span></div></div></span></p>
+      <div class="sp-semester">
+        <div class="sp-sem-header"><h4>Alle emner</h4><span>135 studiepoeng totalt</span></div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk101" data-pts="15" data-price="25300" data-name="Innføring i psykologi">
+  <span class="sp-course-name">Innføring i psykologi</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk102" data-pts="15" data-price="25300" data-name="Psykologisk historie og forskningsmetode">
+  <span class="sp-course-name">Psykologisk historie og forskningsmetode</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk103" data-pts="15" data-price="25300" data-name="Sosial- og personlighetspsykologi">
+  <span class="sp-course-name">Sosial- og personlighetspsykologi</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk104" data-pts="15" data-price="25300" data-name="Utviklingspsykologi og emosjoner">
+  <span class="sp-course-name">Utviklingspsykologi og emosjoner</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk105" data-pts="15" data-price="25300" data-name="Kognitiv psykologi og hjernen">
+  <span class="sp-course-name">Kognitiv psykologi og hjernen</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk106" data-pts="15" data-price="25300" data-name="Psykiske lidelser og psykisk helsearbeid">
+  <span class="sp-course-name">Psykiske lidelser og psykisk helsearbeid</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk201" data-pts="15" data-price="25300" data-name="Kvalitativ og kvantitativ metode">
+  <span class="sp-course-name">Kvalitativ og kvantitativ metode</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk301" data-pts="15" data-price="25300" data-name="Bacheloroppgave">
+  <span class="sp-course-name">Bacheloroppgave</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div><hr class="sp-hr">
+<div class="sp-course-row" data-code="ap-psyk302" data-pts="15" data-price="25300" data-name="Psykologi og arbeidsliv">
+  <span class="sp-course-name">Psykologi og arbeidsliv</span>
+  <span class="sp-badge">15 stp.</span>
+  <span class="sp-price">kr 25 300</span>
+  <button class="sp-add-btn" title="Legg til">+</button>
+</div>
+        <div class="sp-sem-footer"><button class="sp-bestill-alle">Bestill alle</button></div>
+      </div>
+    </div>
+  </div>
+
+</div></div>
+</section>
+
+</div>
                 </div>
             </div>
         </div>
@@ -691,8 +698,6 @@ cfg: { // Application Insights Configuration
       morePanel.appendChild(spOuter);
     }
     /* Also move the mobile bar to body so it's outside both panels */
-    var mobileBar = document.getElementById('sp-mobile-bar');
-    if (mobileBar) document.body.appendChild(mobileBar);
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initOuterTabs);
@@ -705,35 +710,18 @@ cfg: { // Application Insights Configuration
 /* ── Studieplanlegger (event delegation) ── */
 var spCart = {};
 
-var spTidsbrukData = {
-  'sp-heltid':      { uke: 'Ca. 40 timer', stp: '30 studiepoeng', total: '6 semestere over 3 år', mob: 'Ca. 40 timer/uke · 30 stp/semester · 6 sem. over 3 år' },
-  'sp-deltid':      { uke: 'Ca. 20 timer', stp: '15 studiepoeng', total: '12 semestere over 6 år', mob: 'Ca. 20 timer/uke · 15 stp/semester · 12 sem. over 6 år' },
-  'sp-enkeltemne':  { uke: '10–40 timer', stp: '7,5–30 studiepoeng', total: null, mob: '10–40 timer/uke · 7,5–30 stp/semester' }
-};
-
-function spUpdateTidsbruk(panelId) {
-  var d = spTidsbrukData[panelId];
-  if (!d) return;
-  var elUke = document.getElementById('sp-tid-uke');
-  var elStp = document.getElementById('sp-tid-stp');
-  var elTotal = document.getElementById('sp-tid-total');
-  var elTotalRow = document.getElementById('sp-tid-total-row');
-  var elMob = document.getElementById('sp-mob-tidsbruk');
-  if (elUke) elUke.textContent = d.uke;
-  if (elStp) elStp.textContent = d.stp;
-  if (elTotalRow) elTotalRow.style.display = d.total ? '' : 'none';
-  if (elTotal) elTotal.textContent = d.total || '';
-  if (elMob) elMob.textContent = d.mob;
-}
-
 function spTab(btn, panelId) {
   document.querySelectorAll('.sp-tab').forEach(function(t) { t.setAttribute('data-selected', 'false'); });
   document.querySelectorAll('.sp-panel').forEach(function(p) { p.classList.remove('active'); });
   btn.setAttribute('data-selected', 'true');
   var panel = document.getElementById(panelId);
   if (panel) panel.classList.add('active');
-  spUpdateTidsbruk(panelId);
 }
+
+/* Close info popovers on outside click */
+document.addEventListener('click', function() {
+  document.querySelectorAll('.sp-info-trigger.open').forEach(function(t) { t.classList.remove('open'); });
+});
 
 /* Scenario override: "vår nærmer seg" — anbefalt oppstart 16. januar */
 var spScenarioOverride = {

@@ -49,7 +49,13 @@
       "Bash(grep -rl \"__addThisProgram\" studier/*.html)",
       "Bash(python3 cleanup_studier.py)",
       "Bash(perl -i -0pe 's/<script[^>]*otBannerSdk[^>]*><\\\\/script>//gs' index.html \"studietilbud _ Kristiania.html\" \"studier/Digital markedsføring og salgsledelse - Bachelor _ Kristiania.html\" \"studier/Frontend-utvikling - Bli frontend-utvikler på 1 år.html\" \"studier/Administrasjon og ledelse - Bachelor \\(nettstudie\\).html\")",
-      "Bash(perl -i -0pe 's/<style id=\"onetrust-style\">.*?<\\\\/style>//gs' index.html \"studietilbud _ Kristiania.html\" \"studier/Digital markedsføring og salgsledelse - Bachelor _ Kristiania.html\" \"studier/Frontend-utvikling - Bli frontend-utvikler på 1 år.html\" \"studier/Administrasjon og ledelse - Bachelor \\(nettstudie\\).html\")"
+      "Bash(perl -i -0pe 's/<style id=\"onetrust-style\">.*?<\\\\/style>//gs' index.html \"studietilbud _ Kristiania.html\" \"studier/Digital markedsføring og salgsledelse - Bachelor _ Kristiania.html\" \"studier/Frontend-utvikling - Bli frontend-utvikler på 1 år.html\" \"studier/Administrasjon og ledelse - Bachelor \\(nettstudie\\).html\")",
+      "Bash(grep -n '^</section>$' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")",
+      "Bash(sed -n '194,532p' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")",
+      "Bash(sed -i '' '194,532d' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")",
+      "Bash(echo '<style>')",
+      "Bash(cat /tmp/sp_block.txt)",
+      "Bash(sed -n '284,287p' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")"
     ]
   }
 }

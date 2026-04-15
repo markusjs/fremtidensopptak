@@ -55,7 +55,17 @@
       "Bash(sed -i '' '194,532d' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")",
       "Bash(echo '<style>')",
       "Bash(cat /tmp/sp_block.txt)",
-      "Bash(sed -n '284,287p' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")"
+      "Bash(sed -n '284,287p' \"Anvendt psykologi - Bachelor \\(nettstudie\\) _ Kristiania.html\")",
+      "Bash(grep -rn 'studietilbud.*Kristiania\\\\.html' /Users/markus.sorem/Documents/kristiania/*.html /Users/markus.sorem/Documents/kristiania/**/*.html)",
+      "Bash(perl -pi -e 's|href=\"studietilbud _ Kristiania\\\\.html\"|href=\"/utdanning\"|g' index.html \"studietilbud _ Kristiania.html\" sok-skjema.html)",
+      "Bash(perl -pi -e 's|href=\"\\\\.\\\\./studietilbud _ Kristiania\\\\.html\"|href=\"/utdanning\"|g' \"studier/Administrasjon og ledelse - Bachelor \\(nettstudie\\).html\")",
+      "Bash(curl -sI http://localhost:3000/)",
+      "Bash(curl -sI http://localhost:3000/utdanning)",
+      "Bash(curl -sI \"http://localhost:3000/studier/Administrasjon%20og%20ledelse%20-%20Bachelor%20\\(nettstudie\\).html\")",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(node -e ':*)",
+      "Bash(xargs kill:*)",
+      "Bash(node server.js)"
     ]
   }
 }

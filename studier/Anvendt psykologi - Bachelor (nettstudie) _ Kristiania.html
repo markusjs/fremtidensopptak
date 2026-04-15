@@ -292,8 +292,9 @@ cfg: { // Application Insights Configuration
 .sp-tab{flex:1;padding:14px 8px;border:none;background:transparent;cursor:pointer;font-size:15px;font-weight:500;color:#444;transition:all .15s;border-radius:0;text-align:center}
 .sp-tab[data-selected=true]{color:#111;background:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .sp-tab-desc{color:#555;font-size:14px;text-align:center;padding:20px 24px 8px;display:flex;align-items:center;justify-content:center;gap:6px}
-.sp-info-trigger{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1.5px solid #bbb;background:#fff;cursor:pointer;flex-shrink:0;position:relative;color:#888;transition:border-color .15s,color .15s}
-.sp-info-trigger:hover{border-color:#888;color:#555}
+.sp-info-trigger{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;border:none;background:transparent;cursor:pointer;flex-shrink:0;position:relative;transition:opacity .15s;opacity:.65}
+.sp-info-trigger:hover{opacity:1}
+.sp-info-trigger svg{width:20px;height:20px}
 .sp-info-popover{display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,.15);padding:20px;width:280px;z-index:100;text-align:left}
 .sp-info-popover::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:#fff;box-shadow:-2px -2px 4px rgba(0,0,0,.06)}
 .sp-info-trigger.open .sp-info-popover{display:block}
@@ -343,7 +344,7 @@ cfg: { // Application Insights Configuration
 
     <!-- DELTID: 1 emne per semester, 15 stp -->
     <div id="sp-deltid" class="sp-panel">
-      <p class="sp-tab-desc">Velg deltid for et roligere studietempo – 1 emne per semester <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover" id="sp-info-pop-deltid"><div class="sp-info-popover-title">Tidsbruk – deltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 20 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">15 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">12 semestere over 6 år</span></div></div></span></p>
+      <div class="sp-tab-desc">Velg deltid hvis du har ca. 20 timer å studere per uke <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 11C12.5523 11 13 11.4477 13 12V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V12C11 11.4477 11.4477 11 12 11Z" fill="#545454"/><path d="M11.995 7C11.4455 7 11 7.44772 11 8C11 8.55228 11.4455 9 11.995 9H12.005C12.5545 9 13 8.55228 13 8C13 7.44772 12.5545 7 12.005 7H11.995Z" fill="#545454"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z" fill="#545454"/></svg><div class="sp-info-popover" id="sp-info-pop-deltid"><div class="sp-info-popover-title">Tidsbruk – deltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 20 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">15 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">12 semestre over 6 år</span></div></div></span></div>
 
       <div class="sp-semester">
         <div class="sp-sem-header"><h4>1. semester</h4><span>15 studiepoeng kjerneemner</span></div><hr class="sp-hr">
@@ -480,7 +481,7 @@ cfg: { // Application Insights Configuration
 
     <!-- HELTID: 2 emner per semester, 30 stp -->
     <div id="sp-heltid" class="sp-panel active">
-      <p class="sp-tab-desc">Velg heltid for raskere progresjon – 2 emner per semester <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover" id="sp-info-pop-heltid"><div class="sp-info-popover-title">Tidsbruk – heltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">30 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">6 semestere over 3 år</span></div></div></span></p>
+      <div class="sp-tab-desc">Velg heltid for raskere progresjon – 2 emner per semester <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 11C12.5523 11 13 11.4477 13 12V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V12C11 11.4477 11.4477 11 12 11Z" fill="#545454"/><path d="M11.995 7C11.4455 7 11 7.44772 11 8C11 8.55228 11.4455 9 11.995 9H12.005C12.5545 9 13 8.55228 13 8C13 7.44772 12.5545 7 12.005 7H11.995Z" fill="#545454"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z" fill="#545454"/></svg><div class="sp-info-popover" id="sp-info-pop-heltid"><div class="sp-info-popover-title">Tidsbruk – heltid</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">Ca. 40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">30 studiepoeng</span></div><div class="sp-info-row"><span class="sp-info-label">Totalt</span><span class="sp-info-value">6 semestre over 3 år</span></div></div></span></div>
 
       <div class="sp-semester">
         <div class="sp-sem-header"><h4>1. semester</h4><span>30 studiepoeng kjerneemner</span></div><hr class="sp-hr">
@@ -581,7 +582,7 @@ cfg: { // Application Insights Configuration
 
     <!-- ENKELTEMNE: alle emner i flat liste -->
     <div id="sp-enkeltemne" class="sp-panel">
-      <p class="sp-tab-desc">Velg fritt blant alle emner – ta ett om gangen i ditt tempo <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div class="sp-info-popover" id="sp-info-pop-enkeltemne"><div class="sp-info-popover-title">Tidsbruk – enkeltemne</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">10–40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">7,5–30 studiepoeng</span></div></div></span></p>
+      <div class="sp-tab-desc">Meld deg opp i enkeltemnene du ønsker, i ditt eget tempo <span class="sp-info-trigger" onclick="this.classList.toggle('open');event.stopPropagation()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 11C12.5523 11 13 11.4477 13 12V16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16V12C11 11.4477 11.4477 11 12 11Z" fill="#545454"/><path d="M11.995 7C11.4455 7 11 7.44772 11 8C11 8.55228 11.4455 9 11.995 9H12.005C12.5545 9 13 8.55228 13 8C13 7.44772 12.5545 7 12.005 7H11.995Z" fill="#545454"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3Z" fill="#545454"/></svg><div class="sp-info-popover" id="sp-info-pop-enkeltemne"><div class="sp-info-popover-title">Tidsbruk – enkeltemne</div><div class="sp-info-row"><span class="sp-info-label">Studietid per uke</span><span class="sp-info-value">10–40 timer</span></div><div class="sp-info-row"><span class="sp-info-label">Studiepoeng per semester</span><span class="sp-info-value">7,5–30 studiepoeng</span></div></div></span></div>
       <div class="sp-semester">
         <div class="sp-sem-header"><h4>Alle emner</h4><span>135 studiepoeng totalt</span></div><hr class="sp-hr">
 <div class="sp-course-row" data-code="ap-psyk101" data-pts="15" data-price="25300" data-name="Innføring i psykologi">
@@ -813,7 +814,7 @@ function spSyncFromBasket() {
       });
     }
   });
-  spUpdateSummary();
+  /* Don't call spUpdateSummary() here — it triggers spSyncToBasket → addProgramWithEmner → openSoknaderPanel */
 }
 
 /* Event delegation for all SP clicks */

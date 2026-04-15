@@ -55,6 +55,19 @@ var BASKET_CSS = '\
 .hk-city-popover h4{margin:0 0 12px;font-size:15px;font-weight:700;color:#111}\
 .hk-city-btn{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:6px;border:1.5px solid #ddd;border-radius:8px;background:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}\
 .hk-city-btn:hover{border-color:#4e0000;background:#faf5f5}\
+#hk-save-form{display:none;flex-direction:column;gap:0;padding:16px 20px;flex-shrink:0}\
+#hk-save-form.open{display:flex}\
+#hk-save-fields{display:flex;flex-direction:column;gap:16px;width:100%}\
+.hk-save-desc{font-size:16px;color:#212121;line-height:1.5;margin:0}\
+.hk-save-input{width:100%;border:1px solid #c7c8ca;border-radius:8px;padding:16px;font-size:14px;color:#3f3f3f;font-family:inherit;outline:none;box-sizing:border-box}\
+.hk-save-input:focus{border-color:#06f}\
+.hk-save-privacy{font-size:14px;color:rgba(10,10,10,.67);line-height:1.5;margin:0}\
+.hk-save-privacy a{color:#030712;text-decoration:underline}\
+.hk-save-btn{width:100%;height:48px;background:#06f;color:#fff;border:none;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit}\
+.hk-save-btn:hover{background:#0052cc}\
+.hk-save-receipt-box{display:flex;align-items:flex-start;gap:10px;background:#f0f5ff;border-radius:8px;padding:14px;margin-bottom:16px}\
+.hk-save-receipt-msg{font-size:14px;color:#212121;line-height:1.5;margin:0}\
+#hk-save-receipt .hk-btn-primary{display:block;text-align:center;text-decoration:none}\
 ';
 
 /* ─── CRUD ─── */
@@ -198,8 +211,23 @@ function injectSidebarPanel() {
     + '</button></div>'
     + '<div class="hk-body" id="hk-body"></div>'
     + '<div class="hk-footer" id="hk-footer" style="display:none">'
-    + '<button class="hk-btn-outline" onclick="alert(\'Lagret til senere!\')">Lagre til senere</button>'
+    + '<button class="hk-btn-outline" onclick="showLagreSaveView()">Lagre til senere</button>'
     + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre med søknaden</a>'
+    + '</div>'
+    + '<div id="hk-save-form">'
+    + '<div id="hk-save-fields">'
+    + '<p class="hk-save-desc">Du kan lagre søknaden og finne tilbake til den senere.</p>'
+    + '<input class="hk-save-input" id="hk-save-email" type="email" placeholder="E-postadresse" />'
+    + '<p class="hk-save-privacy">Informasjonen blir lagret og brukt i henhold til <a href="/om-kristiania/personvern/">Personvernerklæringen.</a></p>'
+    + '<button class="hk-save-btn" onclick="submitLagreSave()">Lagre søknad</button>'
+    + '</div>'
+    + '<div id="hk-save-receipt" style="display:none">'
+    + '<div class="hk-save-receipt-box">'
+    + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#06f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '<p class="hk-save-receipt-msg">Søknaden er lagret! Vi sender deg en lenke på e-post.</p>'
+    + '</div>'
+    + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre med søknaden</a>'
+    + '</div>'
     + '</div></div>';
   document.body.insertAdjacentHTML('beforeend', html);
 }
@@ -224,7 +252,38 @@ function closeSoknaderPanel() {
   if (!panel) return;
   panel.style.transform = 'translateX(100%)';
   backdrop.style.opacity = '0';
-  setTimeout(function() { panel.style.display = 'none'; backdrop.style.display = 'none'; }, 350);
+  setTimeout(function() {
+    panel.style.display = 'none';
+    backdrop.style.display = 'none';
+    // Reset save form state
+    var saveForm = document.getElementById('hk-save-form');
+    if (saveForm) saveForm.classList.remove('open');
+    var fields = document.getElementById('hk-save-fields');
+    if (fields) fields.style.display = 'flex';
+    var receipt = document.getElementById('hk-save-receipt');
+    if (receipt) receipt.style.display = 'none';
+    var emailInput = document.getElementById('hk-save-email');
+    if (emailInput) emailInput.value = '';
+  }, 350);
+}
+
+/* ─── Lagre til senere (inline) ─── */
+function showLagreSaveView() {
+  var footer = document.getElementById('hk-footer');
+  var saveForm = document.getElementById('hk-save-form');
+  var fields = document.getElementById('hk-save-fields');
+  var receipt = document.getElementById('hk-save-receipt');
+  if (footer) footer.style.display = 'none';
+  if (fields) fields.style.display = 'flex';
+  if (receipt) receipt.style.display = 'none';
+  if (saveForm) saveForm.classList.add('open');
+}
+
+function submitLagreSave() {
+  var fields = document.getElementById('hk-save-fields');
+  var receipt = document.getElementById('hk-save-receipt');
+  if (fields) fields.style.display = 'none';
+  if (receipt) receipt.style.display = 'block';
 }
 
 /* ─── Trash SVG ─── */
@@ -250,7 +309,7 @@ function renderBasketPanel() {
       + '<div style="background:#f4ebe6;border-radius:88px;padding:16px;display:inline-flex;align-items:center;justify-content:center;">'
       + '<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#121212"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#121212"/></svg>'
       + '</div>'
-      + '<a href="studietilbud _ Kristiania.html" style="display:block;width:100%;text-align:center;padding:12px;border-radius:40px;font-size:16px;font-weight:500;cursor:pointer;border:1px solid #4e0000;color:#4e0000;background:none;font-family:inherit;text-decoration:none;">Legg til studier eller emner</a>'
+      + '<a href="/utdanning" style="display:block;width:100%;text-align:center;padding:12px;border-radius:40px;font-size:16px;font-weight:500;cursor:pointer;border:1px solid #4e0000;color:#4e0000;background:none;font-family:inherit;text-decoration:none;">Legg til studier eller emner</a>'
       + '<div style="border-top:1px solid #e3e3e3;width:100%;"></div>'
       + '<p style="font-size:16px;font-weight:500;margin:0;color:#4e0000;">Logg inn for å finne påbegynte søknader</p>'
       + '<button onclick="closeSoknaderPanel()" style="display:block;width:100%;text-align:center;padding:12px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;font-family:inherit;">Logg inn</button>'

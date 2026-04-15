@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/utdanning", "destination": "/studietilbud _ Kristiania.html" },
+    { "source": "/sok", "destination": "/sok-skjema.html" },
+    { "source": "/studier/:path*", "destination": "/studier/:path*" }
+  ],
+  "cleanUrls": true
+}

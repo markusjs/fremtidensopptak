@@ -1,7 +1,3 @@
 {
-  "rewrites": [
-    { "source": "/utdanning", "destination": "/studietilbud%20_%20Kristiania.html" },
-    { "source": "/sok", "destination": "/sok-skjema.html" }
-  ],
   "cleanUrls": true
 }

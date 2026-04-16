@@ -70,7 +70,19 @@
       "Bash(ln -s \"studietilbud _ Kristiania.html\" utdanning.html)",
       "Bash(PORT=3456 node server.js)",
       "Bash(ln -s \"sok-skjema.html\" sok.html)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3456/allokering.html)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3456/allokering.html)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(lsof -ti:3456)",
+      "Bash(grep -oP '.{0,50}href=\"https://www.kristiania.no/\".{0,50}')",
+      "Bash(sed -i '' 's/fokus på\\\\\\([a-zæøå]\\\\\\)/fokus på \\\\1/g' allokering.html)",
+      "Bash(sed -i '' 's/enerett på\\\\\\([a-zæøå]\\\\\\)/enerett på \\\\1/g' allokering.html)",
+      "Bash(sed -i '' 's/konkurranse på\\\\\\([a-zæøå]\\\\\\)/konkurranse på \\\\1/g' allokering.html)",
+      "Bash(sed -i '' 's/basert på\\\\\\([a-zæøå]\\\\\\)/basert på \\\\1/g' allokering.html)",
+      "Bash(sed -i '' 's/ogsåa/også a/g' allokering.html)",
+      "Bash(sed -i '' 's/primært\\\\\\([a-zæøå]\\\\\\)/primært \\\\1/g' allokering.html)",
+      "Bash(sed -i '' 's/nået/nå et/g' allokering.html)",
+      "Bash(sed -i '' 's/på 4p/på 4 p/g' allokering.html)",
+      "Bash(ls -la /Users/markus.sorem/Documents/kristiania/*.js /Users/markus.sorem/Documents/kristiania/*.css)"
     ]
   }
 }

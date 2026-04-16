@@ -6,6 +6,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["server.js"],
       "autoPort": true
+    },
+    {
+      "name": "Pangstart Server",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["/Users/markus.sorem/Documents/pangstart/server.js"],
+      "port": 3456
     }
   ]
 }

@@ -4,6 +4,13 @@
  * Kaprer originale React «Søk nå»-knapper for campus-studier.
  */
 
+/* ─── Global topbar fix: hide duplicate search icon ─── */
+(function(){
+  var s = document.createElement('style');
+  s.textContent = '.BI8sYl_zzmD2PosuI83q:not(.ZK1omoN5LcHwsJ4ZoxIJ) .Q5vGRKkR4UPctsu2Dl_3 img{display:none!important}';
+  document.head.appendChild(s);
+})();
+
 /* ─── Constants ─── */
 var BASKET_KEY = 'kristiania_basket_v2';
 var EMPTY_BASKET = { programs: [], looseEmner: [] };
@@ -441,8 +448,8 @@ function interceptSokNaaButtons() {
       // Single city or no city — add directly
       addChoiceToBasket(choices[0]);
     } else {
-      // Multiple cities — show popover
-      showCityPopover(btn, cityMap);
+      // Multiple cities — show selection in sidebar
+      showCitySelectionInSidebar(cityMap);
     }
   }, true); // capture phase
 }
@@ -489,7 +496,37 @@ function deriveLevelFromPage() {
   return 'Bachelor';
 }
 
-/* ─── City popover ─── */
+/* ─── City selection in sidebar ─── */
+function showCitySelectionInSidebar(cityMap) {
+  injectSidebarPanel();
+  openSoknaderPanel();
+  var body = document.getElementById('hk-body');
+  var footer = document.getElementById('hk-footer');
+  var title = document.getElementById('hk-title');
+  if (!body) return;
+  if (footer) footer.style.display = 'none';
+  if (title) title.textContent = 'Velg campus';
+
+  var studyName = '';
+  var firstChoice = cityMap[Object.keys(cityMap)[0]];
+  if (firstChoice) studyName = firstChoice.name || '';
+
+  var html = '<div style="padding:8px 0;">'
+    + '<p style="font-size:14px;color:#666;margin:0 0 4px;">Du legger til:</p>'
+    + '<p style="font-size:16px;font-weight:600;margin:0 0 20px;color:#1a1a1a;">' + studyName + '</p>'
+    + '<p style="font-size:15px;font-weight:600;margin:0 0 12px;color:#1a1a1a;">Velg campus</p>';
+  Object.keys(cityMap).forEach(function(city) {
+    html += '<button class="hk-city-sidebar-btn" onclick="addChoiceToBasket(' + JSON.stringify(cityMap[city]).replace(/"/g, '&quot;') + ')"'
+      + ' style="display:block;width:100%;text-align:left;padding:16px;margin-bottom:8px;border:1.5px solid #ddd;border-radius:8px;background:#fff;font-size:16px;font-weight:500;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;"'
+      + ' onmouseover="this.style.borderColor=\'#b71c2f\';this.style.background=\'#fdf5f5\'"'
+      + ' onmouseout="this.style.borderColor=\'#ddd\';this.style.background=\'#fff\'"'
+      + '>' + city + '</button>';
+  });
+  html += '</div>';
+  body.innerHTML = html;
+}
+
+/* ─── City popover (legacy) ─── */
 var cityPopoverEl = null;
 
 function showCityPopover(anchorBtn, cityMap) {

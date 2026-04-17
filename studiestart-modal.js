@@ -17,14 +17,14 @@ function injectStyles() {
   _ssStyleInjected = true;
   var css = document.createElement('style');
   css.textContent = '\
-.ss-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1400;opacity:0;transition:opacity .2s}\
+.ss-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1400;opacity:0;transition:opacity .3s}\
 .ss-backdrop.open{display:block;opacity:1}\
-.ss-modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.96);background:#fff;border-radius:16px;width:90%;max-width:460px;max-height:90vh;overflow-y:auto;z-index:1401;opacity:0;transition:transform .25s,opacity .2s;box-shadow:0 8px 40px rgba(0,0,0,.18)}\
-.ss-backdrop.open .ss-modal{transform:translate(-50%,-50%) scale(1);opacity:1}\
-.ss-header{padding:20px 24px 0;display:flex;align-items:center;gap:12px}\
-.ss-close{width:32px;height:32px;border-radius:50%;border:1.5px solid #c7c8ca;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:#555;flex-shrink:0;transition:background .15s}\
+.ss-modal{position:fixed;top:0;right:0;height:100%;width:460px;max-width:100vw;background:#fff;z-index:1401;box-shadow:-4px 0 32px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow-y:auto}\
+.ss-backdrop.open .ss-modal{transform:translateX(0)}\
+.ss-header{padding:20px 24px 0;display:flex;align-items:center;justify-content:flex-end;gap:12px}\
+.ss-close{width:32px;height:32px;border-radius:50%;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;color:#111;flex-shrink:0;transition:background .15s;padding:0;line-height:1}\
 .ss-close:hover{background:#f0f0f0}\
-.ss-title{font-size:24px;font-weight:700;color:#121212;padding:16px 24px 0}\
+.ss-title{font-size:20px;font-weight:800;color:#111;padding:4px 24px 0}\
 .ss-body{padding:16px 24px 24px;display:flex;flex-direction:column;gap:16px}\
 .ss-radio-group{display:flex;flex-direction:column;gap:12px}\
 .ss-radio-card{border:1.5px solid #e0e0e0;border-radius:12px;padding:20px;cursor:pointer;display:flex;align-items:flex-start;gap:14px;transition:border-color .15s,background .15s}\
@@ -56,8 +56,8 @@ function injectStyles() {
 .ss-warning-email{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:12px 14px;font-size:14px;font-family:inherit;outline:none;background:#fff;box-sizing:border-box}\
 .ss-warning-email:focus{border-color:#06f}\
 .ss-or-text{font-size:13px;color:#888}\
-.ss-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;background:#111;color:#fff;font-family:inherit;font-size:16px;font-weight:600;border:none;border-radius:40px;cursor:pointer;width:100%;transition:background .15s}\
-.ss-btn:hover{background:#333}\
+.ss-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:48px;background:#06f;color:#fff;font-family:inherit;font-size:16px;font-weight:600;border:none;border-radius:40px;cursor:pointer;width:100%;transition:background .15s}\
+.ss-btn:hover{background:#0052cc}\
 .ss-btn:disabled{background:#ccc;cursor:not-allowed}\
 .ss-btn svg{flex-shrink:0}\
 .ss-cal{background:#fff;border-radius:12px;padding:16px;border:1px solid #e8e8e8}\
@@ -82,11 +82,7 @@ function injectStyles() {
 .ss-between-calendar{transition:max-height .3s ease,opacity .3s ease;overflow:hidden}\
 .ss-between-warning{transition:max-height .3s ease,opacity .3s ease;overflow:hidden}\
 .ss-date-row{position:relative}\
-.ss-date-row .ss-date-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#888;pointer-events:none}\
-@media(max-width:640px){\
-.ss-modal{top:auto;bottom:0;left:0;right:0;transform:translateY(20px);width:100%;max-width:100%;border-radius:16px 16px 0 0;max-height:85vh}\
-.ss-backdrop.open .ss-modal{transform:translateY(0)}\
-}';
+.ss-date-row .ss-date-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#888;pointer-events:none}';
   document.head.appendChild(css);
 }
 
@@ -259,7 +255,7 @@ function ssInitCalendarState() {
 /* ── Build modal HTML ── */
 function buildApproachingHTML(sc) {
   var mm = getCalendarMinMax();
-  return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()">&times;</button></div>'
+  return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
     + '<h2 class="ss-title">Velg studiestart</h2>'
     + '<div class="ss-body">'
     + '<div class="ss-radio-group">'
@@ -270,7 +266,7 @@ function buildApproachingHTML(sc) {
     + '<div class="ss-radio-main">' + sc.semesterLabel + '</div>'
     + '<div class="ss-radio-sub"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg> ' + sc.studierettLabel + '</div>'
     + '<p class="ss-radio-desc">' + sc.loanInfo + '</p>'
-    + '<a href="https://www.lanekassen.no/nb-NO/Stipend-og-lan/Utdanning-i-Norge/nettstudier-og-samlingsbasert/" class="ss-radio-link" target="_blank" onclick="event.stopPropagation()">' + sc.loanLink + '</a>'
+    + '<a href="https://www.kristiania.no/studere-hos-oss/opptaksinformasjon/lanekassen/" class="ss-radio-link" target="_blank" onclick="event.stopPropagation()">' + sc.loanLink + '</a>'
     + '</div></div>'
     // Option 2: Custom date
     + '<div class="ss-radio-card" onclick="ssSelectRadio(this,\'custom\')">'
@@ -293,7 +289,7 @@ function buildApproachingHTML(sc) {
 
 function buildBetweenHTML(sc) {
   var mm = getCalendarMinMax();
-  return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()">&times;</button></div>'
+  return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
     + '<h2 class="ss-title">Velg studiestart</h2>'
     + '<div class="ss-body">'
     // Checkbox

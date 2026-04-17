@@ -1939,13 +1939,16 @@ cfg: { // Application Insights Configuration
         if (activePanel) activePanel.style.display = 'block';
       });
     });
-    var switchBtn = document.querySelector('.StudyPage__switchToTabButtonContainer button');
-    if (switchBtn) {
-      switchBtn.addEventListener('click', function() {
+    document.querySelectorAll('.StudyPage__switchToTabButtonContainer button, .OnlineStudyPage__switchTabContainer button').forEach(function(btn) {
+      btn.addEventListener('click', function() {
         var velgTab = document.getElementById('tab_morestudyinfo');
         if (velgTab) velgTab.click();
+        setTimeout(function() {
+          var sp = document.querySelector('.sp-outer');
+          if (sp) sp.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
       });
-    }
+    });
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initOuterTabs);

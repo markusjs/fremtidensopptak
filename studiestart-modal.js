@@ -134,11 +134,11 @@ function getStudiestartScenario() {
   // Aug 16 – Oct 15: mellom semestre (høst pågår)
   return {
     id: 'between',
-    nextSemester: 'vårsemesteret',
-    nextDate: '16. januar',
-    nextDateBold: '16. januar',
-    orderOpens: '16. oktober',
-    orderOpensBold: '16. oktober'
+    nextSemester: 'høstsemesteret',
+    nextDate: '16. august',
+    nextDateBold: '16. august',
+    orderOpens: '16. mai',
+    orderOpensBold: '16. mai'
   };
 }
 

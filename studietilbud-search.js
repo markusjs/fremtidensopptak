@@ -200,14 +200,54 @@
     renderCards(filtered);
   }
 
+  /* ── URL state ── */
+  function writeStateToURL() {
+    var params = new URLSearchParams();
+    var q = (searchInput.value || '').trim();
+    if (q) params.set('q', q);
+    ['sted', 'niva', 'form'].forEach(function(g) {
+      var vals = getCheckedValues(g);
+      if (vals.length) params.set(g, vals.join(','));
+    });
+    var qs = params.toString();
+    var newUrl = window.location.pathname + (qs ? '?' + qs : '') + window.location.hash;
+    history.replaceState(null, '', newUrl);
+  }
+
+  function restoreStateFromURL() {
+    var params = new URLSearchParams(window.location.search);
+    var q = params.get('q');
+    if (q) searchInput.value = q;
+    ['sted', 'niva', 'form'].forEach(function(g) {
+      var raw = params.get(g);
+      if (!raw) return;
+      raw.split(',').forEach(function(v) {
+        if (!v) return;
+        var cb = root.querySelector('input[data-group="' + g + '"][value="' + v + '"]');
+        if (cb) cb.checked = true;
+      });
+    });
+  }
+
+  function onFilterChange() {
+    writeStateToURL();
+    applyFilters();
+  }
+
   /* ── Event listeners ── */
-  searchInput.addEventListener('input', applyFilters);
+  searchInput.addEventListener('input', onFilterChange);
   root.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
-    cb.addEventListener('change', applyFilters);
+    cb.addEventListener('change', onFilterChange);
+  });
+  window.addEventListener('popstate', function() {
+    root.querySelectorAll('input[type="checkbox"]').forEach(function(cb) { cb.checked = false; });
+    searchInput.value = '';
+    restoreStateFromURL();
+    applyFilters();
   });
 
-  // Close any accordion-based filter UI that existed
-  // Initial render
-  renderCards(allItems);
+  // Restore state from URL, then render
+  restoreStateFromURL();
+  applyFilters();
 
 })();

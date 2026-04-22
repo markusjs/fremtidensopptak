@@ -611,6 +611,7 @@ body {
               <input type="text" id="rabattkode" placeholder="Skriv inn rabattkode">
               <button onclick="applyRabattkode()">Bruk</button>
             </div>
+            <div id="rabattkodeFeedback" style="display:none;font-size:13px;margin-top:8px;line-height:1.4;"></div>
           </div>
         </div>
 
@@ -731,11 +732,27 @@ function renderCheckoutSummary() {
   if (allEmner.length > 0) {
     var totalPrice = 0;
     allEmner.forEach(function(e) { totalPrice += (e.price || 0); });
+    var discountAmount = Math.round(totalPrice * (_rabattPercent / 100));
+    var priceAfter = totalPrice - discountAmount;
 
-    emnerHtml += '<div style="display:flex;align-items:baseline;justify-content:space-between;">'
+    var priceHtml;
+    if (_rabattPercent > 0) {
+      priceHtml = '<span style="font-size:13px;color:#666;">' + allEmner.length + ' emner &middot; <span style="text-decoration:line-through;color:#888;">' + totalPrice.toLocaleString('nb-NO') + ' kr</span> <strong style="color:#121212;">' + priceAfter.toLocaleString('nb-NO') + ' kr</strong></span>';
+    } else {
+      priceHtml = '<span style="font-size:13px;color:#666;">' + allEmner.length + ' emner &middot; ' + totalPrice.toLocaleString('nb-NO') + ' kr</span>';
+    }
+
+    emnerHtml += '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">'
       + '<span style="font-size:13px;font-weight:600;color:#4e0000;text-transform:uppercase;letter-spacing:.5px;">Emner</span>'
-      + '<span style="font-size:13px;color:#666;">' + allEmner.length + ' emner &middot; ' + totalPrice.toLocaleString('nb-NO') + ' kr</span>'
+      + priceHtml
       + '</div>';
+
+    if (_rabattPercent > 0) {
+      emnerHtml += '<div style="display:flex;align-items:baseline;justify-content:space-between;background:#eafaf0;border:1px solid #c6ecd1;border-radius:8px;padding:8px 12px;font-size:13px;color:#2d6a2d;">'
+        + '<span>Rabatt (' + _rabattCode + ' &minus;' + _rabattPercent + '%)</span>'
+        + '<strong>&minus;' + discountAmount.toLocaleString('nb-NO') + ' kr</strong>'
+        + '</div>';
+    }
 
     // Group: nett program emner
     Object.keys(emnerByProgram).forEach(function(progName) {
@@ -1018,7 +1035,12 @@ function renderPaymentPrices() {
     emnerSection.style.display = 'block';
     var totalPrice = 0;
     allEmner.forEach(function(e) { totalPrice += (e.price || 0); });
-    emnerCount.textContent = allEmner.length + ' emner \u00b7 ' + totalPrice.toLocaleString('nb-NO') + ' kr';
+    if (_rabattPercent > 0) {
+      var priceAfter = totalPrice - Math.round(totalPrice * (_rabattPercent / 100));
+      emnerCount.innerHTML = allEmner.length + ' emner \u00b7 <span style="text-decoration:line-through;color:#888;">' + totalPrice.toLocaleString('nb-NO') + ' kr</span> <strong style="color:#121212;">' + priceAfter.toLocaleString('nb-NO') + ' kr</strong>';
+    } else {
+      emnerCount.textContent = allEmner.length + ' emner \u00b7 ' + totalPrice.toLocaleString('nb-NO') + ' kr';
+    }
   } else {
     emnerSection.style.display = 'none';
   }
@@ -1067,6 +1089,13 @@ function formatExpiry(input) {
 }
 
 /* ── Rabattkode ── */
+var _rabattCode = null;
+var _rabattPercent = 0;
+
+var VALID_RABATTKODER = {
+  'RABATT20': 20
+};
+
 function toggleRabattkode() {
   var row = document.getElementById('rabattkodeRow');
   row.classList.toggle('open');
@@ -1074,11 +1103,41 @@ function toggleRabattkode() {
     document.getElementById('rabattkode').focus();
   }
 }
+
 function applyRabattkode() {
-  var code = document.getElementById('rabattkode').value.trim();
+  var input = document.getElementById('rabattkode');
+  var feedback = document.getElementById('rabattkodeFeedback');
+  var code = input.value.trim().toUpperCase();
   if (!code) return;
-  // Demo: just show a confirmation
-  alert('Rabattkode "' + code + '" er registrert.');
+
+  if (VALID_RABATTKODER.hasOwnProperty(code)) {
+    _rabattCode = code;
+    _rabattPercent = VALID_RABATTKODER[code];
+    input.value = code;
+    input.disabled = true;
+    feedback.style.display = 'block';
+    feedback.innerHTML = '<span style="color:#2d6a2d;font-weight:500;">\u2713 Rabattkoden &laquo;' + code + '&raquo; er aktivert (&minus;' + _rabattPercent + '% p\u00e5 nettemner).</span> <a href="javascript:void(0)" onclick="fjernRabattkode()" style="color:#06f;text-decoration:underline;margin-left:4px;">Fjern</a>';
+  } else {
+    _rabattCode = null;
+    _rabattPercent = 0;
+    feedback.style.display = 'block';
+    feedback.innerHTML = '<span style="color:#b60202;">Ugyldig rabattkode.</span>';
+  }
+  renderCheckoutSummary();
+  renderPaymentPrices();
+}
+
+function fjernRabattkode() {
+  _rabattCode = null;
+  _rabattPercent = 0;
+  var input = document.getElementById('rabattkode');
+  var feedback = document.getElementById('rabattkodeFeedback');
+  input.value = '';
+  input.disabled = false;
+  feedback.style.display = 'none';
+  feedback.innerHTML = '';
+  renderCheckoutSummary();
+  renderPaymentPrices();
 }
 
 /* ── Summary toggle ── */

@@ -383,8 +383,29 @@ cfg: { // Application Insights Configuration
 .sp-sem-header h4{font-size:18px;font-weight:700;margin:0}
 .sp-sem-header span{font-size:13px;color:#555;font-weight:600}
 .sp-hr{display:none}
-.sp-course-row{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #e0e0e0}
+.sp-course-row{display:flex;align-items:center;gap:12px;padding:14px 24px;border-bottom:1px solid #e0e0e0;cursor:pointer;transition:background .15s}
+.sp-course-row:hover{background:#fafafa}
 .sp-course-name{color:#111;text-decoration:none;font-size:14px;margin-right:auto}
+.sp-emne-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0);z-index:1500;transition:background .35s ease}
+.sp-emne-backdrop.show{display:block}
+.sp-emne-backdrop.open{background:rgba(0,0,0,.45)}
+.sp-emne-drawer{position:fixed;top:0;right:0;height:100%;width:560px;max-width:100vw;background:#fff;z-index:1501;box-shadow:-12px 0 48px rgba(0,0,0,0);transform:translate3d(100%,0,0);transition:transform .48s cubic-bezier(.22,1,.36,1),box-shadow .48s ease;display:flex;flex-direction:column;overflow:hidden;will-change:transform}
+.sp-emne-backdrop.open .sp-emne-drawer{transform:translate3d(0,0,0);box-shadow:-12px 0 48px rgba(0,0,0,.22)}
+.sp-emne-header{padding:24px 32px 0;flex-shrink:0}
+.sp-emne-close{width:36px;height:36px;border:1.5px solid #111;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .15s}
+.sp-emne-close:hover{background:#f0f0f0}
+.sp-emne-body{flex:1;overflow-y:auto;padding:16px 32px 24px}
+.sp-emne-title{font-size:28px;font-weight:800;color:#6b2020;margin:8px 0 16px;line-height:1.2}
+.sp-emne-meta{display:flex;flex-wrap:wrap;gap:24px;margin-bottom:24px;color:#111;font-size:14px}
+.sp-emne-meta-item{display:inline-flex;align-items:center;gap:6px}
+.sp-emne-meta-item svg{flex-shrink:0}
+.sp-emne-desc{font-size:15px;color:#222;line-height:1.6}
+.sp-emne-desc p{margin:0 0 16px}
+.sp-emne-desc ul{padding-left:20px;margin:0 0 16px}
+.sp-emne-desc li{margin-bottom:4px}
+.sp-emne-footer{padding:20px 32px;border-top:1px solid #eee;flex-shrink:0}
+.sp-emne-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:56px;background:#b71c2f;color:#fff;border:none;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.sp-emne-btn:hover{background:#8f1423}
 .sp-badge{background:#fff;border:1.5px solid #111;border-radius:20px;padding:4px 12px;font-size:13px;white-space:nowrap;font-weight:500}
 .sp-price{font-size:13px;color:#333;white-space:nowrap;min-width:80px;text-align:right}
 .sp-add-btn{width:34px;height:34px;background:#111;color:#fff;border:none;border-radius:8px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;line-height:1;padding-bottom:2px}
@@ -2066,6 +2087,60 @@ function spSyncFromBasket() {
   /* Don't call spUpdateSummary() here — it triggers spSyncToBasket → addProgramWithEmner → openSoknaderPanel */
 }
 
+/* Emne detail drawer */
+function spOpenEmneDrawer(row) {
+  var code = row.dataset.code;
+  var name = row.dataset.name || (row.querySelector('.sp-course-name') && row.querySelector('.sp-course-name').textContent) || '';
+  var old = document.getElementById('sp-emne-backdrop');
+  if (old) old.remove();
+
+  var closeIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#111" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  var hashIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18" stroke="#111" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  var bookIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4h12a2 2 0 012 2v14H6a2 2 0 01-2-2V4zM4 4v14M18 20a2 2 0 002-2V6" stroke="#111" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var pinIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-6.5-7-12a7 7 0 1114 0c0 5.5-7 12-7 12z" stroke="#111" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.5" stroke="#111" stroke-width="1.5"/></svg>';
+  var arrowIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  var html = '<div class="sp-emne-drawer">'
+    + '<div class="sp-emne-header"><button class="sp-emne-close" aria-label="Lukk" onclick="spCloseEmneDrawer()">' + closeIcon + '</button></div>'
+    + '<div class="sp-emne-body">'
+    + '<h3 class="sp-emne-title">' + name + '</h3>'
+    + '<div class="sp-emne-meta">'
+    + '<span class="sp-emne-meta-item">' + hashIcon + ' ' + code + '</span>'
+    + '<span class="sp-emne-meta-item">' + bookIcon + ' Emne bachelornivå</span>'
+    + '<span class="sp-emne-meta-item">' + pinIcon + ' Nett</span>'
+    + '</div>'
+    + '<div class="sp-emne-desc">'
+    + '<p>Er du usikker på hvordan du forstår fagtekster – eller på hvordan du skriver slik akademia forventer? Dette emnet gir deg nøklene til å knekke den akademiske koden og prestere bedre i studiene.</p>'
+    + '<p>Mange opplever at faglitteratur kan virke utilgjengelig – teksten er kompleks, begrepene tette, og strukturen krevende å følge. Når du samtidig skal skrive egne akademiske tekster, stilles det forventninger til både klarhet, faglig troverdighet og korrekt bruk av kilder.</p>'
+    + '<p>I dette emnet lærer du å forstå hvordan akademiske tekster er bygget opp, hvordan du leser dem med analytisk blikk, og hvordan du selv kan skrive presist, strukturert og i tråd med akademiske normer. Du utvikler samtidig informasjonskompetanse, kritisk tenkning og skriftlig formidling – helt sentrale ferdigheter i høyere utdanning.</p>'
+    + '<p>Du får praktisk trening i:</p>'
+    + '<ul><li>Oppgaveskriving</li><li>Informasjonskompetanse</li><li>Vitenskapsteori</li></ul>'
+    + '</div>'
+    + '</div>'
+    + '<div class="sp-emne-footer"><button class="sp-emne-btn">Les mer ' + arrowIcon + '</button></div>'
+    + '</div>';
+
+  var backdrop = document.createElement('div');
+  backdrop.className = 'sp-emne-backdrop';
+  backdrop.id = 'sp-emne-backdrop';
+  backdrop.innerHTML = html;
+  backdrop.addEventListener('click', function(e) {
+    if (e.target === backdrop) spCloseEmneDrawer();
+  });
+  document.body.appendChild(backdrop);
+  backdrop.classList.add('show');
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
+    backdrop.classList.add('open');
+  }); });
+}
+
+function spCloseEmneDrawer() {
+  var b = document.getElementById('sp-emne-backdrop');
+  if (!b) return;
+  b.classList.remove('open');
+  setTimeout(function() { b.remove(); }, 480);
+}
+
 /* Event delegation for all SP clicks */
 document.addEventListener('click', function(e) {
   var addBtn = e.target.closest('.sp-add-btn');
@@ -2076,6 +2151,14 @@ document.addEventListener('click', function(e) {
 
   var tab = e.target.closest('.sp-tab[data-panel]');
   if (tab) { spTab(tab, tab.dataset.panel); return; }
+
+  var row = e.target.closest('.sp-course-row');
+  if (row) {
+    var link = e.target.closest('a');
+    if (link && row.contains(link)) e.preventDefault();
+    spOpenEmneDrawer(row);
+    return;
+  }
 });
 
 document.addEventListener('DOMContentLoaded', function() { setTimeout(spSyncFromBasket, 100); });

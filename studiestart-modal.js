@@ -364,6 +364,8 @@ window.ssToggleInfo = function(header) {
 /* ── Build modal HTML ── */
 function buildApproachingHTML(sc) {
   var mm = getCalendarMinMax();
+  var calMin = sc.calendarMin || mm.min;
+  var calMax = sc.calendarMax || mm.max;
   return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
     + '<h2 class="ss-title">Velg studiestart</h2>'
     + '<div class="ss-body">'
@@ -384,7 +386,7 @@ function buildApproachingHTML(sc) {
     + '<p class="ss-radio-desc">Du kan starte når som helst innen 3 måneder fra dagens dato.</p>'
     + '<div class="ss-radio-sub"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg> 12 måneder studierett</div>'
     + '<div class="ss-calendar-wrap" id="ss-cal-wrap">'
-    + '<input type="date" class="ss-date-input" id="ss-custom-date" min="' + mm.min + '" max="' + mm.max + '">'
+    + '<input type="date" class="ss-date-input" id="ss-custom-date" min="' + calMin + '" max="' + calMax + '">'
     + '</div>'
     + '</div></div>'
     + '</div>'
@@ -411,8 +413,7 @@ function buildBetweenHTML(sc) {
     + '<div class="ss-between-warning" id="ss-between-warning" style="max-height:0;opacity:0">'
     + '<div class="ss-warning">'
     + '<div class="ss-warning-title">Utenfor Lånekassens semester</div>'
-    + '<p>Semesteret er i gang, og oppstart nå vil muligens ikke gi støtte fra Lånekassen.</p>'
-    + '<p>Neste semester (' + sc.nextSemester + ') har oppstart <strong>' + sc.nextDateBold + '</strong> og kan bestilles fra <strong>' + sc.orderOpensBold + '</strong>.</p>'
+    + '<p>Neste semester (høstsemesteren) har oppstart <strong>16. august</strong> og kan bestilles fra <strong>16. mai</strong>.</p>'
     + '<div class="ss-warning-email-label">Bli varslet når du kan bestille for ' + sc.nextSemester + '</div>'
     + '<input type="email" class="ss-warning-email" id="ss-notify-email" placeholder="mail@epost.com" onclick="event.stopPropagation()">'
     + '</div>'

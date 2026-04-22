@@ -186,6 +186,9 @@ body {
 .radio-circle.selected::after { content: ''; width: 10px; height: 10px; background: #06f; border-radius: 50%; }
 .radio-text { font-size: 14px; color: #3f3f3f; }
 
+.radio-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.radio-row .radio-option { border: 1.5px solid #c7c8ca; border-radius: 8px; }
+
 /* Card expand section */
 .card-fields-expand {
   display: none; padding: 0 16px 16px; background: #f0f7ff;
@@ -479,16 +482,19 @@ body {
             </div>
           </div>
 
-          <div class="input-wrap" id="wrap-spraak" style="position:relative;">
-            <select id="spraak" onchange="this.classList.toggle('has-value', this.value !== '')">
-              <option value="" disabled selected></option>
-              <option value="norsk">Norsk</option>
-              <option value="engelsk">Engelsk</option>
-              <option value="annet">Annet</option>
-            </select>
-            <label for="spraak">Språk</label>
-            <div class="select-chevron">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div id="wrap-spraak">
+            <div style="font-size:14px;font-weight:600;color:#121212;margin-bottom:8px;">Språk</div>
+            <div class="radio-row" id="spraakGroup">
+              <label class="radio-option active" id="opt-spraak-norsk">
+                <input type="radio" name="spraak" value="norsk" style="display:none;" checked onchange="updateSpraakRadio(this)">
+                <div class="radio-circle selected"></div>
+                <span class="radio-text">Norsk</span>
+              </label>
+              <label class="radio-option" id="opt-spraak-engelsk">
+                <input type="radio" name="spraak" value="engelsk" style="display:none;" onchange="updateSpraakRadio(this)">
+                <div class="radio-circle"></div>
+                <span class="radio-text">Engelsk</span>
+              </label>
             </div>
           </div>
         </div>
@@ -954,9 +960,8 @@ function simulateLogin() {
   document.getElementById('gate').value = 'Storgata 1';
   document.getElementById('postnr').value = '0182';
   document.getElementById('poststed').value = 'Oslo';
-  var spraak = document.getElementById('spraak');
-  spraak.value = 'norsk';
-  spraak.classList.add('has-value');
+  var norskRadio = document.querySelector('input[name="spraak"][value="norsk"]');
+  if (norskRadio) { norskRadio.checked = true; updateSpraakRadio(norskRadio); }
   // Trigger float labels
   document.querySelectorAll('.input-wrap input').forEach(function(inp) {
     inp.dispatchEvent(new Event('input'));
@@ -981,8 +986,9 @@ document.addEventListener('input', function(e) {
 
 /* ── Radio ── */
 function updateRadio(input) {
-  document.querySelectorAll('.radio-circle').forEach(function(c) { c.classList.remove('selected'); });
-  document.querySelectorAll('.radio-option').forEach(function(o) { o.classList.remove('active'); });
+  var group = document.getElementById('betalingGroup');
+  group.querySelectorAll('.radio-circle').forEach(function(c) { c.classList.remove('selected'); });
+  group.querySelectorAll('.radio-option').forEach(function(o) { o.classList.remove('active'); });
   input.closest('.radio-option').querySelector('.radio-circle').classList.add('selected');
   input.closest('.radio-option').classList.add('active');
   var errBetaling = document.getElementById('err-betaling');
@@ -1002,6 +1008,14 @@ function updateRadio(input) {
   } else {
     cardExpand.classList.remove('open');
   }
+}
+
+function updateSpraakRadio(input) {
+  var group = document.getElementById('spraakGroup');
+  group.querySelectorAll('.radio-circle').forEach(function(c) { c.classList.remove('selected'); });
+  group.querySelectorAll('.radio-option').forEach(function(o) { o.classList.remove('active'); });
+  input.closest('.radio-option').querySelector('.radio-circle').classList.add('selected');
+  input.closest('.radio-option').classList.add('active');
 }
 
 /* ── Payment section rendering ── */
@@ -1050,7 +1064,8 @@ function renderPaymentPrices() {
 function hentFraTelefon() {
   var lookupInput = document.getElementById('telefon-lookup');
   var tel = lookupInput.value.replace(/\s/g, '');
-  if (!tel || tel.length < 8) {
+  var isDemoCode = tel === '123123';
+  if (!isDemoCode && (!tel || tel.length < 8)) {
     lookupInput.focus();
     lookupInput.style.borderColor = '#06f';
     return;
@@ -1059,8 +1074,9 @@ function hentFraTelefon() {
   // Copy phone to the Kontakt field
   document.getElementById('telefon').value = tel;
   // Simulate 1881 lookup
-  document.getElementById('fornavn').value = 'Ola';
+  document.getElementById('fornavn').value = 'Ole';
   document.getElementById('etternavn').value = 'Nordmann';
+  document.getElementById('epost').value = 'epost@test.no';
   document.getElementById('gate').value = 'Akersveien 24F';
   document.getElementById('postnr').value = '0177';
   document.getElementById('poststed').value = 'Oslo';
@@ -1069,7 +1085,7 @@ function hentFraTelefon() {
     if (inp.value) inp.dispatchEvent(new Event('input'));
   });
   // Clear errors on filled fields
-  ['telefon','fornavn','etternavn','gate','postnr','poststed'].forEach(function(id) {
+  ['telefon','epost','fornavn','etternavn','gate','postnr','poststed'].forEach(function(id) {
     var wrap = document.getElementById('wrap-' + id);
     if (wrap) wrap.classList.remove('error');
     var err = document.getElementById('err-' + id);

@@ -394,7 +394,7 @@ function buildApproachingHTML(sc) {
     + '</div>'
     + '<div class="ss-footer">'
     + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()">'
-    + 'Gå videre med søknaden <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + 'Bekreft'
     + '</button>'
     + '</div>';
 }
@@ -435,7 +435,7 @@ function buildBetweenHTML(sc) {
     + '</div>'
     + '<div class="ss-footer">'
     + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()" disabled>'
-    + 'Gå videre med søknaden <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + 'Bekreft'
     + '</button>'
     + '</div>';
 }

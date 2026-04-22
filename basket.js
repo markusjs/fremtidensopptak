@@ -233,7 +233,7 @@ function injectSidebarPanel() {
     + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#06f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     + '<p class="hk-save-receipt-msg">Søknaden er lagret! Vi sender deg en lenke på e-post.</p>'
     + '</div>'
-    + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre med søknaden</a>'
+    + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre</a>'
     + '</div>'
     + '</div></div>';
   document.body.insertAdjacentHTML('beforeend', html);

@@ -478,7 +478,7 @@ window.ssStudiestotteSelect = function(val, card) {
 
 /* ── Public API ── */
 
-window.openStudiestartModal = function(pendingCourses, scenarioOverride) {
+window.openStudiestartModal = function(pendingCourses, scenarioOverride, options) {
   injectStyles();
   _ssPending = pendingCourses || [];
 
@@ -488,11 +488,16 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride) {
 
   _ssWantsLanekassen = null;
   var sc = scenarioOverride || getStudiestartScenario();
+  var skipStudiestotte = options && options.skipStudiestotte;
+
+  var initialHTML = skipStudiestotte
+    ? (sc.id === 'approaching' ? buildApproachingHTML(sc) : buildBetweenHTML(sc))
+    : buildStudiestotteHTML();
 
   var backdrop = document.createElement('div');
   backdrop.className = 'ss-backdrop';
   backdrop.id = 'ss-backdrop';
-  backdrop.innerHTML = '<div class="ss-modal" id="ss-modal">' + buildStudiestotteHTML() + '</div>';
+  backdrop.innerHTML = '<div class="ss-modal" id="ss-modal">' + initialHTML + '</div>';
 
   // Close on backdrop click
   backdrop.addEventListener('click', function(e) {
@@ -507,6 +512,10 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride) {
   // Trigger open animation
   requestAnimationFrame(function() {
     backdrop.classList.add('open');
+    if (skipStudiestotte && sc.id === 'between') {
+      ssInitCalendarState();
+      ssRenderCalendar();
+    }
   });
 };
 

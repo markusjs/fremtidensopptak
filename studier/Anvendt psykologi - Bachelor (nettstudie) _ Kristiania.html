@@ -772,7 +772,7 @@ function spAddCourse(btn) {
     name: row.dataset.name,
     pts: parseFloat(row.dataset.pts),
     price: parseInt(row.dataset.price)
-  }], spScenarioOverride);
+  }], spScenarioOverride, { skipStudiestotte: true });
 }
 
 function spRemoveCourse(code) {
@@ -796,7 +796,7 @@ function spBestillAlle(btn) {
       price: parseInt(row.dataset.price)
     });
   });
-  if (pending.length > 0) openStudiestartModal(pending, spScenarioOverride);
+  if (pending.length > 0) openStudiestartModal(pending, spScenarioOverride, { skipStudiestotte: true });
 }
 
 function spUpdateSummary() {

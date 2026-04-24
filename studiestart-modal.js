@@ -10,6 +10,7 @@ var _ssPending = [];   // [{btn, code, name, pts, price}, …]
 var _ssStyleInjected = false;
 var _ssCalYear, _ssCalMonth, _ssCalSelected = null;
 var _ssCalMin, _ssCalMax;
+var _ssWantsLanekassen = null;
 
 /* ── CSS injection ── */
 function injectStyles() {
@@ -126,7 +127,11 @@ function injectStyles() {
 .ss-footer{padding:10px 14px calc(14px + env(safe-area-inset-bottom))}\
 .ss-cal{padding:10px 4px}\
 .ss-cal-day{max-width:36px;height:36px;font-size:14px}\
-}';
+}\
+.ss-simple-card{border:1.5px solid #e0e0e0;border-radius:12px;padding:20px 24px;cursor:pointer;font-size:18px;font-weight:700;color:#121212;transition:border-color .15s,background .15s}\
+.ss-simple-card:hover{background:#fafafa;border-color:#ccc}\
+.ss-simple-card.selected{border-color:#06f;background:#f0f7ff}\
+.ss-subtitle{font-size:15px;color:#555;padding:2px 24px 0;line-height:1.4;flex-shrink:0}';
   document.head.appendChild(css);
 }
 
@@ -390,7 +395,6 @@ function buildApproachingHTML(sc) {
     + '</div>'
     + '</div></div>'
     + '</div>'
-    + buildInfoAccordion()
     + '</div>'
     + '<div class="ss-footer">'
     + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()">'
@@ -404,13 +408,8 @@ function buildBetweenHTML(sc) {
   return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
     + '<h2 class="ss-title">Velg studiestart</h2>'
     + '<div class="ss-body">'
-    // Checkbox
-    + '<div class="ss-checkbox-row" onclick="ssBetweenToggle()">'
-    + '<div class="ss-checkbox-box" id="ss-lk-check"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
-    + '<span class="ss-checkbox-label">Jeg planlegger å søke støtte hos Lånekassen</span>'
-    + '</div>'
-    // Warning banner (hidden by default)
-    + '<div class="ss-between-warning" id="ss-between-warning" style="max-height:0;opacity:0">'
+    // Warning banner — visible if user said Ja to Lånekassen
+    + '<div class="ss-between-warning" id="ss-between-warning" style="max-height:' + (_ssWantsLanekassen ? '800px' : '0') + ';opacity:' + (_ssWantsLanekassen ? '1' : '0') + '">'
     + '<div class="ss-warning">'
     + '<div class="ss-warning-title">Utenfor Lånekassens semester</div>'
     + '<p>Neste semester (høstsemesteren) har oppstart <strong>16. august</strong> og kan bestilles fra <strong>16. mai</strong>.</p>'
@@ -422,8 +421,8 @@ function buildBetweenHTML(sc) {
     + '<input type="date" class="ss-date-input" id="ss-custom-date" min="' + mm.min + '" max="' + mm.max + '" onchange="ssDateChanged()">'
     + '</div>'
     + '</div>'
-    // Calendar (visible by default)
-    + '<div class="ss-between-calendar" id="ss-between-calendar" style="max-height:800px;opacity:1">'
+    // Calendar — visible if user said Nei to Lånekassen
+    + '<div class="ss-between-calendar" id="ss-between-calendar" style="max-height:' + (_ssWantsLanekassen ? '0' : '800px') + ';opacity:' + (_ssWantsLanekassen ? '0' : '1') + '">'
     + '<div id="ss-cal-widget" class="ss-cal"></div>'
     + '</div>'
     + '<div class="ss-selected-date" id="ss-selected-date">'
@@ -431,7 +430,6 @@ function buildBetweenHTML(sc) {
     + '<span class="ss-selected-date-label">Valgt studiestart:</span>'
     + '<span class="ss-selected-date-value" id="ss-selected-date-value"></span>'
     + '</div>'
-    + buildInfoAccordion()
     + '</div>'
     + '<div class="ss-footer">'
     + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()" disabled>'
@@ -439,6 +437,44 @@ function buildBetweenHTML(sc) {
     + '</button>'
     + '</div>';
 }
+
+/* ── Studiestøtte step ── */
+function buildStudiestotteHTML() {
+  var chevron = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
+    + '<h2 class="ss-title">Studiestøtte</h2>'
+    + '<p class="ss-subtitle">Planlegger du å søke lån eller stipend fra Lånekassen?</p>'
+    + '<div class="ss-body">'
+    + '<div class="ss-radio-group">'
+    + '<div class="ss-simple-card" onclick="ssStudiestotteSelect(\'ja\', this)">Ja</div>'
+    + '<div class="ss-simple-card" onclick="ssStudiestotteSelect(\'nei\', this)">Nei</div>'
+    + '</div>'
+    + buildInfoAccordion()
+    + '</div>';
+}
+
+window.ssStudiestotteSelect = function(val, card) {
+  _ssWantsLanekassen = (val === 'ja');
+  // Brief visual feedback on the card
+  var cards = document.querySelectorAll('.ss-simple-card');
+  cards.forEach(function(c) { c.classList.remove('selected'); });
+  if (card) card.classList.add('selected');
+
+  var backdrop = document.getElementById('ss-backdrop');
+  if (!backdrop) return;
+  var sc = backdrop._ssScenario;
+  var modal = document.getElementById('ss-modal');
+  if (!modal) return;
+
+  setTimeout(function() {
+    var html = (sc.id === 'approaching') ? buildApproachingHTML(sc) : buildBetweenHTML(sc);
+    modal.innerHTML = html;
+    if (sc.id === 'between' && !_ssWantsLanekassen) {
+      ssInitCalendarState();
+      ssRenderCalendar();
+    }
+  }, 120);
+};
 
 /* ── Public API ── */
 
@@ -450,13 +486,13 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride) {
   var old = document.getElementById('ss-backdrop');
   if (old) old.remove();
 
+  _ssWantsLanekassen = null;
   var sc = scenarioOverride || getStudiestartScenario();
-  var html = (sc.id === 'approaching') ? buildApproachingHTML(sc) : buildBetweenHTML(sc);
 
   var backdrop = document.createElement('div');
   backdrop.className = 'ss-backdrop';
   backdrop.id = 'ss-backdrop';
-  backdrop.innerHTML = '<div class="ss-modal" id="ss-modal">' + html + '</div>';
+  backdrop.innerHTML = '<div class="ss-modal" id="ss-modal">' + buildStudiestotteHTML() + '</div>';
 
   // Close on backdrop click
   backdrop.addEventListener('click', function(e) {
@@ -471,11 +507,6 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride) {
   // Trigger open animation
   requestAnimationFrame(function() {
     backdrop.classList.add('open');
-    // Init custom calendar for between scenario
-    if (sc.id === 'between') {
-      ssInitCalendarState();
-      ssRenderCalendar();
-    }
   });
 };
 
@@ -581,12 +612,8 @@ window.confirmStudiestart = function() {
       dateStr = parts[2] + '.' + parts[1] + '.' + parts[0].slice(-2);
     }
   } else {
-    // Between semesters — check if Lånekasse checkbox is checked
-    var lkBox = document.getElementById('ss-lk-check');
-    var lkChecked = lkBox && lkBox.classList.contains('checked');
-
-    if (lkChecked) {
-      // Date from input field
+    if (_ssWantsLanekassen) {
+      // Date from input field (Lånekassen-flow)
       var dateInput2 = document.getElementById('ss-custom-date');
       if (!dateInput2 || !dateInput2.value) return;
       var parts2 = dateInput2.value.split('-');

@@ -100,11 +100,13 @@ function injectStyles() {
 .ss-info-body li:last-child{margin-bottom:0}\
 .ss-info-link-wrap{margin-top:14px;font-size:13px}\
 .ss-info-link{color:#000;font-size:13px;font-weight:500}\
-.ss-selected-date{display:none;align-items:center;gap:10px;margin-top:4px;padding:14px 16px;background:#f0f7ff;border:1.5px solid #d4d8ff;border-radius:10px;font-size:14px;color:#111}\
+.ss-selected-date{display:none;align-items:flex-start;gap:10px;margin-top:4px;padding:14px 16px;background:#f0f7ff;border:1.5px solid #d4d8ff;border-radius:10px;font-size:14px;color:#111}\
 .ss-selected-date.show{display:flex}\
 .ss-selected-date svg{flex-shrink:0;color:#06f}\
 .ss-selected-date-label{color:#555;font-weight:500}\
 .ss-selected-date-value{font-weight:700;color:#111}\
+.ss-selected-date-hint{font-size:12px;color:#555;font-weight:400}\
+.ss-faq-section{padding:16px 16px 0;display:flex;flex-direction:column;gap:8px}\
 @media (max-width:480px){\
 .ss-modal{width:100%;max-width:100%;box-shadow:none}\
 .ss-header{padding:12px 12px 0}\
@@ -427,8 +429,13 @@ function buildBetweenHTML(sc) {
     + '</div>'
     + '<div class="ss-selected-date" id="ss-selected-date">'
     + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
-    + '<span class="ss-selected-date-label">Valgt studiestart:</span>'
-    + '<span class="ss-selected-date-value" id="ss-selected-date-value"></span>'
+    + '<div style="display:flex;flex-direction:column;gap:2px;">'
+    + '<div><span class="ss-selected-date-label">Valgt studiestart:</span> <span class="ss-selected-date-value" id="ss-selected-date-value"></span></div>'
+    + '<span class="ss-selected-date-hint">Du får tilgang så fort dokumentasjonen er godkjent.</span>'
+    + '</div>'
+    + '</div>'
+    + '<div class="ss-faq-section">'
+    + buildInfoAccordion()
     + '</div>'
     + '</div>'
     + '<div class="ss-footer">'

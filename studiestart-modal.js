@@ -133,7 +133,14 @@ function injectStyles() {
 .ss-simple-card{border:1.5px solid #e0e0e0;border-radius:12px;padding:20px 24px;cursor:pointer;font-size:18px;font-weight:700;color:#121212;transition:border-color .15s,background .15s}\
 .ss-simple-card:hover{background:#fafafa;border-color:#ccc}\
 .ss-simple-card.selected{border-color:#06f;background:#f0f7ff}\
-.ss-subtitle{font-size:15px;color:#555;padding:2px 24px 0;line-height:1.4;flex-shrink:0}';
+.ss-subtitle{font-size:15px;color:#555;padding:2px 24px 0;line-height:1.4;flex-shrink:0}\
+.ss-order-label{font-size:12px;color:#888;margin-bottom:4px}\
+.ss-notify-label{font-size:13px;color:#888;margin:14px 0 6px;line-height:1.4}\
+.ss-between-lk-card{display:block}\
+.ss-between-lk-card.selected{border-color:#e0c0c0;background:#fff8f5}\
+.ss-between-lk-card:hover{background:#fff4f0}\
+.ss-warning-email{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;background:#fff;box-sizing:border-box;min-height:44px;transition:border-color .15s}\
+.ss-warning-email:focus{border-color:#06f}';
   document.head.appendChild(css);
 }
 
@@ -177,19 +184,19 @@ function getStudiestartScenario() {
       id: 'between',
       nextSemester: 'høstsemesteret',
       nextDate: '16. august',
-      nextDateBold: '16. august',
+      nextDateFull: '16. august ' + y,
       orderOpens: '16. mai',
-      orderOpensBold: '16. mai'
+      studierettLabel: 'Studierett til 15. august ' + (y + 1)
     };
   }
   // Aug 16 – Oct 15: mellom semestre (høst pågår)
   return {
     id: 'between',
-    nextSemester: 'høstsemesteret',
-    nextDate: '16. august',
-    nextDateBold: '16. august',
-    orderOpens: '16. mai',
-    orderOpensBold: '16. mai'
+    nextSemester: 'vårsemesteret',
+    nextDate: '16. januar',
+    nextDateFull: '16. januar ' + (y + 1),
+    orderOpens: '16. oktober',
+    studierettLabel: 'Studierett til 15. januar ' + (y + 2)
   };
 }
 
@@ -397,6 +404,9 @@ function buildApproachingHTML(sc) {
     + '</div>'
     + '</div></div>'
     + '</div>'
+    + '<div class="ss-faq-section">'
+    + buildInfoAccordion()
+    + '</div>'
     + '</div>'
     + '<div class="ss-footer">'
     + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()">'
@@ -407,26 +417,59 @@ function buildApproachingHTML(sc) {
 
 function buildBetweenHTML(sc) {
   var mm = getCalendarMinMax();
+  var clockSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg>';
+
+  if (_ssWantsLanekassen) {
+    // Card-based layout: upcoming semester + email notification, OR custom date now
+    return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
+      + '<h2 class="ss-title">Velg studiestart</h2>'
+      + '<div class="ss-body">'
+      + '<div class="ss-radio-group">'
+      // Card 1: upcoming semester (selected by default, no radio dot)
+      + '<div class="ss-radio-card ss-between-lk-card selected" onclick="ssSelectRadioBetween(this,\'semester\')">'
+      + '<div style="flex:1">'
+      + '<div class="ss-order-label">Kan bestilles fra ' + sc.orderOpens + '</div>'
+      + '<div class="ss-radio-main">' + (sc.nextDateFull || sc.nextDate) + '</div>'
+      + '<p class="ss-radio-desc">Anbefalt hvis du ønsker å søke lån/stipend hos Lånekassen.</p>'
+      + '<div class="ss-radio-sub">' + clockSvg + ' ' + (sc.studierettLabel || '') + '</div>'
+      + '<p class="ss-notify-label">Send e-post når jeg kan søke opptak for å sikre studiestøtte.</p>'
+      + '<input type="email" class="ss-warning-email" id="ss-notify-email" placeholder="mail@epost.no" onclick="event.stopPropagation()">'
+      + '</div>'
+      + '</div>'
+      // Card 2: custom date now
+      + '<div class="ss-radio-card" onclick="ssSelectRadioBetween(this,\'custom\')">'
+      + '<div class="ss-radio-dot"></div>'
+      + '<div style="flex:1">'
+      + '<div class="ss-radio-main">Valgfri oppstartsdato</div>'
+      + '<p class="ss-radio-desc">Du kan starte når som helst innen 3 måneder fra dagens dato.</p>'
+      + '<div class="ss-radio-sub">' + clockSvg + ' 12 måneder studierett</div>'
+      + '<div class="ss-calendar-wrap" id="ss-cal-wrap">'
+      + '<div id="ss-cal-widget" class="ss-cal" style="margin-top:12px"></div>'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<div class="ss-selected-date" id="ss-selected-date">'
+      + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+      + '<div style="display:flex;flex-direction:column;gap:2px;">'
+      + '<div><span class="ss-selected-date-label">Valgt studiestart:</span> <span class="ss-selected-date-value" id="ss-selected-date-value"></span></div>'
+      + '<span class="ss-selected-date-hint">Du får tilgang så fort dokumentasjonen er godkjent.</span>'
+      + '</div>'
+      + '</div>'
+      + '<div class="ss-faq-section">'
+      + buildInfoAccordion()
+      + '</div>'
+      + '</div>'
+      + '<div class="ss-footer">'
+      + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()">Bekreft</button>'
+      + '</div>';
+  }
+
+  // Nei case: just show calendar to pick a date now
   return '<div class="ss-header"><button class="ss-close" onclick="closeStudiestartModal()" aria-label="Lukk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></button></div>'
     + '<h2 class="ss-title">Velg studiestart</h2>'
     + '<div class="ss-body">'
-    // Warning banner — visible if user said Ja to Lånekassen
-    + '<div class="ss-between-warning" id="ss-between-warning" style="max-height:' + (_ssWantsLanekassen ? '800px' : '0') + ';opacity:' + (_ssWantsLanekassen ? '1' : '0') + '">'
-    + '<div class="ss-warning">'
-    + '<div class="ss-warning-title">Utenfor Lånekassens semester</div>'
-    + '<p>Neste semester (høstsemesteren) har oppstart <strong>16. august</strong> og kan bestilles fra <strong>16. mai</strong>.</p>'
-    + '<div class="ss-warning-email-label">Bli varslet når du kan bestille for ' + sc.nextSemester + '</div>'
-    + '<input type="email" class="ss-warning-email" id="ss-notify-email" placeholder="mail@epost.com" onclick="event.stopPropagation()">'
-    + '</div>'
-    + '<p class="ss-or-text" style="margin-top:16px">Du kan likevel velge en startdato og studere uten støtte:</p>'
-    + '<div class="ss-date-row">'
-    + '<input type="date" class="ss-date-input" id="ss-custom-date" min="' + mm.min + '" max="' + mm.max + '" onchange="ssDateChanged()">'
-    + '</div>'
-    + '</div>'
-    // Calendar — visible if user said Nei to Lånekassen
-    + '<div class="ss-between-calendar" id="ss-between-calendar" style="max-height:' + (_ssWantsLanekassen ? '0' : '800px') + ';opacity:' + (_ssWantsLanekassen ? '0' : '1') + '">'
     + '<div id="ss-cal-widget" class="ss-cal"></div>'
-    + '</div>'
     + '<div class="ss-selected-date" id="ss-selected-date">'
     + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
     + '<div style="display:flex;flex-direction:column;gap:2px;">'
@@ -439,9 +482,7 @@ function buildBetweenHTML(sc) {
     + '</div>'
     + '</div>'
     + '<div class="ss-footer">'
-    + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()" disabled>'
-    + 'Bekreft'
-    + '</button>'
+    + '<button class="ss-btn" id="ss-confirm-btn" onclick="confirmStudiestart()" disabled>Bekreft</button>'
     + '</div>';
 }
 
@@ -480,6 +521,7 @@ window.ssStudiestotteSelect = function(val, card) {
       ssInitCalendarState();
       ssRenderCalendar();
     }
+    // Between+Ja: calendar is lazy-init'd when user clicks "Valgfri oppstartsdato"
   }, 120);
 };
 
@@ -532,6 +574,25 @@ window.closeStudiestartModal = function() {
   backdrop.classList.remove('open');
   setTimeout(function() { backdrop.remove(); }, 250);
   _ssPending = [];
+};
+
+window.ssSelectRadioBetween = function(card, value) {
+  var group = card.closest('.ss-radio-group');
+  group.querySelectorAll('.ss-radio-card').forEach(function(c) { c.classList.remove('selected'); });
+  card.classList.add('selected');
+
+  var calWrap = document.getElementById('ss-cal-wrap');
+  var btn = document.getElementById('ss-confirm-btn');
+
+  if (value === 'custom') {
+    if (calWrap) calWrap.classList.add('open');
+    if (btn) btn.disabled = !_ssCalSelected;
+    ssInitCalendarState();
+    ssRenderCalendar();
+  } else {
+    if (calWrap) calWrap.classList.remove('open');
+    if (btn) btn.disabled = false;
+  }
 };
 
 window.ssSelectRadio = function(card, value) {
@@ -629,18 +690,27 @@ window.confirmStudiestart = function() {
     }
   } else {
     if (_ssWantsLanekassen) {
-      // Date from input field (Lånekassen-flow)
-      var dateInput2 = document.getElementById('ss-custom-date');
-      if (!dateInput2 || !dateInput2.value) return;
-      var parts2 = dateInput2.value.split('-');
-      dateStr = parts2[2] + '.' + parts2[1] + '.' + parts2[0].slice(-2);
+      // Check which card is selected in between+Ja layout
+      var selectedCard = document.querySelector('.ss-radio-card.selected');
+      var isSemesterCard = selectedCard && selectedCard.classList.contains('ss-between-lk-card');
+      if (isSemesterCard) {
+        // User wants to be notified for the upcoming semester — just close
+        closeStudiestartModal();
+        return;
+      }
+      // Custom date from calendar
+      if (!_ssCalSelected) return;
+      var dd = String(_ssCalSelected.getDate()).padStart(2, '0');
+      var mm2 = String(_ssCalSelected.getMonth() + 1).padStart(2, '0');
+      var yy2 = String(_ssCalSelected.getFullYear()).slice(-2);
+      dateStr = dd + '.' + mm2 + '.' + yy2;
     } else {
       // Date from calendar widget
       if (!_ssCalSelected) return;
-      var dd = String(_ssCalSelected.getDate()).padStart(2, '0');
-      var mm = String(_ssCalSelected.getMonth() + 1).padStart(2, '0');
-      var yy = String(_ssCalSelected.getFullYear()).slice(-2);
-      dateStr = dd + '.' + mm + '.' + yy;
+      var ddd = String(_ssCalSelected.getDate()).padStart(2, '0');
+      var mmm = String(_ssCalSelected.getMonth() + 1).padStart(2, '0');
+      var yyy = String(_ssCalSelected.getFullYear()).slice(-2);
+      dateStr = ddd + '.' + mmm + '.' + yyy;
     }
   }
 

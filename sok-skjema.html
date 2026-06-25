@@ -744,10 +744,12 @@ body {
     <a href="/" class="topbar-logo">
       <img src="topbar/Kristiania_logo_22_sort.svg" height="36" alt="Kristiania logo">
     </a>
-    <button class="topbar-icon-btn" onclick="openSoknaderPanel()" aria-label="Handlekurv">
-      <img src="topbar/Basket.svg" width="24" height="24" alt="">
-      <span id="topbar-basket-count" style="display:none;position:absolute;top:2px;right:2px;background:#b60202;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;line-height:16px;text-align:center;"></span>
-    </button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="topbar-icon-btn" onclick="gaVidere(0)" aria-label="Handlekurv">
+        <img src="topbar/Basket.svg" width="24" height="24" alt="">
+        <span id="topbar-basket-count" style="display:none;position:absolute;top:2px;right:2px;background:#b60202;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;line-height:16px;text-align:center;"></span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -781,6 +783,16 @@ body {
         <button class="s0-legg-til-btn" onclick="window.location.href='/utdanning'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#06f" stroke-width="2.5" stroke-linecap="round"/></svg>
           Legg til studieprogram
+        </button>
+      </div>
+      <div class="s0-card" id="step0EmnerCard" style="display:none;margin-top:16px;">
+        <div class="s0-section-header">
+          <span class="s0-section-label">Emner</span>
+        </div>
+        <div id="step0EmnerList"></div>
+        <button class="s0-legg-til-btn" onclick="window.location.href='/utdanning'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#06f" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Legg til emner
         </button>
       </div>
       <button class="s0-btn-primary" onclick="gaVidereFraSteg0()">Gå videre</button>
@@ -1163,8 +1175,8 @@ body {
       </div>
       <div class="summary-body" id="desktopSummaryBody">
         <div id="sidebar-programs"></div>
-        <div id="sidebar-rediger"></div>
         <div id="sidebar-emner"></div>
+        <div id="sidebar-rediger"></div>
       </div>
     </aside>
 
@@ -1405,38 +1417,80 @@ var ENV_SVG = '<svg class="env-svg" viewBox="0 0 260 210" width="268" height="21
 function renderStep0() {
   var b = getBasket();
   var programs = (b.programs || []).filter(function(p) { return p.type !== 'nett'; });
+  var nettPrograms = (b.programs || []).filter(function(p) { return p.type === 'nett'; });
+  var looseEmner = b.looseEmner || [];
 
   if (_currentStep === 0) updateStepper(0);
 
+  // --- Hele program ---
   if (programs.length === 0) {
     document.getElementById('step0PrioritetList').innerHTML =
       '<p style="font-size:14px;color:#888;padding:16px 0;">Ingen studieprogram lagt til ennå.</p>';
-    return;
+  } else {
+    var html = '';
+    programs.forEach(function(p, idx) {
+      var badges = '';
+      if (p.city) badges += '<span class="s0-badge">' + p.city + '</span>';
+      if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
+
+      var meta = '';
+      if (p.points) meta += p.points + ' stp.';
+      if (p.level === 'Bachelor') meta += (meta ? ' · ' : '') + '3 år';
+      else if (p.level === 'Master') meta += (meta ? ' · ' : '') + '2 år';
+
+      var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : idx.toString();
+      html += '<div class="s0-prioritet-card">'
+        + '<div class="s0-prioritet-header">'
+        + '<span class="s0-prioritet-label">' + (idx + 1) + '. prioritet</span>'
+        + '<button class="s0-dots-btn" onclick="toggleS0Menu(this,\'' + safeId + '\',' + idx + ',' + programs.length + ')" aria-label="Alternativer">⋯</button>'
+        + '</div>'
+        + (badges ? '<div class="s0-badges">' + badges + '</div>' : '')
+        + '<div class="s0-program-name">' + (p.level ? p.level + ' i ' : '') + p.name + '</div>'
+        + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
+        + '</div>';
+    });
+    document.getElementById('step0PrioritetList').innerHTML = html;
   }
 
-  var html = '';
-  programs.forEach(function(p, idx) {
-    var badges = '';
-    if (p.city) badges += '<span class="s0-badge">' + p.city + '</span>';
-    if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
+  // --- Emner (nettbaserte program + løse emner) ---
+  var emnerCard = document.getElementById('step0EmnerCard');
+  var hasEmner = nettPrograms.length > 0 || looseEmner.length > 0;
+  emnerCard.style.display = hasEmner ? '' : 'none';
 
-    var meta = '';
-    if (p.points) meta += p.points + ' stp.';
-    if (p.level === 'Bachelor') meta += (meta ? ' · ' : '') + '3 år';
-    else if (p.level === 'Master') meta += (meta ? ' · ' : '') + '2 år';
+  if (hasEmner) {
+    var emnerHtml = '';
+    nettPrograms.forEach(function(p, idx) {
+      var badges = '<span class="s0-badge" style="background:#e8f0fe;color:#1a4db0;">Nett</span>';
+      if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
 
-    var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : idx.toString();
-    html += '<div class="s0-prioritet-card">'
-      + '<div class="s0-prioritet-header">'
-      + '<span class="s0-prioritet-label">' + (idx + 1) + '. prioritet</span>'
-      + '<button class="s0-dots-btn" onclick="toggleS0Menu(this,\'' + safeId + '\',' + idx + ',' + programs.length + ')" aria-label="Alternativer">⋯</button>'
-      + '</div>'
-      + (badges ? '<div class="s0-badges">' + badges + '</div>' : '')
-      + '<div class="s0-program-name">' + (p.level ? p.level + ' i ' : '') + p.name + '</div>'
-      + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
-      + '</div>';
-  });
-  document.getElementById('step0PrioritetList').innerHTML = html;
+      var meta = '';
+      if (p.points) meta += p.points + ' stp.';
+      if (p.emner && p.emner.length) meta += (meta ? ' · ' : '') + p.emner.length + ' emner';
+
+      var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : ('nett-' + idx);
+      emnerHtml += '<div class="s0-prioritet-card">'
+        + '<div class="s0-prioritet-header">'
+        + '<div class="s0-badges">' + badges + '</div>'
+        + '<button class="s0-dots-btn" onclick="toggleS0EmneMenu(this,\'' + safeId + '\',false)" aria-label="Alternativer">⋯</button>'
+        + '</div>'
+        + '<div class="s0-program-name">' + p.name + '</div>'
+        + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
+        + '</div>';
+    });
+    looseEmner.forEach(function(e, idx) {
+      var safeCode = e.code ? e.code.toString().replace(/'/g, "\\'") : ('loose-' + idx);
+      var meta = e.pts ? e.pts + ' stp.' : '';
+      emnerHtml += '<div class="s0-prioritet-card">'
+        + '<div class="s0-prioritet-header">'
+        + '<span></span>'
+        + '<button class="s0-dots-btn" onclick="toggleS0EmneMenu(this,\'' + safeCode + '\',true)" aria-label="Alternativer">⋯</button>'
+        + '</div>'
+        + '<div class="s0-program-name">' + e.name + '</div>'
+        + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
+        + '</div>';
+    });
+    document.getElementById('step0EmnerList').innerHTML = emnerHtml;
+  }
 }
 
 var ICON_REMOVE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
@@ -1495,6 +1549,38 @@ function s0RemoveProgram(programId) {
   removeProgram(programId);
   renderStep0();
   renderSidebar();
+}
+
+function toggleS0EmneMenu(btn, id, isLoose) {
+  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
+  var dropdown = document.createElement('div');
+  dropdown.className = 's0-dropdown';
+
+  var item = document.createElement('button');
+  item.className = 's0-dropdown-item';
+  item.innerHTML = ICON_REMOVE + '<span>Fjern</span>';
+  item.onclick = function(e) {
+    e.stopPropagation();
+    dropdown.remove();
+    if (isLoose) {
+      removeLooseEmne(id);
+    } else {
+      removeProgram(id);
+    }
+    renderStep0();
+    renderSidebar();
+  };
+  dropdown.appendChild(item);
+  btn.appendChild(dropdown);
+
+  setTimeout(function() {
+    document.addEventListener('click', function closeMenu(e) {
+      if (!dropdown.contains(e.target) && e.target !== btn) {
+        dropdown.remove();
+        document.removeEventListener('click', closeMenu);
+      }
+    });
+  }, 0);
 }
 
 function moveProgram(programId, direction) {
@@ -2105,27 +2191,22 @@ function renderSidebar() {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
       if (p.city) badges += '<span class="badge badge-orange">' + p.city + '</span>';
-      progHtml += '<div style="margin-bottom:10px;">'
-        + '<div class="sidebar-prioritet-label">' + (idx + 1) + '. prioritet</div>'
-        + '<div style="border:1.5px solid #e5e5e5;border-radius:10px;padding:12px 14px;">'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">'
-        + '<span style="font-size:14px;font-weight:500;">' + (p.level ? p.level + ' i ' : '') + p.name + '</span>'
-        + '<div style="display:flex;gap:4px;">' + badges + '</div></div></div>'
+      progHtml += '<div style="margin-bottom:14px;">'
+        + '<div style="font-size:13px;font-weight:700;color:#121212;margin-bottom:4px;">' + (idx + 1) + '. prioritet</div>'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-left:8px;">'
+        + '<span style="font-size:14px;font-weight:400;color:#121212;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + p.name + '</span>'
+        + '<div style="display:flex;gap:4px;flex-shrink:0;">' + badges + '</div>'
+        + '</div>'
         + '</div>';
     });
     if (progHtml) {
-      progHtml = '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">'
-        + '<span style="font-size:13px;font-weight:700;color:#121212;">Hele program</span>'
-        + '<span style="font-size:11px;color:#888;">Faktureres per semester</span></div>'
+      progHtml = '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">'
+        + '<span style="font-size:13px;font-weight:700;color:#4e0000;">Hele program</span>'
+        + '<span style="font-size:12px;color:#4e0000;">Faktureres per semester</span></div>'
         + progHtml;
     }
   }
   document.getElementById('sidebar-programs').innerHTML = progHtml;
-
-  var redigerHtml = campusPrograms.length > 0
-    ? '<button class="sidebar-rediger-link" onclick="gaVidere(0)">Rediger søknad</button>'
-    : '';
-  document.getElementById('sidebar-rediger').innerHTML = redigerHtml;
 
   var allEmner = [];
   var emnerByProg = {};
@@ -2145,11 +2226,16 @@ function renderSidebar() {
       ? '<span style="text-decoration:line-through;color:#aaa;">' + total.toLocaleString('nb-NO') + ' kr</span> <strong>' + after.toLocaleString('nb-NO') + ' kr</strong>'
       : total.toLocaleString('nb-NO') + ' kr';
     if (progHtml) emnerHtml += '<div style="height:1px;background:#e8e8e8;margin:12px 0;"></div>';
-    emnerHtml += '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;"><span style="font-size:12px;font-weight:600;color:#4e0000;letter-spacing:.5px;">Emner</span><span style="font-size:12px;color:#666;">' + allEmner.length + ' emner &middot; ' + priceStr + '</span></div>';
+    emnerHtml += '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px;"><span style="font-size:12px;font-weight:600;color:#4e0000;letter-spacing:.5px;">Emner</span><span style="font-size:12px;color:#666;">' + allEmner.length + ' emner &middot; ' + priceStr + '</span></div>';
     Object.keys(emnerByProg).forEach(function(pname) { emnerHtml += buildSidebarGroup(pname, emnerByProg[pname]); });
     if (loose.length > 0) emnerHtml += buildSidebarGroup('Emner uten tilknytning til studieprogram', loose);
   }
   document.getElementById('sidebar-emner').innerHTML = emnerHtml;
+
+  var hasAnything = campusPrograms.length > 0 || allEmner.length > 0 || loose.length > 0;
+  document.getElementById('sidebar-rediger').innerHTML = hasAnything
+    ? '<button class="sidebar-rediger-link" onclick="gaVidere(0)">Rediger</button>'
+    : '';
 }
 
 function buildSidebarGroup(label, emner) {

@@ -47,6 +47,55 @@ body {
 .step { display: none; }
 .step.active { display: block; }
 
+/* Stepper */
+.stepper { max-width: 1100px; margin: 0 auto; padding: 32px 32px 4px; }
+.stepper-track { display: flex; align-items: flex-start; }
+.stepper-step {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  position: relative; min-width: 0;
+}
+.stepper-step::before {
+  content: ''; position: absolute; top: 17px; right: 50%; left: -50%;
+  height: 2px; background: #ddd6d6; z-index: 0; transition: background .35s ease;
+}
+.stepper-step:first-child::before { display: none; }
+.stepper-step.done::before, .stepper-step.current::before { background: #4e0000; }
+.stepper-node {
+  position: relative; z-index: 1;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #fff; border: 2px solid #ddd6d6; color: #9a9090;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 600;
+  transition: all .35s ease;
+}
+.stepper-label {
+  margin-top: 9px; font-size: 13px; font-weight: 500; color: #9a9090;
+  text-align: center; transition: color .35s ease; line-height: 1.25;
+}
+.stepper-step.current .stepper-node {
+  border-color: #4e0000; color: #4e0000;
+  box-shadow: 0 0 0 4px rgba(78,0,0,0.10);
+}
+.stepper-step.current .stepper-label { color: #4e0000; font-weight: 600; }
+.stepper-step.done .stepper-node { background: #4e0000; border-color: #4e0000; color: #fff; }
+.stepper-step.done .stepper-label { color: #4e0000; }
+.stepper-step.clickable { cursor: pointer; }
+.stepper-step.clickable:hover .stepper-node { background: #6b1010; border-color: #6b1010; box-shadow: 0 0 0 4px rgba(78,0,0,0.10); }
+.stepper-step.clickable:hover .stepper-label { text-decoration: underline; }
+.stepper-step.clickable:focus-visible { outline: none; }
+.stepper-step.clickable:focus-visible .stepper-node { box-shadow: 0 0 0 3px rgba(78,0,0,0.35); }
+.stepper-mobile-caption {
+  display: none; font-size: 14px; font-weight: 600; color: #4e0000;
+  margin-bottom: 14px; text-align: center;
+}
+@media (max-width: 600px) {
+  .stepper { padding: 20px 20px 0; }
+  .stepper-mobile-caption { display: block; }
+  .stepper-label { display: none; }
+  .stepper-node { width: 30px; height: 30px; font-size: 13px; }
+  .stepper-step::before { top: 14px; }
+}
+
 /* Form card */
 .form-col {
   background: #fff; border-radius: 12px; padding: 40px;
@@ -302,6 +351,13 @@ body {
 .summary-accordion-chevron.open { transform: rotate(180deg); }
 .summary-accordion-body { display: none; padding-top: 16px; }
 .summary-accordion-body.open { display: block; }
+.accordion-locked { cursor: default; pointer-events: none; }
+.accordion-locked .summary-accordion-chevron { display: none; }
+@media (max-width: 767px) {
+  .summary-accordion-header { cursor: default; pointer-events: none; }
+  .summary-accordion-header .summary-accordion-chevron { display: none; }
+  .summary-accordion-body { display: block; }
+}
 
 .summary-label { font-size: 16px; font-weight: 600; color: #4e0000; }
 .summary-meta { font-size: 14px; color: #888; }
@@ -480,10 +536,192 @@ body {
 .receipt-step-label { font-size: 15px; font-weight: 600; color: #4e0000; }
 .receipt-step-desc { font-size: 14px; color: #555; line-height: 1.5; }
 
+/* Søknadsoversikt (step 0) */
+.s0-page {
+  max-width: 700px; margin: 0 auto; padding: 40px 32px;
+}
+.s0-title {
+  font-size: 28px; font-weight: 700; color: #4e0000; margin-bottom: 24px;
+}
+.s0-card {
+  background: #fff; border-radius: 12px; padding: 24px 28px;
+}
+.s0-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.s0-section-label { font-size: 18px; font-weight: 700; color: #121212; }
+.s0-faktor-badge {
+  display: flex; align-items: center; gap: 6px;
+  border: 1px solid #e0e0e0; border-radius: 20px;
+  padding: 5px 12px; font-size: 13px; color: #555;
+}
+.s0-prioritet-card {
+  border: 1.5px solid #e5e5e5; border-radius: 12px;
+  padding: 16px 18px; margin-bottom: 12px;
+}
+.s0-prioritet-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.s0-prioritet-label { font-size: 13px; color: #888; font-weight: 500; }
+.s0-dots-btn {
+  background: none; border: none; cursor: pointer;
+  padding: 4px 6px; font-size: 18px; color: #888; line-height: 1;
+  border-radius: 6px; letter-spacing: 2px; position: relative;
+}
+.s0-dots-btn:hover { background: #f5f5f5; }
+.s0-dropdown {
+  position: absolute; right: 0; top: calc(100% + 6px);
+  background: #1c1c1c; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.4); z-index: 50; min-width: 180px;
+  overflow: hidden;
+}
+.s0-dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; text-align: left;
+  padding: 13px 16px; background: none;
+  border: none; border-top: 1px solid rgba(220,50,50,.22);
+  font-size: 14px; color: #fff; cursor: pointer;
+  font-family: 'Graphik', sans-serif; line-height: 1;
+}
+.s0-dropdown-item:first-child { border-top: none; }
+.s0-dropdown-item:hover { background: rgba(255,255,255,.09); }
+.s0-prioritet-card { transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); position: relative; }
+.s0-badges { display: flex; gap: 6px; margin-bottom: 8px; }
+.s0-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 500;
+  background: #f5e6e6; color: #6b2020;
+}
+.s0-program-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 4px; }
+.s0-program-meta { font-size: 13px; color: #888; }
+.s0-legg-til-btn {
+  display: flex; align-items: center; gap: 6px;
+  color: #06f; font-size: 15px; font-weight: 500;
+  background: none; border: none; cursor: pointer;
+  padding: 14px 0 4px; font-family: 'Graphik', sans-serif;
+}
+.s0-legg-til-btn:hover { text-decoration: underline; }
+.s0-btn-primary {
+  display: block; width: 100%; text-align: center;
+  padding: 16px; border-radius: 40px; font-size: 16px; font-weight: 700;
+  background: #06f; color: #fff; border: none; cursor: pointer;
+  font-family: 'Graphik', sans-serif; margin-top: 24px;
+}
+.s0-btn-primary:hover { background: #0052cc; }
+/* Sidebar priority labels and rediger link */
+.sidebar-prioritet-label {
+  font-size: 12px; color: #888; margin-bottom: 4px;
+}
+.sidebar-rediger-link {
+  display: inline-block; font-size: 14px; font-weight: 500;
+  color: #121212; text-decoration: underline; cursor: pointer;
+  margin-top: 14px; background: none; border: none;
+  font-family: 'Graphik', sans-serif; padding: 0;
+}
+.sidebar-rediger-link:hover { color: #4e0000; }
+/* FEIDE login badge (step 5 summary) */
+.feide-login-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 500; color: #4e0000;
+  border: 1px solid #e0c4c4; border-radius: 20px;
+  padding: 3px 10px 3px 6px; background: #fdf5f5;
+  white-space: nowrap;
+}
+
+/* FEIDE user card */
+.feide-user-card { display:flex; align-items:center; gap:12px; background:#f5f5f5; border-radius:10px; padding:12px 14px; margin-bottom:14px; }
+.feide-user-avatar { width:40px; height:40px; border-radius:50%; background:#d8d8d8; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; color:#333; flex-shrink:0; }
+.feide-user-info { display:flex; flex-direction:column; gap:2px; }
+.feide-user-name { font-size:15px; font-weight:500; color:#121212; }
+.feide-user-source { display:inline-flex; align-items:center; gap:4px; font-size:12px; color:#4e0000; font-weight:500; }
+
+/* Person edit form */
+.person-info-view { display:flex; flex-direction:column; gap:8px; font-size:14px; color:#555; padding-top:2px; }
+.person-edit-btn { margin-top:14px; font-size:13px; font-weight:500; color:#4e0000; background:none; border:none; cursor:pointer; font-family:'Graphik',sans-serif; padding:0; text-decoration:underline; }
+.person-edit-form { display:flex; flex-direction:column; gap:12px; padding-top:4px; }
+.person-edit-label { font-size:12px; color:#888; margin-bottom:3px; }
+.person-edit-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.person-edit-input { width:100%; border:1.5px solid #c7c8ca; border-radius:8px; padding:10px 12px; font-size:14px; color:#121212; font-family:'Graphik',sans-serif; outline:none; box-sizing:border-box; }
+.person-edit-input:focus { border-color:#4e0000; }
+.person-edit-actions { display:flex; align-items:center; gap:16px; margin-top:4px; }
+.person-save-btn { padding:9px 22px; background:#4e0000; color:#fff; border:none; border-radius:24px; font-size:14px; font-weight:600; cursor:pointer; font-family:'Graphik',sans-serif; }
+.person-save-btn:hover { background:#3d0000; }
+.person-cancel-btn { font-size:14px; color:#888; background:none; border:none; cursor:pointer; font-family:'Graphik',sans-serif; }
+.person-cancel-btn:hover { color:#121212; }
+
+/* Faktureres-tooltip */
+.s0-info-wrap { position: relative; display: inline-flex; align-items: center; }
+.s0-info-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; line-height: 0; }
+.s0-tooltip {
+  position: absolute; right: 0; top: calc(100% + 8px);
+  background: #1c1c1c; color: #fff; font-size: 13px; line-height: 1.5;
+  border-radius: 10px; padding: 12px 14px; width: 220px; z-index: 60;
+  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+  opacity: 0; pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+.s0-tooltip.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.s0-tooltip::before {
+  content: ''; position: absolute; top: -5px; right: 10px;
+  width: 10px; height: 10px; background: #1c1c1c;
+  transform: rotate(45deg); border-radius: 2px;
+}
+
+/* FAQ accordion */
+.s0-faq { border: 1.5px solid #f0d5d5; border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+.s0-faq-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; background: none; width: 100%; border: none; font-family: 'Graphik', sans-serif; text-align: left; }
+.s0-faq-question { font-size: 14px; font-weight: 500; color: #121212; }
+.s0-faq-chevron { width: 20px; height: 20px; flex-shrink: 0; transition: transform 0.2s; }
+.s0-faq-chevron.open { transform: rotate(180deg); }
+.s0-faq-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+.s0-faq-body.open { max-height: 200px; }
+.s0-faq-answer { padding: 0 16px 14px; font-size: 14px; color: #555; line-height: 1.55; }
+
+/* ── Felles konvolutt ── */
+.env-svg { overflow: visible; filter: drop-shadow(0 14px 30px rgba(60,30,10,.18)); }
+.env-wrap { transition: transform 0.85s cubic-bezier(.5,0,.75,.25), opacity 0.7s ease; }
+.env-wrap.fly { transform: translate(150px,-360px) rotate(14deg) scale(0.45); opacity: 0; }
+.env-paper { transform: translateY(60px); transition: transform 0.75s cubic-bezier(.45,0,.2,1); }
+.env-paper.out { transform: translateY(-58px); }
+.env-flap-open { opacity: 0; transition: opacity 0.3s ease; }
+.env-flap-closed { opacity: 1; transition: opacity 0.3s ease; }
+.env-svg.open .env-flap-open { opacity: 1; }
+.env-svg.open .env-flap-closed { opacity: 0; }
+
+/* ── Send overlay ── */
+.snd-ov {
+  position: fixed; inset: 0; z-index: 3000;
+  background: #faf6ef; display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.4s ease;
+}
+.snd-ov.visible { opacity: 1; }
+.snd-center { display: flex; flex-direction: column; align-items: center; gap: 30px; position: relative; }
+.snd-title2 { font-size: 20px; font-weight: 700; color: #4e0000; transition: opacity 0.35s ease; }
+.snd-title2.hide { opacity: 0; }
+.snd-done {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 18px;
+  opacity: 0; transform: scale(0.9);
+  transition: opacity 0.4s ease, transform 0.45s cubic-bezier(0.34,1.4,0.64,1);
+  pointer-events: none;
+}
+.snd-done.show { opacity: 1; transform: scale(1); }
+.snd-done-ring {
+  width: 76px; height: 76px; background: #4e0000; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.snd-done-label { font-size: 22px; font-weight: 700; color: #121212; }
+
+
 /* Responsive */
 @media (max-width: 1023px) {
   .checkout-grid { grid-template-columns: 1fr; padding: 20px 16px; gap: 16px; }
   .summary-col { display: none; }
+  .s0-page { padding: 20px 16px; }
 }
 @media (max-width: 600px) {
   .checkout-grid { padding: 16px; }
@@ -494,6 +732,7 @@ body {
   .otp-input { width: 56px; height: 56px; }
   .btn-row { flex-direction: column-reverse; }
   .btn-row .btn-secondary { width: 100%; }
+  .s0-card { padding: 20px 16px; }
 }
 </style>
 </head>
@@ -514,11 +753,45 @@ body {
 
 <!-- SKJEMA-SIDE -->
 <div id="checkoutPage">
-  <div class="checkout-grid" id="checkoutGrid">
+
+  <!-- Stepper -->
+  <div class="stepper" id="checkoutStepper">
+    <div class="stepper-mobile-caption" id="stepperCaption"></div>
+    <div class="stepper-track" id="stepperTrack"></div>
+  </div>
+
+  <!-- Steg 0: Søknadsoversikt -->
+  <div id="step0Page">
+    <div class="s0-page">
+      <h1 class="s0-title">Søknad</h1>
+      <div class="s0-card">
+        <div class="s0-section-header">
+          <span class="s0-section-label">Hele program</span>
+        </div>
+        <div class="s0-faq">
+          <button class="s0-faq-header" onclick="toggleS0Faq(this)">
+            <span class="s0-faq-question">Kan jeg endre rekkefølgen senere?</span>
+            <svg class="s0-faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="s0-faq-body">
+            <p class="s0-faq-answer">Ja, i Mitt Kristiania kan du omprioritere søknadsvalgene dine, legge til nye valg eller trekke søknaden når du ønsker.</p>
+          </div>
+        </div>
+        <div id="step0PrioritetList"></div>
+        <button class="s0-legg-til-btn" onclick="window.location.href='/utdanning'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#06f" stroke-width="2.5" stroke-linecap="round"/></svg>
+          Legg til studieprogram
+        </button>
+      </div>
+      <button class="s0-btn-primary" onclick="gaVidereFraSteg0()">Gå videre</button>
+    </div>
+  </div>
+
+  <div class="checkout-grid" id="checkoutGrid" style="display:none;">
 
     <div>
       <!-- Steg 1: Opprett søknad -->
-      <div class="step active" id="step1">
+      <div class="step" id="step1">
         <div class="form-col">
           <h1 class="step-title">Opprett søknad</h1>
 
@@ -890,6 +1163,7 @@ body {
       </div>
       <div class="summary-body" id="desktopSummaryBody">
         <div id="sidebar-programs"></div>
+        <div id="sidebar-rediger"></div>
         <div id="sidebar-emner"></div>
       </div>
     </aside>
@@ -910,11 +1184,7 @@ body {
             </svg>
           </div>
           <div class="summary-accordion-body" id="personAccordion">
-            <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;color:#555;">
-              <div><span style="color:#888;">Navn: </span><span id="summaryNavn"></span></div>
-              <div><span style="color:#888;">Fødselsnummer: </span><span id="summaryFnr"></span></div>
-              <div><span style="color:#888;">Adresse: </span><span id="summaryAdresse"></span></div>
-            </div>
+            <div id="personInfoContent"></div>
           </div>
         </div>
 
@@ -923,7 +1193,7 @@ body {
           <div id="step5Emner"></div>
         </div>
 
-        <button class="btn-primary" onclick="sendSoknad()">Send inn søknad</button>
+        <button class="btn-primary" onclick="animateSend()">Send inn søknad</button>
       </div>
     </div>
   </div>
@@ -969,21 +1239,110 @@ body {
 
 <script src="basket.js"></script>
 <script>
-var _currentStep = 1;
+var _currentStep = 0;
 var _phoneNumber = '';
+var _feideLoggedIn = false;
 var _rabattCode = null;
 var _rabattPercent = 0;
 var VALID_RABATTKODER = { 'RABATT20': 20 };
 
+/* Stepper */
+var STEPPER_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+var ALL_PHASES = [
+  { key: 'studievalg',   label: 'Studievalg' },
+  { key: 'login',        label: 'Logg inn' },
+  { key: 'opplysninger', label: 'Opplysninger' },
+  { key: 'betaling',     label: 'Betaling' },
+  { key: 'sammendrag',   label: 'Sammendrag' }
+];
+
+// Betaling vises kun når kurven inneholder nettemner
+function basketHasEmner() {
+  var b = getBasket();
+  return (b.looseEmner && b.looseEmner.length > 0) ||
+    ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
+}
+
+function getActivePhases() {
+  if (basketHasEmner()) return ALL_PHASES;
+  return ALL_PHASES.filter(function(p) { return p.key !== 'betaling'; });
+}
+
+function stepToPhaseKey(n) {
+  if (n === 1 || n === 2) return 'login';
+  if (n === 3) return 'opplysninger';
+  if (n === 4) return 'betaling';
+  if (n === 5) return 'sammendrag';
+  return 'studievalg';
+}
+
+var PHASE_TO_STEP = { studievalg: 0, login: 1, opplysninger: 3, betaling: 4, sammendrag: 5 };
+
+// Naviger bakover til en fullført fase ved klikk i stepperen
+function goToPhase(key) {
+  var step = PHASE_TO_STEP[key];
+  if (step === undefined) return;
+  gaVidere(step);
+}
+
+function updateStepper(n) {
+  var phases = getActivePhases();
+  var currentKey = stepToPhaseKey(n);
+  var currentIdx = 0;
+  for (var k = 0; k < phases.length; k++) {
+    if (phases[k].key === currentKey) { currentIdx = k; break; }
+  }
+
+  var html = '';
+  for (var i = 0; i < phases.length; i++) {
+    var cls = 'stepper-step';
+    var inner;
+    var attrs = '';
+    if (i < currentIdx) {
+      cls += ' done';
+      inner = STEPPER_CHECK;
+      // Fullførte steg (unntatt innlogging) kan klikkes for å gå tilbake
+      if (phases[i].key !== 'login') {
+        cls += ' clickable';
+        attrs = ' role="button" tabindex="0" onclick="goToPhase(\'' + phases[i].key + '\')"'
+          + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();goToPhase(\'' + phases[i].key + '\')}"';
+      }
+    } else {
+      inner = (i + 1); if (i === currentIdx) cls += ' current';
+    }
+    html += '<div class="' + cls + '"' + attrs + '><div class="stepper-node">' + inner + '</div>'
+      + '<div class="stepper-label">' + phases[i].label + '</div></div>';
+  }
+  document.getElementById('stepperTrack').innerHTML = html;
+
+  var cap = document.getElementById('stepperCaption');
+  if (cap) cap.textContent = 'Steg ' + (currentIdx + 1) + ' av ' + phases.length + ' · ' + phases[currentIdx].label;
+}
+
 function gaVidere(n) {
-  if (_currentStep <= 4) document.getElementById('step' + _currentStep).classList.remove('active');
+  // Hide current view
+  if (_currentStep === 0) {
+    document.getElementById('step0Page').style.display = 'none';
+  } else if (_currentStep >= 1 && _currentStep <= 4) {
+    document.getElementById('step' + _currentStep).classList.remove('active');
+  }
   document.getElementById('feide-step').classList.remove('active');
   _currentStep = n;
-  if (n === 5) {
+  updateStepper(n);
+
+  if (n === 0) {
+    document.getElementById('step0Page').style.display = 'block';
+    document.getElementById('checkoutGrid').style.display = 'none';
+    document.getElementById('step5Page').style.display = 'none';
+    renderStep0();
+  } else if (n === 5) {
+    document.getElementById('step0Page').style.display = 'none';
     document.getElementById('checkoutGrid').style.display = 'none';
     document.getElementById('step5Page').style.display = 'block';
     renderStep5();
   } else {
+    document.getElementById('step0Page').style.display = 'none';
     document.getElementById('checkoutGrid').style.display = '';
     document.getElementById('step5Page').style.display = 'none';
     document.getElementById('step' + n).classList.add('active');
@@ -992,11 +1351,200 @@ function gaVidere(n) {
 }
 
 function showFeidePage() {
-  if (_currentStep <= 4) document.getElementById('step' + _currentStep).classList.remove('active');
+  if (_currentStep === 0) {
+    document.getElementById('step0Page').style.display = 'none';
+  } else if (_currentStep >= 1 && _currentStep <= 4) {
+    document.getElementById('step' + _currentStep).classList.remove('active');
+  }
   document.getElementById('checkoutGrid').style.display = '';
   document.getElementById('step5Page').style.display = 'none';
+  document.getElementById('step0Page').style.display = 'none';
   document.getElementById('feide-step').classList.add('active');
+  updateStepper(1);
   window.scrollTo(0, 0);
+}
+
+/* Step 0 */
+function gaVidereFraSteg0() {
+  gaVidere(1);
+}
+
+/* Felles illustrert konvolutt brukt av begge animasjonene */
+var ENV_SVG = '<svg class="env-svg" viewBox="0 0 260 210" width="268" height="217" xmlns="http://www.w3.org/2000/svg">'
+  // interior back wall (cream)
+  + '<rect x="30" y="92" width="200" height="100" rx="6" fill="#f7f2e8" stroke="#1c1c1c" stroke-width="3"/>'
+  // open flap (behind paper, points up) — cream with periwinkle lining
+  + '<path class="env-flap-open" d="M28 92 L130 26 L232 92 Z" fill="#f7f2e8" stroke="#1c1c1c" stroke-width="3" stroke-linejoin="round"/>'
+  + '<path class="env-flap-open" d="M54 92 L130 51 L206 92 Z" fill="#b9bdee"/>'
+  // letter (slides up/down)
+  + '<g class="env-paper">'
+  + '<rect x="64" y="34" width="132" height="96" rx="4" fill="#f5f1e7" stroke="#1c1c1c" stroke-width="2.5"/>'
+  + '<rect x="80" y="48" width="46" height="6" rx="3" fill="#1c1c1c"/>'
+  + '<rect x="80" y="60" width="28" height="6" rx="3" fill="#1c1c1c"/>'
+  + '<rect x="66" y="80" width="128" height="30" fill="#bcc0ed"/>'
+  + '<rect x="80" y="89" width="92" height="5" rx="2.5" fill="#1c1c1c"/>'
+  + '<rect x="80" y="99" width="72" height="5" rx="2.5" fill="#1c1c1c"/>'
+  + '<rect x="80" y="118" width="96" height="5" rx="2.5" fill="#1c1c1c"/>'
+  + '</g>'
+  // front pocket (kraft), top edge dips to center
+  + '<path class="env-front" d="M30 92 L30 190 L230 190 L230 92 L130 150 Z" fill="#cf8b43" stroke="#1c1c1c" stroke-width="3" stroke-linejoin="round"/>'
+  // address dashes (lower-left)
+  + '<rect x="58" y="120" width="42" height="6" rx="3" fill="#1c1c1c"/>'
+  + '<rect x="58" y="133" width="56" height="6" rx="3" fill="#1c1c1c"/>'
+  + '<rect x="58" y="146" width="30" height="6" rx="3" fill="#1c1c1c"/>'
+  // postmark squiggles
+  + '<path d="M150 134 q6 -5 12 0 t12 0" fill="none" stroke="#1c1c1c" stroke-width="2"/>'
+  + '<path d="M150 141 q6 -5 12 0 t12 0" fill="none" stroke="#1c1c1c" stroke-width="2"/>'
+  // red stamp (right)
+  + '<rect class="env-stamp" x="174" y="127" width="34" height="40" rx="2" fill="#d9534f" stroke="#1c1c1c" stroke-width="2.5"/>'
+  + '<rect x="180" y="133" width="22" height="28" rx="1" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="3 3"/>'
+  // closed flap (kraft, covers opening)
+  + '<path class="env-flap-closed" d="M30 92 L130 150 L230 92 Z" fill="#c47e37" stroke="#1c1c1c" stroke-width="3" stroke-linejoin="round"/>'
+  + '</svg>';
+
+function renderStep0() {
+  var b = getBasket();
+  var programs = (b.programs || []).filter(function(p) { return p.type !== 'nett'; });
+
+  if (_currentStep === 0) updateStepper(0);
+
+  if (programs.length === 0) {
+    document.getElementById('step0PrioritetList').innerHTML =
+      '<p style="font-size:14px;color:#888;padding:16px 0;">Ingen studieprogram lagt til ennå.</p>';
+    return;
+  }
+
+  var html = '';
+  programs.forEach(function(p, idx) {
+    var badges = '';
+    if (p.city) badges += '<span class="s0-badge">' + p.city + '</span>';
+    if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
+
+    var meta = '';
+    if (p.points) meta += p.points + ' stp.';
+    if (p.level === 'Bachelor') meta += (meta ? ' · ' : '') + '3 år';
+    else if (p.level === 'Master') meta += (meta ? ' · ' : '') + '2 år';
+
+    var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : idx.toString();
+    html += '<div class="s0-prioritet-card">'
+      + '<div class="s0-prioritet-header">'
+      + '<span class="s0-prioritet-label">' + (idx + 1) + '. prioritet</span>'
+      + '<button class="s0-dots-btn" onclick="toggleS0Menu(this,\'' + safeId + '\',' + idx + ',' + programs.length + ')" aria-label="Alternativer">⋯</button>'
+      + '</div>'
+      + (badges ? '<div class="s0-badges">' + badges + '</div>' : '')
+      + '<div class="s0-program-name">' + (p.level ? p.level + ' i ' : '') + p.name + '</div>'
+      + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
+      + '</div>';
+  });
+  document.getElementById('step0PrioritetList').innerHTML = html;
+}
+
+var ICON_REMOVE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+var ICON_UP    = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var ICON_DOWN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function toggleFaktorTooltip(e) {
+  e.stopPropagation();
+  var tip = document.getElementById('faktorTooltip');
+  if (!tip) return;
+  var isVisible = tip.classList.contains('visible');
+  tip.classList.toggle('visible', !isVisible);
+  if (!isVisible) {
+    function closeOnClick() { tip.classList.remove('visible'); document.removeEventListener('click', closeOnClick); }
+    document.addEventListener('click', closeOnClick);
+  }
+}
+
+function toggleS0Faq(btn) {
+  var body = btn.nextElementSibling;
+  var chevron = btn.querySelector('.s0-faq-chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function toggleS0Menu(btn, programId, idx, total) {
+  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
+  var dropdown = document.createElement('div');
+  dropdown.className = 's0-dropdown';
+
+  function makeItem(icon, label, fn) {
+    var item = document.createElement('button');
+    item.className = 's0-dropdown-item';
+    item.innerHTML = icon + '<span>' + label + '</span>';
+    item.onclick = function(e) { e.stopPropagation(); fn(); };
+    dropdown.appendChild(item);
+  }
+
+  if (idx > 0)           makeItem(ICON_UP,   'Flytt opp',      function() { moveProgram(programId, 'up'); });
+  if (idx < total - 1)   makeItem(ICON_DOWN, 'Flytt ned',      function() { moveProgram(programId, 'down'); });
+  makeItem(ICON_REMOVE, 'Trekk søknaden', function() { s0RemoveProgram(programId); });
+
+  btn.appendChild(dropdown);
+  setTimeout(function() {
+    document.addEventListener('click', function closeMenu(e) {
+      if (!dropdown.contains(e.target) && e.target !== btn) {
+        dropdown.remove();
+        document.removeEventListener('click', closeMenu);
+      }
+    });
+  }, 0);
+}
+
+function s0RemoveProgram(programId) {
+  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
+  removeProgram(programId);
+  renderStep0();
+  renderSidebar();
+}
+
+function moveProgram(programId, direction) {
+  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
+
+  var b = getBasket();
+  var allProgs = b.programs || [];
+  var campusProgs = allProgs.filter(function(p) { return p.type !== 'nett'; });
+  var campusIdx = campusProgs.findIndex(function(p) { return p.id === programId; });
+  if (campusIdx === -1) return;
+
+  var newCampusIdx = direction === 'up' ? campusIdx - 1 : campusIdx + 1;
+  if (newCampusIdx < 0 || newCampusIdx >= campusProgs.length) return;
+
+  var cards = Array.from(document.querySelectorAll('.s0-prioritet-card'));
+  var cardA = cards[campusIdx];
+  var cardB = cards[newCampusIdx];
+  if (!cardA || !cardB) return;
+
+  var rectA = cardA.getBoundingClientRect();
+  var rectB = cardB.getBoundingClientRect();
+  var deltaA = rectB.top - rectA.top;
+  var deltaB = rectA.top - rectB.top;
+
+  // Disable transition temporarily, then apply transform
+  cardA.style.transition = 'none';
+  cardB.style.transition = 'none';
+  requestAnimationFrame(function() {
+    cardA.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.2,1)';
+    cardB.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.2,1)';
+    cardA.style.zIndex = '2';
+    cardA.style.transform = 'translateY(' + deltaA + 'px)';
+    cardB.style.transform = 'translateY(' + deltaB + 'px)';
+
+    setTimeout(function() {
+      // Swap in the full program array
+      var idxA = allProgs.findIndex(function(p) { return p.id === campusProgs[campusIdx].id; });
+      var idxB = allProgs.findIndex(function(p) { return p.id === campusProgs[newCampusIdx].id; });
+      var tmp = allProgs[idxA];
+      allProgs[idxA] = allProgs[idxB];
+      allProgs[idxB] = tmp;
+      b.programs = allProgs;
+      saveBasket(b);
+      cardA.style.transform = '';
+      cardB.style.transform = '';
+      cardA.style.zIndex = '';
+      renderStep0();
+      renderSidebar();
+    }, 300);
+  });
 }
 
 /* Step 1 */
@@ -1011,7 +1559,7 @@ function gaVidereStep1() {
   gaVidere(2);
 }
 
-function simulateFeideLogin() { prefillFormData(); gaVidere(3); }
+function simulateFeideLogin() { prefillFormData(); _feideLoggedIn = true; gaVidere(5); }
 
 
 function formatPhone(tel) {
@@ -1068,8 +1616,15 @@ function gaVidereStep3() {
   if (!validateField('postnr', /^\d{4}$/.test(document.getElementById('postnr').value.trim()))) ok = false;
   if (!validateField('poststed', document.getElementById('poststed').value.trim().length > 0)) ok = false;
   if (!ok) return;
-  renderPaymentStep();
-  gaVidere(4);
+  var b = getBasket();
+  var hasEmner = (b.looseEmner && b.looseEmner.length > 0) ||
+    ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
+  if (hasEmner) {
+    renderPaymentStep();
+    gaVidere(4);
+  } else {
+    gaVidere(5);
+  }
 }
 
 function updateSpraakRadio(input) {
@@ -1268,6 +1823,83 @@ function applyRabattkode() {
 }
 
 /* Step 5 */
+function renderPersonReadOnly() {
+  var fnr = document.getElementById('fnr').value;
+  var fornavn = document.getElementById('fornavn').value;
+  var etternavn = document.getElementById('etternavn').value;
+  var gate = document.getElementById('gate').value;
+  var postnr = document.getElementById('postnr').value;
+  var poststed = document.getElementById('poststed').value;
+  var adr = [gate, postnr, poststed].filter(Boolean).join(', ');
+  var el = document.getElementById('personInfoContent');
+  if (!el) return;
+  var feideCard = '';
+  if (_feideLoggedIn) {
+    var initials = ((fornavn[0] || '') + (etternavn[0] || '')).toUpperCase();
+    var lockIcon = '<svg width="11" height="11" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#4e0000" stroke-width="2.2"/><rect x="11" y="15" width="10" height="7" rx="1.5" stroke="#4e0000" stroke-width="1.8"/><path d="M13 15v-2.5a3 3 0 016 0V15" stroke="#4e0000" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="19" r="1.2" fill="#4e0000"/></svg>';
+    feideCard = '<div class="feide-user-card">'
+      + '<div class="feide-user-avatar">' + initials + '</div>'
+      + '<div class="feide-user-info">'
+      + '<span class="feide-user-name">' + (fornavn + ' ' + etternavn).trim() + '</span>'
+      + '<span class="feide-user-source">' + lockIcon + 'Innlogget med FEIDE</span>'
+      + '</div>'
+      + '</div>';
+  }
+  el.innerHTML =
+    feideCard
+    + '<div class="person-info-view">'
+    + '<div><span style="color:#888;">Navn: </span><span>' + (fornavn + ' ' + etternavn).trim() + '</span></div>'
+    + '<div><span style="color:#888;">Fødselsnummer: </span><span>' + fnr + '</span></div>'
+    + '<div><span style="color:#888;">Adresse: </span><span>' + adr + '</span></div>'
+    + '</div>'
+    + '<button class="person-edit-btn" onclick="renderPersonEdit()">Rediger</button>';
+}
+
+function renderPersonEdit() {
+  var fnr = document.getElementById('fnr').value;
+  var fornavn = document.getElementById('fornavn').value;
+  var etternavn = document.getElementById('etternavn').value;
+  var gate = document.getElementById('gate').value;
+  var postnr = document.getElementById('postnr').value;
+  var poststed = document.getElementById('poststed').value;
+  var el = document.getElementById('personInfoContent');
+  if (!el) return;
+  el.innerHTML =
+    '<div class="person-edit-form">'
+    + '<div><div class="person-edit-label">Fødselsnummer</div><input class="person-edit-input" id="editFnr" value="' + fnr + '" /></div>'
+    + '<div class="person-edit-row">'
+    + '<div><div class="person-edit-label">Fornavn og mellomnavn</div><input class="person-edit-input" id="editFornavn" value="' + fornavn + '" /></div>'
+    + '<div><div class="person-edit-label">Etternavn</div><input class="person-edit-input" id="editEtternavn" value="' + etternavn + '" /></div>'
+    + '</div>'
+    + '<div><div class="person-edit-label">Gateadresse</div><input class="person-edit-input" id="editGate" value="' + gate + '" /></div>'
+    + '<div class="person-edit-row">'
+    + '<div><div class="person-edit-label">Postnummer</div><input class="person-edit-input" id="editPostnr" value="' + postnr + '" /></div>'
+    + '<div><div class="person-edit-label">Poststed</div><input class="person-edit-input" id="editPoststed" value="' + poststed + '" /></div>'
+    + '</div>'
+    + '<div class="person-edit-actions">'
+    + '<button class="person-save-btn" onclick="savePersonInfo()">Lagre</button>'
+    + '<button class="person-cancel-btn" onclick="renderPersonReadOnly()">Avbryt</button>'
+    + '</div>'
+    + '</div>';
+}
+
+function savePersonInfo() {
+  var fnr = document.getElementById('editFnr').value.trim();
+  var fornavn = document.getElementById('editFornavn').value.trim();
+  var etternavn = document.getElementById('editEtternavn').value.trim();
+  var gate = document.getElementById('editGate').value.trim();
+  var postnr = document.getElementById('editPostnr').value.trim();
+  var poststed = document.getElementById('editPoststed').value.trim();
+  // Sync back to the step 3 form fields so gaVidereStep3 / re-renders stay consistent
+  document.getElementById('fnr').value = fnr;
+  document.getElementById('fornavn').value = fornavn;
+  document.getElementById('etternavn').value = etternavn;
+  document.getElementById('gate').value = gate;
+  document.getElementById('postnr').value = postnr;
+  document.getElementById('poststed').value = poststed;
+  renderPersonReadOnly();
+}
+
 function renderStep5() {
   var fnr = document.getElementById('fnr').value;
   var fornavn = document.getElementById('fornavn').value;
@@ -1275,9 +1907,21 @@ function renderStep5() {
   var gate = document.getElementById('gate').value;
   var postnr = document.getElementById('postnr').value;
   var poststed = document.getElementById('poststed').value;
-  document.getElementById('summaryNavn').textContent = fornavn + ' ' + etternavn;
-  document.getElementById('summaryFnr').textContent = fnr;
-  document.getElementById('summaryAdresse').textContent = [gate, postnr, poststed].filter(Boolean).join(', ');
+  renderPersonReadOnly();
+
+  // FEIDE: open and lock accordion
+  var accordionBody = document.getElementById('personAccordion');
+  var chevron = document.getElementById('personAccordionChevron');
+  var accordionHeader = document.querySelector('#step5Page .summary-accordion-header');
+  if (_feideLoggedIn) {
+    if (accordionBody) accordionBody.classList.add('open');
+    if (chevron) chevron.classList.add('open');
+    if (accordionHeader) accordionHeader.classList.add('accordion-locked');
+  } else {
+    if (accordionBody) accordionBody.classList.remove('open');
+    if (chevron) chevron.classList.remove('open');
+    if (accordionHeader) accordionHeader.classList.remove('accordion-locked');
+  }
 
   var b = getBasket();
   var programs = b.programs || [];
@@ -1286,12 +1930,19 @@ function renderStep5() {
 
   var progHtml = '';
   if (campusPrograms.length > 0) {
-    progHtml += '<div class="summary-section-header"><span class="summary-label">Studieprogram</span><span class="summary-meta">Faktureres per semester</span></div>';
-    campusPrograms.forEach(function(p) {
+    var ICON_INFO = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><g clip-path="url(#clip0_s0_info)"><path d="M7.99984 7.33342C8.36803 7.33342 8.6665 7.63189 8.6665 8.00008V10.6667C8.6665 11.0349 8.36803 11.3334 7.99984 11.3334C7.63165 11.3334 7.33317 11.0349 7.33317 10.6667V8.00008C7.33317 7.63189 7.63165 7.33342 7.99984 7.33342Z" fill="#888"/><path d="M7.99652 4.66675C7.63016 4.66675 7.33317 4.96523 7.33317 5.33342C7.33317 5.7016 7.63016 6.00008 7.99652 6.00008H8.00315C8.36951 6.00008 8.6665 5.7016 8.6665 5.33342C8.6665 4.96523 8.36951 4.66675 8.00315 4.66675H7.99652Z" fill="#888"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.666504 8.00008C0.666504 3.94999 3.94975 0.666748 7.99984 0.666748C12.0499 0.666748 15.3332 3.94999 15.3332 8.00008C15.3332 12.0502 12.0499 15.3334 7.99984 15.3334C3.94975 15.3334 0.666504 12.0502 0.666504 8.00008ZM7.99984 2.00008C4.68613 2.00008 1.99984 4.68637 1.99984 8.00008C1.99984 11.3138 4.68613 14.0001 7.99984 14.0001C11.3135 14.0001 13.9998 11.3138 13.9998 8.00008C13.9998 4.68637 11.3135 2.00008 7.99984 2.00008Z" fill="#888"/></g><defs><clipPath id="clip0_s0_info"><rect width="16" height="16" fill="white"/></clipPath></defs></svg>';
+    var faktorBadge = '<div class="s0-faktor-badge">Faktureres per semester<div class="s0-info-wrap"><button class="s0-info-btn" onclick="toggleFaktorTooltip(event)" aria-label="Mer informasjon">' + ICON_INFO + '</button><div class="s0-tooltip" id="faktorTooltip">Studieavgiften deles i to like betalinger — én ved semesterstart om høsten og én om våren.</div></div></div>';
+    progHtml += '<div class="summary-section-header" style="margin-bottom:16px;"><span class="summary-label">Hele program</span>' + faktorBadge + '</div>';
+    campusPrograms.forEach(function(p, idx) {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
       if (p.city) badges += '<span class="badge badge-orange">' + p.city + '</span>';
-      progHtml += '<div class="sp-row"><span style="font-size:14px;font-weight:500;">' + (p.level ? p.level + ' i ' : '') + p.name + '</span><div class="sp-badges">' + badges + '</div></div>';
+      progHtml += '<div style="margin-bottom:10px;">'
+        + '<div class="sidebar-prioritet-label">' + (idx + 1) + '. prioritet</div>'
+        + '<div style="border:1.5px solid #e5e5e5;border-radius:10px;padding:12px 14px;">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'
+        + '<span style="font-size:14px;font-weight:500;">' + (p.level ? p.level + ' i ' : '') + p.name + '</span>'
+        + '<div style="display:flex;gap:4px;">' + badges + '</div></div></div></div>';
     });
   }
   document.getElementById('step5Programs').innerHTML = progHtml;
@@ -1340,6 +1991,56 @@ function toggleAccordion(id) {
 function toggleSummaryGroup(header) {
   header.classList.toggle('open');
   header.nextElementSibling.classList.toggle('open');
+}
+
+function animateSend() {
+  var el = document.createElement('div');
+  el.className = 'snd-ov';
+  el.innerHTML = '<div class="snd-center">'
+    + '<div class="env-wrap">' + ENV_SVG + '</div>'
+    + '<div class="snd-title2" id="sndTitle2">Sender søknaden …</div>'
+    + '<div class="snd-done" id="sndDone"><div class="snd-done-ring">'
+    + '<svg width="38" height="38" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '</div><span class="snd-done-label">Søknad sendt!</span></div>'
+    + '</div>';
+  document.body.appendChild(el);
+
+  var svg = el.querySelector('.env-svg');
+  var paper = el.querySelector('.env-paper');
+  var wrap = el.querySelector('.env-wrap');
+
+  // Start: åpen konvolutt med brevet oppe/ute
+  svg.classList.add('open');
+  paper.classList.add('out');
+  requestAnimationFrame(function() { el.classList.add('visible'); });
+
+  // Brevet skyves ned i konvolutten
+  setTimeout(function() { paper.classList.remove('out'); }, 520);
+
+  // Konvolutten lukkes
+  setTimeout(function() {
+    svg.classList.remove('open');
+  }, 1200);
+
+  // Sendes av gårde
+  setTimeout(function() {
+    wrap.classList.add('fly');
+    el.querySelector('#sndTitle2').classList.add('hide');
+  }, 1850);
+
+  // Hake + «Søknad sendt!»
+  setTimeout(function() {
+    el.querySelector('#sndDone').classList.add('show');
+  }, 2250);
+
+  // Avslutt → kvittering
+  setTimeout(function() {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      if (el.parentNode) document.body.removeChild(el);
+      sendSoknad();
+    }, 400);
+  }, 3100);
 }
 
 function sendSoknad() {
@@ -1400,22 +2101,31 @@ function renderSidebar() {
 
   var progHtml = '';
   if (campusPrograms.length > 0) {
-    campusPrograms.forEach(function(p) {
+    campusPrograms.forEach(function(p, idx) {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
       if (p.city) badges += '<span class="badge badge-orange">' + p.city + '</span>';
-      progHtml += '<div style="border:1.5px solid #e5e5e5;border-radius:10px;padding:12px 14px;">'
+      progHtml += '<div style="margin-bottom:10px;">'
+        + '<div class="sidebar-prioritet-label">' + (idx + 1) + '. prioritet</div>'
+        + '<div style="border:1.5px solid #e5e5e5;border-radius:10px;padding:12px 14px;">'
         + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;">'
         + '<span style="font-size:14px;font-weight:500;">' + (p.level ? p.level + ' i ' : '') + p.name + '</span>'
-        + '<div style="display:flex;gap:4px;">' + badges + '</div></div></div>';
+        + '<div style="display:flex;gap:4px;">' + badges + '</div></div></div>'
+        + '</div>';
     });
     if (progHtml) {
-      progHtml = '<div style="font-size:12px;font-weight:600;color:#4e0000;letter-spacing:.5px;margin-bottom:8px;">Studieprogram</div>'
-        + '<div style="font-size:12px;color:#888;text-align:right;margin-bottom:8px;">Faktureres per semester</div>'
+      progHtml = '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;">'
+        + '<span style="font-size:13px;font-weight:700;color:#121212;">Hele program</span>'
+        + '<span style="font-size:11px;color:#888;">Faktureres per semester</span></div>'
         + progHtml;
     }
   }
   document.getElementById('sidebar-programs').innerHTML = progHtml;
+
+  var redigerHtml = campusPrograms.length > 0
+    ? '<button class="sidebar-rediger-link" onclick="gaVidere(0)">Rediger søknad</button>'
+    : '';
+  document.getElementById('sidebar-rediger').innerHTML = redigerHtml;
 
   var allEmner = [];
   var emnerByProg = {};
@@ -1474,7 +2184,10 @@ document.addEventListener('input', function(e) {
   }
 });
 
-document.addEventListener('DOMContentLoaded', function() { renderSidebar(); });
+document.addEventListener('DOMContentLoaded', function() {
+  renderSidebar();
+  gaVidere(0);
+});
 </script>
 </body>
 </html>

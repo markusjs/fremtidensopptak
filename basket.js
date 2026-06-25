@@ -37,8 +37,8 @@ var BASKET_CSS = '\
 .hk-card-name{font-size:15px;font-weight:700;color:#111;line-height:1.3}\
 .hk-card-right{display:flex;align-items:center;gap:6px;flex-shrink:0}\
 .hk-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}\
-.hk-badge-sem{background:#f5e6e6;color:#6b2020}\
-.hk-badge-city{background:#f5e6e6;color:#6b2020}\
+.hk-badge-sem{background:#eceae7;color:#5a5a5a}\
+.hk-badge-city{background:#f8d9de;color:#7a2238}\
 .hk-badge-nett{background:none;border:1.5px solid #999;color:#555}\
 .hk-trash{background:none;border:none;cursor:pointer;padding:4px;color:#aaa;transition:color .15s}\
 .hk-trash:hover{color:#c00}\
@@ -62,19 +62,37 @@ var BASKET_CSS = '\
 .hk-city-popover h4{margin:0 0 12px;font-size:15px;font-weight:700;color:#111}\
 .hk-city-btn{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:6px;border:1.5px solid #ddd;border-radius:8px;background:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}\
 .hk-city-btn:hover{border-color:#4e0000;background:#faf5f5}\
-#hk-save-form{display:none;flex-direction:column;gap:0;padding:16px 20px;flex-shrink:0}\
-#hk-save-form.open{display:flex}\
-#hk-save-fields{display:flex;flex-direction:column;gap:16px;width:100%}\
-.hk-save-desc{font-size:16px;color:#212121;line-height:1.5;margin:0}\
-.hk-save-input{width:100%;border:1px solid #c7c8ca;border-radius:8px;padding:16px;font-size:14px;color:#3f3f3f;font-family:inherit;outline:none;box-sizing:border-box}\
-.hk-save-input:focus{border-color:#06f}\
-.hk-save-privacy{font-size:14px;color:rgba(10,10,10,.67);line-height:1.5;margin:0}\
-.hk-save-privacy a{color:#030712;text-decoration:underline}\
-.hk-save-btn{width:100%;height:48px;background:#06f;color:#fff;border:none;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit}\
-.hk-save-btn:hover{background:#0052cc}\
-.hk-save-receipt-box{display:flex;align-items:flex-start;gap:10px;background:#f0f5ff;border-radius:8px;padding:14px;margin-bottom:16px}\
-.hk-save-receipt-msg{font-size:14px;color:#212121;line-height:1.5;margin:0}\
-#hk-save-receipt .hk-btn-primary{display:block;text-align:center;text-decoration:none}\
+.hk-bookmark-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:#FFCB05;color:#212121;border:2px solid #FFCB05;border-radius:8px;padding:14px 22px;font-size:18px;font-weight:600;font-family:inherit;cursor:pointer;line-height:1;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}\
+.hk-bookmark-btn:hover{background:#f0bf00;border-color:#f0bf00}\
+.hk-bookmark-btn svg{display:block;flex-shrink:0}\
+.hk-bookmark-btn.saved{background:#fff;border-color:#212121;color:#212121}\
+.hk-bookmark-btn.saved:hover{background:#f7f7f7}\
+#bm-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1400;transition:opacity .3s;opacity:0}\
+#bm-panel{display:none;position:fixed;top:0;right:0;height:100%;width:460px;max-width:100vw;background:#fff;z-index:1401;box-shadow:-4px 0 32px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);flex-direction:column;font-family:inherit;overflow:hidden}\
+#bm-panel .hk-header h2{display:flex;align-items:center;gap:10px}\
+.bm-card{position:relative;padding-bottom:14px}\
+.bm-card-top{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 12px 0 16px;gap:8px}\
+.bm-badges{display:flex;flex-wrap:wrap;gap:6px;padding-top:2px}\
+.bm-actions{display:flex;align-items:center;gap:2px;flex-shrink:0}\
+.bm-icon-btn{background:none;border:none;cursor:pointer;padding:6px;color:#555;border-radius:6px;display:flex;align-items:center;transition:background .15s,color .15s}\
+.bm-icon-btn:hover{background:#f1f1f1;color:#111}\
+.bm-icon-btn.bm-remove{color:#121212}\
+.bm-card-name{display:block;padding:10px 16px 0;font-size:16px;font-weight:700;color:#111;text-decoration:none;border:none;line-height:1.3}\
+.bm-card-name:hover{text-decoration:underline}\
+.bm-card-meta{padding:3px 16px 0;font-size:13px;color:#777}\
+.bm-sok-btn{display:block;width:calc(100% - 32px);box-sizing:border-box;margin:14px 16px 0;padding:13px;border-radius:28px;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#2f54eb;color:#fff;font-family:inherit;transition:background .15s}\
+.bm-sok-btn:hover{background:#1f3fd0}\
+.bm-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 28px}\
+.bm-empty-icon{width:72px;height:72px;border-radius:50%;background:#f4ebe6;color:#4e0000;display:flex;align-items:center;justify-content:center}\
+.bm-empty-title{font-size:18px;font-weight:700;color:#121212;margin:0}\
+.bm-empty-text{font-size:14px;color:#666;line-height:1.5;margin:0}\
+.bm-login{padding:10px 4px 24px}\
+.bm-login-heading{font-size:16px;font-weight:700;color:#121212;margin:0 0 14px}\
+.bm-login-label{font-size:14px;color:#4e0000;margin:0 0 12px}\
+.bm-feide-btn{display:flex;align-items:center;justify-content:center;gap:10px;border:1.5px solid #d4d8ff;background:#f5f7ff;border-radius:12px;padding:16px 24px;font-size:16px;font-weight:600;color:#121212;cursor:pointer;font-family:inherit;width:100%;transition:background .15s}\
+.bm-feide-btn:hover{background:#eceffe}\
+.bm-or{display:flex;align-items:center;gap:12px;margin:18px 0;color:#999;font-size:12px;letter-spacing:.1em;text-align:center}\
+.bm-or::before,.bm-or::after{content:\"\";flex:1;height:1px;background:#e3e3e3}\
 ';
 
 /* ─── CRUD ─── */
@@ -186,6 +204,297 @@ function getBasketCount() {
   return b.programs.length + (b.looseEmner.length > 0 ? 1 : 0);
 }
 
+/* ─── Bokmerker ─── */
+var BOOKMARK_KEY = 'kristiania_bookmarks';
+var BM_OUTLINE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 4h12a1 1 0 0 1 1 1v15.5l-7-3.9-7 3.9V5a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+var BM_FILLED  = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h12a1 1 0 0 1 1 1v15.5l-7-3.9-7 3.9V5a1 1 0 0 1 1-1z"/></svg>';
+
+function getBookmarks() {
+  try {
+    var arr = JSON.parse(localStorage.getItem(BOOKMARK_KEY) || '[]');
+    return Array.isArray(arr) ? arr : [];
+  } catch(e) { return []; }
+}
+
+function saveBookmarks(arr) {
+  localStorage.setItem(BOOKMARK_KEY, JSON.stringify(arr));
+  updateBookmarkBadge();
+}
+
+function getBookmarkCount() { return getBookmarks().length; }
+
+function isBookmarked(id) {
+  return getBookmarks().some(function(b) { return b.id === id; });
+}
+
+/* Hvilket studie er denne siden? */
+function getCurrentStudyInfo() {
+  var choices = extractChoices();
+  var info = { id: window.location.pathname, name: '', level: deriveLevelFromPage(),
+               url: window.location.pathname, city: null, startSemester: null, points: null, duration: null };
+  if (choices && choices.length) {
+    var c = choices[0];
+    info.id = c.studyCode || c.variantCode || info.id;
+    info.name = c.name || '';
+    info.city = c.variantCity || null;
+    if (c.startSemester) info.startSemester = c.startSemester + ' 2026';
+    if (c.points) info.points = ('' + c.points).replace(/studiepoeng/i, 'stp.').trim();
+    if (c.durationInYears) info.duration = c.durationInYears + ' år';
+  }
+  if (!info.name) {
+    var h1 = document.querySelector('h1');
+    info.name = h1 ? h1.textContent.trim() : (document.title.split(/[|–-]/)[0] || '').trim();
+  }
+  if (!info.duration) info.duration = info.level === 'Master' ? '2 år' : (info.level === 'Bachelor' ? '3 år' : null);
+  return info;
+}
+
+function toggleBookmark() {
+  var info = getCurrentStudyInfo();
+  var arr = getBookmarks();
+  var idx = -1;
+  for (var i = 0; i < arr.length; i++) { if (arr[i].id === info.id) { idx = i; break; } }
+  if (idx >= 0) {
+    arr.splice(idx, 1);
+    saveBookmarks(arr);
+    updateBookmarkButtons();
+    renderBookmarkPanel();
+  } else {
+    arr.push(info);
+    saveBookmarks(arr);
+    updateBookmarkButtons();
+    openBookmarkPanel();
+  }
+}
+
+function removeBookmark(id) {
+  var arr = getBookmarks().filter(function(b) { return b.id !== id; });
+  saveBookmarks(arr);
+  updateBookmarkButtons();
+  renderBookmarkPanel();
+}
+
+/* Eget bokmerke-ikon i topbaren */
+function injectTopbarBookmarkIcon() {
+  if (document.getElementById('topbar-bookmark-btn')) return;
+  var basketImg = document.querySelector('img[src*="Basket.svg"]');
+  if (!basketImg) return;
+  var basketBtn = basketImg.closest('button') || basketImg.closest('a');
+  if (!basketBtn) return;
+  var basketLi = basketBtn.closest('li');
+  // Avled bokmerke-ikonets sti fra kurv-ikonet (samme topbar-mappe)
+  var bmSrc = (basketImg.getAttribute('src') || '').replace('Basket.svg', 'Bookmark.svg');
+
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.id = 'topbar-bookmark-btn';
+  btn.className = basketBtn.className;
+  btn.setAttribute('aria-label', 'Bokmerker');
+  btn.style.cssText = 'position:relative;background:none;border:none;cursor:pointer;padding:8px;display:inline-flex;align-items:center;justify-content:center;';
+  btn.onclick = function() { openBookmarkPanel(); };
+  btn.innerHTML = '<span class="SvgIcon" style="display:flex;align-items:center;"><img src="' + bmSrc + '" width="24" height="24" alt="" style="display:block;"></span>'
+    + '<span id="topbar-bookmark-count" style="display:none;position:absolute;top:4px;right:4px;background:#c8233f;color:#fff;border-radius:9px;min-width:16px;height:16px;padding:0 3px;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box;"></span>';
+
+  if (basketLi) {
+    var li = document.createElement('li');
+    li.className = basketLi.className;
+    var liStyle = basketLi.getAttribute('style');
+    if (liStyle) li.setAttribute('style', liStyle);
+    li.appendChild(btn);
+    basketLi.insertAdjacentElement('afterend', li);
+  } else {
+    basketBtn.insertAdjacentElement('afterend', btn);
+  }
+}
+
+function updateBookmarkBadge() {
+  var badge = document.getElementById('topbar-bookmark-count');
+  if (!badge) return;
+  var n = getBookmarkCount();
+  badge.textContent = n;
+  badge.style.display = n > 0 ? 'block' : 'none';
+}
+
+/* Sørg for lik ikon-rekkefølge i topbaren på alle sider:
+   profil → søk → kurv → bokmerke → meny */
+function normalizeTopbarOrder() {
+  var basketImg = document.querySelector('img[src*="Basket.svg"]');
+  if (!basketImg) return;
+  var basketLi = basketImg.closest('li');
+  if (!basketLi) return;
+  var ul = basketLi.parentNode;
+  if (!ul || ul.tagName !== 'UL') return;
+
+  function liIn(el) {
+    if (!el) return null;
+    var li = el.closest('li');
+    return (li && li.parentNode === ul) ? li : null;
+  }
+  var searchEl = document.querySelector('[role="search"]')
+    || document.querySelector('img[src*="search.svg"]')
+    || document.querySelector('img[src*="Search.svg"]');
+  var profile  = liIn(document.querySelector('a[href$="/min-side/"]'));
+  var search   = liIn(searchEl);
+  var bookmark = liIn(document.getElementById('topbar-bookmark-btn'));
+  var menu     = liIn(document.querySelector('img[src*="Menu.svg"]'));
+
+  var order = [profile, search, basketLi, bookmark, menu];
+  for (var i = 0; i < order.length; i++) {
+    if (order[i] && order[i].parentNode === ul) ul.appendChild(order[i]);
+  }
+}
+
+/* «Lagre»-knapp ved siden av «Søk nå» */
+function injectBookmarkButtons() {
+  var sokBtns = document.querySelectorAll('button[title="Søk nå"].yEK9biWpMxeKit4W3SEn');
+  for (var i = 0; i < sokBtns.length; i++) {
+    var sokBtn = sokBtns[i];
+    var wrap = sokBtn.parentElement;
+    if (!wrap || wrap.querySelector('.hk-bookmark-btn')) continue;
+    wrap.style.display = 'flex';
+    wrap.style.gap = '8px';
+    wrap.style.alignItems = 'stretch';
+    sokBtn.style.flex = '1 1 auto';
+    var lagre = document.createElement('button');
+    lagre.type = 'button';
+    lagre.className = 'hk-bookmark-btn';
+    lagre.setAttribute('aria-label', 'Lagre som bokmerke');
+    lagre.onclick = function(e) { e.preventDefault(); e.stopPropagation(); toggleBookmark(); };
+    sokBtn.insertAdjacentElement('afterend', lagre);
+  }
+  updateBookmarkButtons();
+}
+
+function updateBookmarkButtons() {
+  var saved = isBookmarked(getCurrentStudyInfo().id);
+  var btns = document.querySelectorAll('.hk-bookmark-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].innerHTML = (saved ? BM_FILLED : BM_OUTLINE) + '<span>' + (saved ? 'Lagret' : 'Lagre') + '</span>';
+    btns[i].classList.toggle('saved', saved);
+  }
+}
+
+/* ─── Bokmerke-panel (sidebar) ─── */
+var BM_TITLE_ICON = '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h12a1 1 0 0 1 1 1v15.5l-7-3.9-7 3.9V5a1 1 0 0 1 1-1z"/></svg>';
+
+function injectBookmarkPanel() {
+  if (document.getElementById('bm-panel')) return;
+  if (!document.getElementById('hk-styles')) {
+    var style = document.createElement('style');
+    style.id = 'hk-styles';
+    style.textContent = BASKET_CSS;
+    document.head.appendChild(style);
+  }
+  var html = '<div id="bm-backdrop" onclick="closeBookmarkPanel()"></div>'
+    + '<div id="bm-panel">'
+    + '<div class="hk-header"><h2>' + BM_TITLE_ICON + '<span id="bm-title">Bokmerker</span></h2>'
+    + '<button class="hk-close" onclick="closeBookmarkPanel()" aria-label="Lukk">'
+    + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
+    + '</button></div>'
+    + '<div class="hk-body" id="bm-body"></div>'
+    + '</div>';
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+
+var BM_FEIDE_ICON = '<svg width="26" height="26" viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="3" stroke="#1f2b6b" stroke-width="2"/><path d="M12 26v-7a4 4 0 0 1 8 0v7" stroke="#1f2b6b" stroke-width="2" stroke-linecap="round"/></svg>';
+
+function bookmarkLoginHtml() {
+  return '<div class="bm-login">'
+    + '<h3 class="bm-login-heading">Logg inn for å lagre bokmerker</h3>'
+    + '<p class="bm-login-label">Ny bruker</p>'
+    + '<button class="bm-feide-btn" onclick="bookmarkLogin()">Opprett bruker</button>'
+    + '<div class="bm-or">ELLER</div>'
+    + '<p class="bm-login-label">Student ved Kristiania med aktiv FEIDE-bruker.</p>'
+    + '<button class="bm-feide-btn" onclick="bookmarkLogin()">Fortsett med FEIDE' + BM_FEIDE_ICON + '</button>'
+    + '</div>';
+}
+
+function bookmarkLogin() { window.location.href = '/min-side/'; }
+
+function openBookmarkPanel() {
+  injectBookmarkPanel();
+  renderBookmarkPanel();
+  var panel = document.getElementById('bm-panel');
+  var backdrop = document.getElementById('bm-backdrop');
+  if (!panel) return;
+  panel.style.display = 'flex';
+  backdrop.style.display = 'block';
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
+    panel.style.transform = 'translateX(0)';
+    backdrop.style.opacity = '1';
+  }); });
+}
+
+function closeBookmarkPanel() {
+  var panel = document.getElementById('bm-panel');
+  var backdrop = document.getElementById('bm-backdrop');
+  if (!panel) return;
+  panel.style.transform = 'translateX(100%)';
+  backdrop.style.opacity = '0';
+  setTimeout(function() { panel.style.display = 'none'; backdrop.style.display = 'none'; }, 350);
+}
+
+function renderBookmarkPanel() {
+  injectBookmarkPanel();
+  var arr = getBookmarks();
+  var body = document.getElementById('bm-body');
+  var title = document.getElementById('bm-title');
+  if (!body) return;
+
+  if (title) title.textContent = arr.length === 0 ? 'Bokmerker' : 'Bokmerker (' + arr.length + ')';
+
+  if (arr.length === 0) {
+    body.innerHTML = '<div class="bm-empty">'
+      + '<div class="bm-empty-icon">' + BM_TITLE_ICON + '</div>'
+      + '<h3 class="bm-empty-title">Ingen bokmerker ennå</h3>'
+      + '<p class="bm-empty-text">Trykk «Lagre» på et studie du vil se nærmere på senere, så finner du det igjen her.</p>'
+      + '</div>';
+    return;
+  }
+
+  var html = '';
+  arr.forEach(function(bm) { html += renderBookmarkCard(bm); });
+  html += bookmarkLoginHtml();
+  body.innerHTML = html;
+}
+
+function renderBookmarkCard(bm) {
+  var badges = '';
+  if (bm.city) badges += '<span class="hk-badge hk-badge-city">' + bm.city + '</span>';
+  if (bm.startSemester) badges += '<span class="hk-badge hk-badge-sem">' + bm.startSemester + '</span>';
+  var meta = [];
+  if (bm.points) meta.push(bm.points);
+  if (bm.duration) meta.push(bm.duration);
+  var safeId = ('' + bm.id).replace(/'/g, "\\'");
+  return '<div class="hk-card bm-card">'
+    + '<div class="bm-card-top">'
+    + '<div class="bm-badges">' + badges + '</div>'
+    + '<div class="bm-actions">'
+    + '<button class="bm-icon-btn bm-remove" onclick="removeBookmark(\'' + safeId + '\')" aria-label="Fjern bokmerke">' + BM_FILLED + '</button>'
+    + '</div></div>'
+    + '<a class="bm-card-name" href="' + bm.url + '">' + bm.name + '</a>'
+    + (meta.length ? '<div class="bm-card-meta">' + meta.join(' • ') + '</div>' : '')
+    + '<button class="bm-sok-btn" onclick="applyBookmark(\'' + safeId + '\')">Søk nå</button>'
+    + '</div>';
+}
+
+/* Legg bokmerket studie til søknaden (som «Søk nå» ellers) */
+function applyBookmark(id) {
+  var bm = getBookmarks().filter(function(b) { return b.id === id; })[0];
+  if (!bm) return;
+  closeBookmarkPanel();
+  addProgram({
+    id: bm.id,
+    name: bm.name,
+    level: bm.level || 'Bachelor',
+    points: bm.points || '',
+    type: 'campus',
+    city: bm.city || null,
+    startSemester: bm.startSemester || 'Høst 26',
+    price: 0
+  });
+}
+
 /* ─── UI refresh ─── */
 function refreshBasketUI() {
   updateBasketCount();
@@ -218,24 +527,9 @@ function injectSidebarPanel() {
     + '</button></div>'
     + '<div class="hk-body" id="hk-body"></div>'
     + '<div class="hk-footer" id="hk-footer" style="display:none">'
-    + '<button class="hk-btn-outline" onclick="showLagreSaveView()">Lagre til senere</button>'
     + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre med søknaden</a>'
     + '</div>'
-    + '<div id="hk-save-form">'
-    + '<div id="hk-save-fields">'
-    + '<p class="hk-save-desc">Du kan lagre søknaden og finne tilbake til den senere.</p>'
-    + '<input class="hk-save-input" id="hk-save-email" type="email" placeholder="E-postadresse" />'
-    + '<p class="hk-save-privacy">Informasjonen blir lagret og brukt i henhold til <a href="/om-kristiania/personvern/">Personvernerklæringen.</a></p>'
-    + '<button class="hk-save-btn" onclick="submitLagreSave()">Lagre søknad</button>'
-    + '</div>'
-    + '<div id="hk-save-receipt" style="display:none">'
-    + '<div class="hk-save-receipt-box">'
-    + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#06f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    + '<p class="hk-save-receipt-msg">Søknaden er lagret! Vi sender deg en lenke på e-post.</p>'
-    + '</div>'
-    + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre</a>'
-    + '</div>'
-    + '</div></div>';
+    + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
 }
 
@@ -262,35 +556,7 @@ function closeSoknaderPanel() {
   setTimeout(function() {
     panel.style.display = 'none';
     backdrop.style.display = 'none';
-    // Reset save form state
-    var saveForm = document.getElementById('hk-save-form');
-    if (saveForm) saveForm.classList.remove('open');
-    var fields = document.getElementById('hk-save-fields');
-    if (fields) fields.style.display = 'flex';
-    var receipt = document.getElementById('hk-save-receipt');
-    if (receipt) receipt.style.display = 'none';
-    var emailInput = document.getElementById('hk-save-email');
-    if (emailInput) emailInput.value = '';
   }, 350);
-}
-
-/* ─── Lagre til senere (inline) ─── */
-function showLagreSaveView() {
-  var footer = document.getElementById('hk-footer');
-  var saveForm = document.getElementById('hk-save-form');
-  var fields = document.getElementById('hk-save-fields');
-  var receipt = document.getElementById('hk-save-receipt');
-  if (footer) footer.style.display = 'none';
-  if (fields) fields.style.display = 'flex';
-  if (receipt) receipt.style.display = 'none';
-  if (saveForm) saveForm.classList.add('open');
-}
-
-function submitLagreSave() {
-  var fields = document.getElementById('hk-save-fields');
-  var receipt = document.getElementById('hk-save-receipt');
-  if (fields) fields.style.display = 'none';
-  if (receipt) receipt.style.display = 'block';
 }
 
 /* ─── Trash SVG ─── */
@@ -565,6 +831,10 @@ function enhanceTopbarBasket() {
   if (!basketImg) return;
   var btn = basketImg.closest('button');
   if (!btn) return;
+  // Normaliser vertikal justering (fjern inline-block baseline-gap)
+  basketImg.style.display = 'block';
+  btn.style.display = 'inline-flex';
+  btn.style.alignItems = 'center';
   // Add click handler if not already set
   if (!btn.getAttribute('onclick')) {
     btn.setAttribute('onclick', 'openSoknaderPanel()');
@@ -586,6 +856,11 @@ function initBasket() {
   enhanceTopbarBasket();
   refreshBasketUI();
   interceptSokNaaButtons();
+  injectBookmarkPanel();
+  injectBookmarkButtons();
+  injectTopbarBookmarkIcon();
+  normalizeTopbarOrder();
+  updateBookmarkBadge();
 }
 
 if (document.readyState === 'loading') {

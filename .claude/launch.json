@@ -5,7 +5,8 @@
       "name": "Kristiania Prototype",
       "runtimeExecutable": "node",
       "runtimeArgs": ["server.js"],
-      "autoPort": true
+      "port": 3000,
+      "autoPort": false
     },
     {
       "name": "Pangstart Server",

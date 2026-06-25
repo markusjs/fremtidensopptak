@@ -300,6 +300,9 @@ function injectTopbarBookmarkIcon() {
     li.className = basketLi.className;
     var liStyle = basketLi.getAttribute('style');
     if (liStyle) li.setAttribute('style', liStyle);
+    // Sørg for vertikal sentrering uansett side (noen sider mangler dette på li-en)
+    li.style.display = 'flex';
+    li.style.alignItems = 'center';
     li.appendChild(btn);
     basketLi.insertAdjacentElement('afterend', li);
   } else {
@@ -835,6 +838,8 @@ function enhanceTopbarBasket() {
   basketImg.style.display = 'block';
   btn.style.display = 'inline-flex';
   btn.style.alignItems = 'center';
+  var basketLi = btn.closest('li');
+  if (basketLi) { basketLi.style.display = 'flex'; basketLi.style.alignItems = 'center'; }
   // Add click handler if not already set
   if (!btn.getAttribute('onclick')) {
     btn.setAttribute('onclick', 'openSoknaderPanel()');

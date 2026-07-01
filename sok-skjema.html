@@ -73,10 +73,10 @@ body {
   text-align: center; transition: color .35s ease; line-height: 1.25;
 }
 .stepper-step.current .stepper-node {
-  border-color: #4e0000; color: #4e0000;
-  box-shadow: 0 0 0 4px rgba(78,0,0,0.10);
+  border-color: #0066FF; color: #0066FF;
+  box-shadow: 0 0 0 4px rgba(0,102,255,0.10);
 }
-.stepper-step.current .stepper-label { color: #4e0000; font-weight: 600; }
+.stepper-step.current .stepper-label { color: #0066FF; font-weight: 600; }
 .stepper-step.done .stepper-node { background: #4e0000; border-color: #4e0000; color: #fff; }
 .stepper-step.done .stepper-label { color: #4e0000; }
 .stepper-step.clickable { cursor: pointer; }
@@ -717,6 +717,31 @@ body {
 .snd-done-label { font-size: 22px; font-weight: 700; color: #121212; }
 
 
+/* Oppstart section */
+.opp-emner-box { border:1.5px solid #e5e5e5; border-radius:12px; overflow:hidden; margin-bottom:16px; }
+.opp-emner-header { background:#f8f8f8; padding:12px 16px; border-bottom:1px solid #e5e5e5; }
+.opp-emne-row { display:flex; align-items:flex-start; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #f0f0f0; gap:12px; flex-wrap:wrap; }
+.opp-emne-row:last-child { border-bottom:none; }
+.opp-emne-info { flex:1; min-width:0; }
+.opp-emne-meta { font-size:12px; color:#888; margin-bottom:3px; }
+.opp-emne-name { font-size:14px; font-weight:600; color:#121212; }
+.opp-emne-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+.opp-velg-link { font-size:13px; color:#06f; background:none; border:none; cursor:pointer; font-family:'Graphik',sans-serif; padding:0; white-space:nowrap; }
+.opp-velg-link:hover { text-decoration:underline; }
+.opp-date-done { font-size:13px; color:#15a34a; font-weight:500; white-space:nowrap; }
+.opp-inline-picker { display:none; width:100%; padding:16px; border-top:1px solid #e5e5e5; background:#f8f8f8; }
+.opp-inline-picker.open { display:block; }
+.opp-date-option { display:flex; gap:14px; align-items:flex-start; padding:14px 16px; border:1.5px solid #e5e5e5; border-radius:10px; margin-bottom:10px; cursor:pointer; transition:border-color .15s,background .15s; }
+.opp-date-option:last-child { margin-bottom:0; }
+.opp-date-option:hover { border-color:#c7c8ca; }
+.opp-date-option.selected { border-color:#06f; background:#f0f7ff; }
+.opp-date-label { font-size:16px; font-weight:700; color:#121212; margin-bottom:4px; }
+.opp-date-sub { font-size:13px; color:#555; line-height:1.5; margin-bottom:6px; }
+.opp-date-meta { font-size:13px; color:#888; display:flex; align-items:center; gap:5px; }
+.opp-section-title { font-size:15px; font-weight:600; color:#121212; margin-bottom:14px; }
+.opp-err { display:none; font-size:13px; color:#b60202; margin-top:8px; }
+.opp-err.show { display:block; }
+
 /* Responsive */
 @media (max-width: 1023px) {
   .checkout-grid { grid-template-columns: 1fr; padding: 20px 16px; gap: 16px; }
@@ -915,8 +940,8 @@ body {
       <!-- Steg 3: Personopplysninger -->
       <div class="step" id="step3">
         <div class="form-col">
-          <h1 class="step-title">Fullfør søknaden</h1>
 
+          <!-- Personopplysninger -->
           <div>
             <h2 class="step-subtitle" style="margin-bottom:16px;">Personopplysninger</h2>
             <div class="input-group">
@@ -989,6 +1014,30 @@ body {
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Oppstart (vises kun hvis kurven har emner) -->
+          <div id="oppstartSection" style="display:none;">
+            <h2 class="step-subtitle" style="margin-bottom:20px;">Oppstart</h2>
+            <div class="opp-emner-box">
+              <div class="opp-emner-header">
+                <div style="font-size:13px;color:#888;" id="oppstartProgLabel"></div>
+                <div style="font-size:15px;font-weight:700;color:#121212;" id="oppstartEmneCountLabel"></div>
+              </div>
+              <div id="oppstartEmnerList"></div>
+            </div>
+            <div class="checkbox-row" style="margin-bottom:16px;" id="sammeDatoRow">
+              <div class="checkbox-box checked" id="cb-sammedato" onclick="toggleSammeDato()">
+                <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="checkbox-label" onclick="toggleSammeDato()">Bruk samme oppstartsdato for alle emnene</span>
+            </div>
+            <div id="sharedDateSection">
+              <p class="opp-section-title">Velg oppstartsdato</p>
+              <div id="sharedDateOptions"></div>
+              <div class="opp-err" id="err-sharedDate">Velg en oppstartsdato for å gå videre</div>
+            </div>
+            <div style="height:8px;"></div>
           </div>
 
           <button class="btn-primary" onclick="gaVidereStep3()">Til betaling</button>
@@ -1358,6 +1407,7 @@ function gaVidere(n) {
     document.getElementById('checkoutGrid').style.display = '';
     document.getElementById('step5Page').style.display = 'none';
     document.getElementById('step' + n).classList.add('active');
+    if (n === 3) renderOppstartSection();
   }
   window.scrollTo(0, 0);
 }
@@ -1645,7 +1695,7 @@ function gaVidereStep1() {
   gaVidere(2);
 }
 
-function simulateFeideLogin() { prefillFormData(); _feideLoggedIn = true; gaVidere(5); }
+function simulateFeideLogin() { prefillFormData(); _feideLoggedIn = true; gaVidere(3); }
 
 
 function formatPhone(tel) {
@@ -1683,6 +1733,158 @@ function prefillFormData() {
   });
 }
 
+/* Step 3 – Oppstart */
+var OPPSTART_DATES = [
+  { label: '16. august 2026', sub: 'Anbefalt hvis du ønsker å søke lån/stipend hos Lånekassen.', meta: 'Studierett til 15. august 2027', badge: '16. aug 2026' },
+  { label: 'Valgfri oppstartsdato', sub: 'Du kan starte når som helst innen 3 måneder fra dagens dato.', meta: '12 måneder studierett', badge: 'Valgfri' }
+];
+var _oppstartMode = 'same';
+var _sharedDateIdx = null;
+var _individualDates = {};
+var _activeEmneIdx = 0;
+
+var CLOCK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><circle cx="12" cy="12" r="9" stroke="#888" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="#888" stroke-width="1.8" stroke-linecap="round"/></svg>';
+var CHECK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M20 6L9 17l-5-5" stroke="#15a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function getAllCartEmner() {
+  var b = getBasket();
+  var emner = [];
+  (b.programs || []).forEach(function(p) {
+    if (p.type === 'nett' && p.emner) {
+      p.emner.forEach(function(e) { emner.push({ e: e, progName: p.name }); });
+    }
+  });
+  (b.looseEmner || []).forEach(function(e) { emner.push({ e: e, progName: null }); });
+  return emner;
+}
+
+function renderDateCards(fnName, extraArg, selectedIdx) {
+  return OPPSTART_DATES.map(function(d, i) {
+    var sel = selectedIdx === i;
+    var onclick = extraArg !== null ? fnName + '(' + extraArg + ',' + i + ')' : fnName + '(' + i + ')';
+    return '<div class="opp-date-option' + (sel ? ' selected' : '') + '" onclick="' + onclick + '">'
+      + '<div class="payment-radio' + (sel ? ' selected' : '') + '" style="margin-top:3px;flex-shrink:0;"></div>'
+      + '<div><div class="opp-date-label">' + d.label + '</div>'
+      + '<div class="opp-date-sub">' + d.sub + '</div>'
+      + '<div class="opp-date-meta">' + CLOCK_SVG + ' ' + d.meta + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderOppstartEmnerList(emner) {
+  var html = '';
+  emner.forEach(function(x, idx) {
+    var e = x.e;
+    var code = e.code ? String(e.code) : ('emne-' + idx);
+    var dateIdx = _individualDates[code];
+    var hasDate = dateIdx !== undefined;
+    var isActive = _oppstartMode === 'individual' && idx === _activeEmneIdx && !hasDate;
+
+    html += '<div class="opp-emne-row">';
+    html += '<div class="opp-emne-info">';
+    html += '<div class="opp-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</div>';
+    html += '<div class="opp-emne-name">' + e.name + '</div>';
+    html += '</div>';
+    html += '<div class="opp-emne-right">';
+    if (_oppstartMode === 'individual') {
+      if (hasDate) {
+        html += '<span class="opp-date-done">' + CHECK_SVG + ' ' + OPPSTART_DATES[dateIdx].badge + '</span>';
+      } else {
+        html += '<button class="opp-velg-link" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
+      }
+    }
+    html += '<span class="badge badge-nett">Nett</span>';
+    html += '</div>';
+
+    if (_oppstartMode === 'individual') {
+      html += '<div class="opp-inline-picker' + (isActive ? ' open' : '') + '" id="opp-picker-' + idx + '">';
+      html += '<p class="opp-section-title" style="margin-bottom:12px;">Velg oppstartsdato</p>';
+      html += renderDateCards('selectIndividualDate', idx, hasDate ? dateIdx : null);
+      html += '</div>';
+    }
+
+    html += '</div>';
+  });
+  document.getElementById('oppstartEmnerList').innerHTML = html;
+}
+
+function renderOppstartSection() {
+  var emner = getAllCartEmner();
+  var section = document.getElementById('oppstartSection');
+  if (!section) return;
+  if (emner.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+
+  _oppstartMode = 'same';
+  _sharedDateIdx = null;
+  _individualDates = {};
+  _activeEmneIdx = 0;
+  document.getElementById('cb-sammedato').classList.add('checked');
+  document.getElementById('sharedDateSection').style.display = 'block';
+
+  var progNames = [];
+  emner.forEach(function(x) { if (x.progName && progNames.indexOf(x.progName) === -1) progNames.push(x.progName); });
+  document.getElementById('oppstartProgLabel').textContent = progNames.length ? progNames.join(', ') : 'Emner';
+  document.getElementById('oppstartEmneCountLabel').textContent = emner.length + ' emne' + (emner.length !== 1 ? 'r' : '');
+
+  renderOppstartEmnerList(emner);
+  document.getElementById('sharedDateOptions').innerHTML = renderDateCards('selectSharedDate', null, _sharedDateIdx);
+}
+
+function toggleSammeDato() {
+  var cb = document.getElementById('cb-sammedato');
+  var isChecked = cb.classList.contains('checked');
+  _oppstartMode = isChecked ? 'individual' : 'same';
+  cb.classList.toggle('checked', !isChecked);
+  _sharedDateIdx = null;
+  _individualDates = {};
+  _activeEmneIdx = 0;
+  var emner = getAllCartEmner();
+  document.getElementById('sharedDateSection').style.display = _oppstartMode === 'same' ? 'block' : 'none';
+  if (_oppstartMode === 'same') {
+    document.getElementById('sharedDateOptions').innerHTML = renderDateCards('selectSharedDate', null, null);
+  }
+  renderOppstartEmnerList(emner);
+}
+
+function selectSharedDate(idx) {
+  _sharedDateIdx = idx;
+  document.getElementById('sharedDateOptions').innerHTML = renderDateCards('selectSharedDate', null, idx);
+  var err = document.getElementById('err-sharedDate');
+  if (err) err.classList.remove('show');
+}
+
+function selectIndividualDate(emneIdx, dateIdx) {
+  var emner = getAllCartEmner();
+  var x = emner[emneIdx];
+  if (!x) return;
+  var code = x.e.code ? String(x.e.code) : ('emne-' + emneIdx);
+  _individualDates[code] = dateIdx;
+  _activeEmneIdx = emneIdx + 1;
+  renderOppstartEmnerList(emner);
+}
+
+function activateIndividualPicker(idx) {
+  _activeEmneIdx = idx;
+  renderOppstartEmnerList(getAllCartEmner());
+}
+
+function saveOppstartDatesToBasket(emner) {
+  var b = getBasket();
+  emner.forEach(function(x, i) {
+    var code = x.e.code ? String(x.e.code) : ('emne-' + i);
+    var dIdx = _oppstartMode === 'same' ? _sharedDateIdx : _individualDates[code];
+    var badge = dIdx !== undefined && dIdx !== null ? OPPSTART_DATES[dIdx].badge : null;
+    (b.programs || []).forEach(function(p) {
+      if (p.type === 'nett' && p.emner) {
+        p.emner.forEach(function(e) { if (String(e.code) === code) e.startDate = badge; });
+      }
+    });
+    (b.looseEmner || []).forEach(function(e) { if (String(e.code) === code) e.startDate = badge; });
+  });
+  saveBasket(b);
+}
+
 /* Step 3 */
 function validateField(id, test) {
   var wrap = document.getElementById('wrap-' + id);
@@ -1694,6 +1896,28 @@ function validateField(id, test) {
 }
 
 function gaVidereStep3() {
+  // Valider oppstartsdatoer
+  var emner = getAllCartEmner();
+  if (emner.length > 0) {
+    if (_oppstartMode === 'same') {
+      if (_sharedDateIdx === null) {
+        var errEl = document.getElementById('err-sharedDate');
+        if (errEl) { errEl.classList.add('show'); errEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+        return;
+      }
+    } else {
+      var allPicked = emner.every(function(x, i) {
+        var code = x.e.code ? String(x.e.code) : ('emne-' + i);
+        return _individualDates[code] !== undefined;
+      });
+      if (!allPicked) {
+        activateIndividualPicker(_activeEmneIdx);
+        return;
+      }
+    }
+    saveOppstartDatesToBasket(emner);
+  }
+
   var ok = true;
   if (!validateField('fnr', document.getElementById('fnr').value.replace(/\s/g,'').length >= 11)) ok = false;
   if (!validateField('fornavn', document.getElementById('fornavn').value.trim().length > 0)) ok = false;

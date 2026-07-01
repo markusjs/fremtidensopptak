@@ -772,7 +772,8 @@ function spAddCourse(btn) {
     name: row.dataset.name,
     pts: parseFloat(row.dataset.pts),
     price: parseInt(row.dataset.price)
-  }], spScenarioOverride, { skipStudiestotte: true });
+  }], spScenarioOverride, { skipAll: true });
+  if (typeof revealEmne === 'function') setTimeout(function() { revealEmne('anvendt-psykologi-nett', code); }, 150);
 }
 
 function spRemoveCourse(code) {
@@ -796,7 +797,11 @@ function spBestillAlle(btn) {
       price: parseInt(row.dataset.price)
     });
   });
-  if (pending.length > 0) openStudiestartModal(pending, spScenarioOverride, { skipStudiestotte: true });
+  if (pending.length > 0) {
+    openStudiestartModal(pending, spScenarioOverride, { skipAll: true });
+    var lastCode = pending[pending.length - 1].code;
+    if (typeof revealEmne === 'function') setTimeout(function() { revealEmne('anvendt-psykologi-nett', lastCode); }, 150);
+  }
 }
 
 function spUpdateSummary() {

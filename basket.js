@@ -4,10 +4,20 @@
  * Kaprer originale React «Søk nå»-knapper for campus-studier.
  */
 
-/* ─── Global topbar fix: hide duplicate search icon ─── */
+/* ─── Global topbar fix ─── */
 (function(){
   var s = document.createElement('style');
-  s.textContent = '.BI8sYl_zzmD2PosuI83q:not(.ZK1omoN5LcHwsJ4ZoxIJ) .Q5vGRKkR4UPctsu2Dl_3 img{display:none!important}';
+  s.textContent = [
+    /* Skjul søk-li i topbaren (ikke wired opp i prototypen) */
+    'li:has([role="search"]){display:none!important}',
+    /* Skjul profil-ikon (Mitt Kristiania) – kun li med direkte barn-a til min-side */
+    'li:has(> a[href$="/min-side/"]){display:none!important}',
+    /* Større logo */
+    'img[src*="Kristiania_logo"]{height:52px!important;width:auto!important}',
+    /* Overflow visible på bokmerke-li så badge ikke klippes */
+    '#topbar-bookmark-btn{overflow:visible!important}',
+    'li:has(#topbar-bookmark-btn){overflow:visible!important;position:relative}'
+  ].join('');
   document.head.appendChild(s);
 })();
 
@@ -17,9 +27,7 @@ var EMPTY_BASKET = { programs: [], looseEmner: [] };
 
 /* ─── Path helper ─── */
 function getSokSkjemaPath() {
-  var path = window.location.pathname;
-  if (path.indexOf('/studier/') !== -1) return '../sok-skjema.html';
-  return 'sok-skjema.html';
+  return '/sok-skjema.html';
 }
 
 /* ─── CSS (injiseres én gang) ─── */
@@ -27,36 +35,39 @@ var BASKET_CSS = '\
 .uTMhMIeN0bDXVFVIysSa::after{display:none!important}\
 #sok-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;transition:opacity .3s;opacity:0}\
 #sok-panel{display:none;position:fixed;top:0;right:0;height:100%;width:460px;max-width:100vw;background:#fff;z-index:1201;box-shadow:-4px 0 32px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);flex-direction:column;font-family:inherit;overflow:hidden}\
-.hk-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0}\
-.hk-header h2{font-size:20px;font-weight:800;margin:0;color:#111}\
-.hk-close{background:none;border:none;cursor:pointer;padding:6px;color:#111}\
+.hk-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0;border-bottom:1px solid #c7c8ca}\
+.hk-header h2{font-size:18px;font-weight:500;margin:0;color:#4e0000;line-height:24px}\
+.hk-close{background:none;border:none;cursor:pointer;padding:6px;color:#121212}\
 .hk-body{flex:1;overflow-y:auto;padding:12px 20px}\
-.hk-card{border:1.5px solid #e5e5e5;border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff}\
-.hk-card-header{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 16px;gap:8px;cursor:default}\
-.hk-card-meta{font-size:12px;color:#777;margin-bottom:3px}\
-.hk-card-name{font-size:15px;font-weight:700;color:#111;line-height:1.3}\
-.hk-card-right{display:flex;align-items:center;gap:6px;flex-shrink:0}\
-.hk-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}\
-.hk-badge-sem{background:#eceae7;color:#5a5a5a}\
-.hk-badge-city{background:#f8d9de;color:#7a2238}\
-.hk-badge-nett{background:none;border:1.5px solid #999;color:#555}\
-.hk-trash{background:none;border:none;cursor:pointer;padding:4px;color:#aaa;transition:color .15s}\
-.hk-trash:hover{color:#c00}\
-.hk-chevron{background:none;border:none;cursor:pointer;padding:4px;transition:transform .2s}\
-.hk-emner-list{border-top:1px solid #f0f0f0;display:none}\
+.hk-card{border:1px solid #c7c8ca;border-radius:8px;margin-bottom:8px;overflow:hidden;background:#fff}\
+.hk-card-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px;gap:12px;cursor:default}\
+.hk-card-meta{font-size:14px;font-weight:400;color:#3f3f3f;line-height:17.5px;margin-bottom:4px}\
+.hk-card-name{font-size:16px;font-weight:500;color:#000;line-height:17.5px}\
+.hk-card-right{display:flex;align-items:center;gap:8px;flex-shrink:0}\
+.hk-badge{font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;white-space:nowrap;color:#101828;line-height:16px}\
+.hk-badge-sem{background:#f4ebe6}\
+.hk-badge-city{background:#f9ccd2}\
+.hk-badge-nett{background:#f9ccd2}\
+.hk-trash{background:none;border:none;cursor:pointer;padding:4px;color:#121212;transition:color .15s}\
+.hk-trash:hover{color:#4e0000}\
+.hk-chevron{background:none;border:none;cursor:pointer;padding:4px;transition:transform .2s;color:#121212}\
+.hk-emner-list{border-top:1px solid #c7c8ca;display:none}\
 .hk-emner-list.open{display:block}\
-.hk-emne-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #f5f5f5;gap:8px}\
-.hk-emne-meta{font-size:11px;color:#888}\
-.hk-emne-name{font-size:13px;font-weight:600;color:#222}\
-.hk-emne-right{display:flex;align-items:center;gap:6px;flex-shrink:0}\
-.hk-badge-date{background:#f0f0f0;color:#555;font-size:11px;padding:3px 8px;border-radius:12px}\
+.hk-emne-row{display:flex;align-items:center;justify-content:space-between;padding:20px 16px;border-bottom:1px solid #c7c8ca;gap:8px;background:#f5f5f5}\
+.hk-emner-list{overflow:hidden}\
+@keyframes hkEmneAdded{0%{background:#dbe5ff;box-shadow:inset 3px 0 0 #2f54eb}70%{background:#dbe5ff;box-shadow:inset 3px 0 0 #2f54eb}100%{background:transparent;box-shadow:inset 3px 0 0 transparent}}\
+.hk-emne-row.hk-emne-added{animation:hkEmneAdded 2s ease}\
+.hk-emne-meta{font-size:14px;font-weight:400;color:#3f3f3f;line-height:17.5px}\
+.hk-emne-name{font-size:16px;font-weight:500;color:#000;line-height:17.5px}\
+.hk-emne-right{display:flex;align-items:center;gap:8px;flex-shrink:0}\
+.hk-badge-date{background:#fff;color:#101828;font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;line-height:16px}\
 .hk-section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px;cursor:pointer}\
-.hk-section-title{font-size:13px;color:#555}\
-.hk-footer{padding:16px 20px;border-top:1px solid #e5e5e5;flex-shrink:0;display:flex;flex-direction:column;gap:10px}\
-.hk-btn-outline{display:block;width:100%;text-align:center;padding:13px;border-radius:30px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid #4e0000;color:#4e0000;background:none;font-family:inherit}\
+.hk-section-title{font-size:14px;font-weight:400;color:#3f3f3f}\
+.hk-footer{padding:16px 20px;border-top:1px solid #c7c8ca;flex-shrink:0;display:flex;flex-direction:column;gap:10px}\
+.hk-btn-outline{display:block;width:100%;text-align:center;padding:13px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:1.5px solid #4e0000;color:#4e0000;background:none;font-family:inherit}\
 .hk-btn-outline:hover{background:#faf5f5}\
-.hk-btn-primary{display:block;width:100%;text-align:center;padding:13px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:#1a3dc2;color:#fff;text-decoration:none;font-family:inherit}\
-.hk-btn-primary:hover{background:#1533a8}\
+.hk-btn-primary{display:block;width:100%;text-align:center;padding:13px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;text-decoration:none;font-family:inherit}\
+.hk-btn-primary:hover{background:#0052cc}\
 .hk-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;padding:64px 16px 16px;color:#888}\
 .hk-city-popover{position:fixed;z-index:1300;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);padding:16px;min-width:200px}\
 .hk-city-popover h4{margin:0 0 12px;font-size:15px;font-weight:700;color:#111}\
@@ -80,8 +91,8 @@ var BASKET_CSS = '\
 .bm-card-name{display:block;padding:10px 16px 0;font-size:16px;font-weight:700;color:#111;text-decoration:none;border:none;line-height:1.3}\
 .bm-card-name:hover{text-decoration:underline}\
 .bm-card-meta{padding:3px 16px 0;font-size:13px;color:#777}\
-.bm-sok-btn{display:block;width:calc(100% - 32px);box-sizing:border-box;margin:14px 16px 0;padding:13px;border-radius:28px;font-size:15px;font-weight:700;cursor:pointer;border:none;background:#2f54eb;color:#fff;font-family:inherit;transition:background .15s}\
-.bm-sok-btn:hover{background:#1f3fd0}\
+.bm-sok-alle-btn{display:block;width:100%;box-sizing:border-box;padding:16px;border-radius:32px;font-size:16px;font-weight:700;cursor:pointer;border:none;background:#2f54eb;color:#fff;font-family:inherit;transition:background .15s}\
+.bm-sok-alle-btn:hover{background:#1f3fd0}\
 .bm-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 28px}\
 .bm-empty-icon{width:72px;height:72px;border-radius:50%;background:#f4ebe6;color:#4e0000;display:flex;align-items:center;justify-content:center}\
 .bm-empty-title{font-size:18px;font-weight:700;color:#121212;margin:0}\
@@ -93,6 +104,39 @@ var BASKET_CSS = '\
 .bm-feide-btn:hover{background:#eceffe}\
 .bm-or{display:flex;align-items:center;gap:12px;margin:18px 0;color:#999;font-size:12px;letter-spacing:.1em;text-align:center}\
 .bm-or::before,.bm-or::after{content:\"\";flex:1;height:1px;background:#e3e3e3}\
+.bm-back-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:none;font-size:14px;font-weight:500;color:#555;cursor:pointer;font-family:inherit;padding:0;margin-bottom:4px;}\
+.bm-back-btn:hover{color:#121212}\
+.bm-view{padding:16px 20px 32px}\
+.bm-view-title{font-size:22px;font-weight:700;color:#121212;margin:8px 0 6px}\
+.bm-view-sub{font-size:14px;color:#555;line-height:1.5;margin:0 0 20px}\
+.bm-phone-row{display:flex;margin-bottom:8px}\
+.bm-phone-prefix{border:1.5px solid #c7c8ca;border-right:none;border-radius:8px 0 0 8px;padding:0 14px;font-size:15px;background:#fff;display:flex;align-items:center;color:#555;white-space:nowrap}\
+.bm-phone-input{flex:1;border:1.5px solid #c7c8ca;border-left:none;border-radius:0 8px 8px 0;padding:14px;font-size:15px;font-family:inherit;outline:none}\
+.bm-phone-input:focus{border-color:#06f}\
+.bm-sms-hint{font-size:14px;color:#4e0000;margin:0 0 16px}\
+.bm-consent-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:20px}\
+.bm-cb{width:20px;height:20px;min-width:20px;border:1.5px solid #c7c8ca;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:1px;transition:background .15s,border-color .15s}\
+.bm-cb.checked{background:#06f;border-color:#06f}\
+.bm-cb-label{font-size:14px;color:#121212;line-height:1.4}\
+.bm-cb-label a{color:#06f}\
+.bm-btn-primary{display:flex;align-items:center;justify-content:center;height:52px;background:#06f;color:#fff;font-family:inherit;font-size:16px;font-weight:600;border:none;border-radius:40px;cursor:pointer;width:100%;transition:background .15s}\
+.bm-btn-primary:hover{background:#0052cc}\
+.bm-otp-group{display:flex;gap:12px;margin-bottom:20px}\
+.bm-otp-input{width:64px;height:64px;border:1.5px solid #c7c8ca;border-radius:50%;font-size:24px;font-weight:600;text-align:center;color:#121212;font-family:inherit;background:#fff;outline:none;transition:border-color .15s}\
+.bm-otp-input:focus{border-color:#06f}\
+.bm-tilhorighet-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1.5px solid #c7c8ca;border-radius:8px;margin-bottom:20px}\
+.bm-k-avatar{width:32px;height:32px;border-radius:6px;background:#cc0000;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0}\
+.bm-feide-option{display:flex;align-items:center;gap:14px;width:100%;padding:16px 20px;border:1.5px solid #06f;border-radius:8px;background:#fff;font-size:15px;font-weight:500;color:#121212;cursor:pointer;font-family:inherit;transition:background .15s}\
+.bm-feide-option:hover{background:#f0f7ff}\
+.bm-feide-options{display:flex;flex-direction:column;gap:12px}\
+.bm-hjelp-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0 0;font-size:15px;font-weight:500;color:#121212;border-top:1px solid #e8e8e8;margin-top:20px}\
+.bm-user-card{display:flex;align-items:center;gap:12px;background:#f5f5f5;border-radius:10px;padding:12px 14px;margin:12px 0 4px}\
+.bm-user-avatar{width:38px;height:38px;border-radius:50%;background:#4e0000;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}\
+.bm-user-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}\
+.bm-user-name{font-size:14px;font-weight:600;color:#121212;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
+.bm-user-source{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#4e0000;font-weight:500}\
+.bm-logout-btn{font-size:13px;color:#888;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;white-space:nowrap;flex-shrink:0}\
+.bm-logout-btn:hover{color:#4e0000;text-decoration:underline}\
 ';
 
 /* ─── CRUD ─── */
@@ -290,10 +334,10 @@ function injectTopbarBookmarkIcon() {
   btn.id = 'topbar-bookmark-btn';
   btn.className = basketBtn.className;
   btn.setAttribute('aria-label', 'Bokmerker');
-  btn.style.cssText = 'position:relative;background:none;border:none;cursor:pointer;padding:8px;display:inline-flex;align-items:center;justify-content:center;';
+  btn.style.cssText = 'position:relative;background:none;border:none;cursor:pointer;padding:8px;display:inline-flex;align-items:center;justify-content:center;width:auto;box-sizing:content-box;';
   btn.onclick = function() { openBookmarkPanel(); };
-  btn.innerHTML = '<span class="SvgIcon" style="display:flex;align-items:center;"><img src="' + bmSrc + '" width="24" height="24" alt="" style="display:block;"></span>'
-    + '<span id="topbar-bookmark-count" style="display:none;position:absolute;top:4px;right:4px;background:#c8233f;color:#fff;border-radius:9px;min-width:16px;height:16px;padding:0 3px;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box;"></span>';
+  btn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;flex-shrink:0;"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 2C4.89543 2 4 2.89543 4 4V21C4 21.3729 4.20764 21.7148 4.53843 21.8866C4.86921 22.0584 5.26803 22.0319 5.57346 21.8178L12 17.3148L18.4265 21.8178C18.732 22.0319 19.1308 22.0584 19.4616 21.8866C19.7924 21.7148 20 21.3729 20 21V4C20 2.89543 19.1046 2 18 2H6ZM6 4H18V19.0813L12.5735 15.2822C12.2293 15.0411 11.7707 15.0411 11.4265 15.2822L6 19.0813V4Z" fill="#121212"/></svg>'
+    + '<span id="topbar-bookmark-count" style="display:none;position:absolute;top:2px;right:2px;background:#c8233f;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box;"></span>';
 
   if (basketLi) {
     var li = document.createElement('li');
@@ -303,6 +347,8 @@ function injectTopbarBookmarkIcon() {
     // Sørg for vertikal sentrering uansett side (noen sider mangler dette på li-en)
     li.style.display = 'flex';
     li.style.alignItems = 'center';
+    li.style.minWidth = '44px';
+    li.style.justifyContent = 'center';
     li.appendChild(btn);
     basketLi.insertAdjacentElement('afterend', li);
   } else {
@@ -395,6 +441,9 @@ function injectBookmarkPanel() {
     + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
     + '</button></div>'
     + '<div class="hk-body" id="bm-body"></div>'
+    + '<div class="hk-footer" id="bm-footer" style="display:none">'
+    + '<button class="bm-sok-alle-btn" onclick="applyAllBookmarks()">Legg til i søknad</button>'
+    + '</div>'
     + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
 }
@@ -402,19 +451,174 @@ function injectBookmarkPanel() {
 var BM_FEIDE_ICON = '<svg width="26" height="26" viewBox="0 0 32 32" fill="none"><rect x="6" y="6" width="20" height="20" rx="3" stroke="#1f2b6b" stroke-width="2"/><path d="M12 26v-7a4 4 0 0 1 8 0v7" stroke="#1f2b6b" stroke-width="2" stroke-linecap="round"/></svg>';
 
 function bookmarkLoginHtml() {
-  return '<div class="bm-login">'
-    + '<h3 class="bm-login-heading">Logg inn for å lagre bokmerker</h3>'
-    + '<p class="bm-login-label">Ny bruker</p>'
-    + '<button class="bm-feide-btn" onclick="bookmarkLogin()">Opprett bruker</button>'
-    + '<div class="bm-or">ELLER</div>'
-    + '<p class="bm-login-label">Student ved Kristiania med aktiv FEIDE-bruker.</p>'
-    + '<button class="bm-feide-btn" onclick="bookmarkLogin()">Fortsett med FEIDE' + BM_FEIDE_ICON + '</button>'
+  return '<div style="border-top:1px solid #efefef;padding:20px 0 8px;margin-top:8px;">'
+    + '<p style="font-size:14px;font-weight:600;color:#121212;margin:0 0 14px;line-height:1.4;">Logg inn eller opprett bruker for å lagre bokmerkene</p>'
+    + '<button class="bm-btn-primary" onclick="showBmLoginChoice()">Gå videre</button>'
     + '</div>';
 }
 
-function bookmarkLogin() { window.location.href = '/min-side/'; }
+function bookmarkLoginChoiceHtml() {
+  return '<div class="bm-view">'
+    + '<button class="bm-back-btn" onclick="showBmMain()">' + BM_BACK_ICON + 'Tilbake</button>'
+    + '<h3 class="bm-view-title" style="margin-bottom:20px;">Logg inn</h3>'
+    + '<p class="bm-login-label">Ny bruker</p>'
+    + '<button class="bm-feide-btn" onclick="showBmNewUser()">Opprett bruker</button>'
+    + '<div class="bm-or">ELLER</div>'
+    + '<p class="bm-login-label">Student ved Kristiania med aktiv FEIDE-bruker.</p>'
+    + '<button class="bm-feide-btn" onclick="showBmFeide()">Fortsett med FEIDE' + BM_FEIDE_ICON + '</button>'
+    + '</div>';
+}
+
+/* ─── Bookmark panel views ─── */
+var _bmView = 'main'; // 'main' | 'newuser' | 'newuser-otp' | 'feide'
+var _bmPhone = '';
+var _bmLoggedIn = false;
+var _bmUserName = '';
+
+var BM_BACK_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function showBmNewUser()      { _bmView = 'newuser';       renderBmActiveView(); }
+function showBmFeide()        { _bmView = 'feide';         renderBmActiveView(); }
+function showBmLoginChoice()  { _bmView = 'login-choice';  renderBmActiveView(); }
+function showBmMain()         { _bmView = 'main';          renderBookmarkPanel(); }
+
+function renderBmActiveView() {
+  var body = document.getElementById('bm-body');
+  var title = document.getElementById('bm-title');
+  if (!body) return;
+  if (_bmView === 'login-choice') {
+    if (title) title.textContent = 'Logg inn';
+    body.innerHTML = bookmarkLoginChoiceHtml();
+  } else if (_bmView === 'newuser') {
+    if (title) title.textContent = 'Opprett bruker';
+    body.innerHTML = bmNewUserHtml();
+  } else if (_bmView === 'newuser-otp') {
+    if (title) title.textContent = 'Bekreft kode';
+    body.innerHTML = bmOtpHtml();
+    body.querySelectorAll('.bm-otp-input')[0].focus();
+  } else if (_bmView === 'feide') {
+    if (title) title.textContent = 'Logg inn';
+    body.innerHTML = bmFeideHtml();
+  }
+}
+
+function bmNewUserHtml() {
+  return '<div class="bm-view">'
+    + '<button class="bm-back-btn" onclick="showBmMain()">' + BM_BACK_ICON + 'Tilbake</button>'
+    + '<h3 class="bm-view-title">Opprett bruker</h3>'
+    + '<div class="bm-phone-row">'
+    + '<div class="bm-phone-prefix">+47</div>'
+    + '<input type="tel" id="bm-telefon" class="bm-phone-input" placeholder="Telefonnummer" inputmode="numeric">'
+    + '</div>'
+    + '<p class="bm-sms-hint">Du får en bekreftelseskode på SMS.</p>'
+    + '<div class="bm-consent-row">'
+    + '<div id="bm-consent-cb" class="bm-cb" onclick="bmToggleCb(this)"></div>'
+    + '<span class="bm-cb-label" onclick="bmToggleCb(document.getElementById(\'bm-consent-cb\'))">Jeg samtykker til å bli kontaktet av en studierådgiver og har lest <a href="#" onclick="event.stopPropagation()">personvernerklæringen</a>.</span>'
+    + '</div>'
+    + '<button class="bm-btn-primary" onclick="bmGaVidereStep1()">Gå videre</button>'
+    + '</div>';
+}
+
+function bmToggleCb(el) {
+  el.classList.toggle('checked');
+  el.innerHTML = el.classList.contains('checked')
+    ? '<svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : '';
+}
+
+function bmGaVidereStep1() {
+  var inp = document.getElementById('bm-telefon');
+  var tel = inp ? inp.value.replace(/\s/g, '') : '';
+  if (!tel || tel.length < 8) { if (inp) inp.style.borderColor = '#b60202'; return; }
+  _bmPhone = tel;
+  _bmView = 'newuser-otp';
+  renderBmActiveView();
+}
+
+function bmOtpHtml() {
+  var fmt = _bmPhone.replace(/(\d{3})(\d{2})(\d{3})/, '$1 $2 $3');
+  var inputs = [0,1,2,3].map(function(i) {
+    return '<input type="tel" maxlength="1" inputmode="numeric" class="bm-otp-input"'
+      + ' oninput="bmOtpNext(this,' + i + ')" onkeydown="bmOtpBack(event,' + i + ')">';
+  }).join('');
+  return '<div class="bm-view">'
+    + '<button class="bm-back-btn" onclick="showBmNewUser()">' + BM_BACK_ICON + 'Tilbake</button>'
+    + '<h3 class="bm-view-title">Bekreftelseskode</h3>'
+    + '<p class="bm-view-sub">Vi har sendt deg en kode på <strong>' + fmt + '</strong>.</p>'
+    + '<div class="bm-otp-group">' + inputs + '</div>'
+    + '<button class="bm-btn-primary" onclick="bmBekreftKode()">Bekreft</button>'
+    + '</div>';
+}
+
+function bmOtpNext(input, idx) {
+  input.value = input.value.replace(/\D/g, '').slice(-1);
+  var inputs = document.querySelectorAll('#bm-body .bm-otp-input');
+  if (input.value && idx < 3) inputs[idx + 1].focus();
+}
+
+function bmOtpBack(e, idx) {
+  var inputs = document.querySelectorAll('#bm-body .bm-otp-input');
+  if (e.key === 'Backspace' && !inputs[idx].value && idx > 0) inputs[idx - 1].focus();
+}
+
+function bmBekreftKode() {
+  var inputs = document.querySelectorAll('#bm-body .bm-otp-input');
+  var code = Array.from(inputs).map(function(i) { return i.value; }).join('');
+  if (code.length < 4) { inputs[0].focus(); return; }
+  _bmLoggedIn = true;
+  _bmUserName = 'Lars Juster Eilefsen';
+  _bmView = 'main';
+  renderBookmarkPanel();
+}
+
+function bmFeideLogin() {
+  _bmLoggedIn = true;
+  _bmUserName = 'Lars Juster Eilefsen';
+  _bmView = 'main';
+  renderBookmarkPanel();
+}
+
+function bmLogout() {
+  _bmLoggedIn = false;
+  _bmUserName = '';
+  renderBookmarkPanel();
+}
+
+function bmLoggedInHtml() {
+  var initials = _bmUserName.split(' ').map(function(w){return w[0];}).slice(0,2).join('');
+  var FEIDE_LOCK = '<svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#4e0000" stroke-width="2"/><rect x="11" y="15" width="10" height="8" rx="1.5" stroke="#4e0000" stroke-width="1.8"/><path d="M13 15v-3a3 3 0 016 0v3" stroke="#4e0000" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  return '<div class="bm-user-card">'
+    + '<div class="bm-user-avatar">' + initials + '</div>'
+    + '<div class="bm-user-info">'
+    + '<span class="bm-user-name">' + _bmUserName + '</span>'
+    + '<span class="bm-user-source">' + FEIDE_LOCK + 'Logget inn</span>'
+    + '</div>'
+    + '<button class="bm-logout-btn" onclick="bmLogout()">Logg ut</button>'
+    + '</div>';
+}
+
+function bmFeideHtml() {
+  var msIcon = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0"><rect width="9.5" height="9.5" fill="#F25022"/><rect x="10.5" width="9.5" height="9.5" fill="#7FBA00"/><rect y="10.5" width="9.5" height="9.5" fill="#00A4EF"/><rect x="10.5" y="10.5" width="9.5" height="9.5" fill="#FFB900"/></svg>';
+  var idPortenIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><rect x="2" y="2" width="20" height="20" rx="3" stroke="#222" stroke-width="1.5"/><path d="M7 8h10M7 12h10M7 16h6" stroke="#222" stroke-width="1.5" stroke-linecap="round"/></svg>';
+  return '<div class="bm-view">'
+    + '<button class="bm-back-btn" onclick="showBmMain()">' + BM_BACK_ICON + 'Tilbake</button>'
+    + '<h3 class="bm-view-title">Logg inn med Feide</h3>'
+    + '<p class="bm-view-sub">Du må logge deg på via Feide for å få tilgang til Dataporten.</p>'
+    + '<div style="font-size:13px;color:#888;margin-bottom:8px;font-weight:500;">Din tilhørighet</div>'
+    + '<div class="bm-tilhorighet-row">'
+    + '<div style="display:flex;align-items:center;gap:12px;"><div class="bm-k-avatar">K</div><span style="font-size:15px;font-weight:500;color:#121212;">Kristiania</span></div>'
+    + '<button style="background:none;border:none;font-size:14px;color:#06f;cursor:pointer;text-decoration:underline;font-family:inherit;padding:0;">Endre tilhørighet</button>'
+    + '</div>'
+    + '<div class="bm-feide-options">'
+    + '<button class="bm-feide-option" onclick="bmFeideLogin()">' + msIcon + 'Bruk arbeids- eller skolekonto</button>'
+    + '<button class="bm-feide-option" onclick="bmFeideLogin()">' + idPortenIcon + 'Logg inn med ID-porten</button>'
+    + '</div>'
+    + '<div class="bm-hjelp-row"><span>Trenger du hjelp?</span><span style="font-size:22px;font-weight:300;color:#888;line-height:1;">+</span></div>'
+    + '</div>';
+}
 
 function openBookmarkPanel() {
+  _bmView = 'main';
   injectBookmarkPanel();
   renderBookmarkPanel();
   var panel = document.getElementById('bm-panel');
@@ -457,8 +661,9 @@ function renderBookmarkPanel() {
 
   var html = '';
   arr.forEach(function(bm) { html += renderBookmarkCard(bm); });
-  html += bookmarkLoginHtml();
   body.innerHTML = html;
+  var footer = document.getElementById('bm-footer');
+  if (footer) footer.style.display = 'block';
 }
 
 function renderBookmarkCard(bm) {
@@ -477,7 +682,6 @@ function renderBookmarkCard(bm) {
     + '</div></div>'
     + '<a class="bm-card-name" href="' + bm.url + '">' + bm.name + '</a>'
     + (meta.length ? '<div class="bm-card-meta">' + meta.join(' • ') + '</div>' : '')
-    + '<button class="bm-sok-btn" onclick="applyBookmark(\'' + safeId + '\')">Søk nå</button>'
     + '</div>';
 }
 
@@ -496,6 +700,24 @@ function applyBookmark(id) {
     startSemester: bm.startSemester || 'Høst 26',
     price: 0
   });
+}
+
+/* Legg alle bokmerkede studier til søknaden */
+function applyAllBookmarks() {
+  var arr = getBookmarks();
+  arr.forEach(function(bm) {
+    addProgram({
+      id: bm.id,
+      name: bm.name,
+      level: bm.level || 'Bachelor',
+      points: bm.points || '',
+      type: 'campus',
+      city: bm.city || null,
+      startSemester: bm.startSemester || 'Høst 26',
+      price: 0
+    });
+  });
+  window.location.href = getSokSkjemaPath();
 }
 
 /* ─── UI refresh ─── */
@@ -583,7 +805,7 @@ function renderBasketPanel() {
   if (totalItems === 0) {
     body.innerHTML = '<div class="hk-empty">'
       + '<div style="background:#f4ebe6;border-radius:88px;padding:16px;display:inline-flex;align-items:center;justify-content:center;">'
-      + '<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#121212"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#121212"/></svg>'
+      + '<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M22 9L12 5 2 9l10 4 10-4z" stroke="#121212" stroke-width="1.8" stroke-linejoin="round" fill="none"/><path d="M6 11v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5" stroke="#121212" stroke-width="1.8" stroke-linejoin="round" fill="none"/><line x1="22" y1="9" x2="22" y2="14" stroke="#121212" stroke-width="1.8" stroke-linecap="round"/></svg>'
       + '</div>'
       + '<a href="/utdanning" style="display:block;width:100%;text-align:center;padding:12px;border-radius:40px;font-size:16px;font-weight:500;cursor:pointer;border:1px solid #4e0000;color:#4e0000;background:none;font-family:inherit;text-decoration:none;">Legg til studier eller emner</a>'
       + '<div style="border-top:1px solid #e3e3e3;width:100%;"></div>'
@@ -633,7 +855,7 @@ function renderNettCard(prog) {
   var emnerHtml = '';
   if (prog.emner) {
     prog.emner.forEach(function(e) {
-      emnerHtml += '<div class="hk-emne-row">'
+      emnerHtml += '<div class="hk-emne-row" data-code="' + (e.code || '') + '">'
         + '<div><div class="hk-emne-meta">#' + (e.code || '') + ' · ' + (e.pts || 0) + ' studiepoeng</div>'
         + '<div class="hk-emne-name">' + e.name + '</div></div>'
         + '<div class="hk-emne-right">'
@@ -643,7 +865,7 @@ function renderNettCard(prog) {
     });
   }
 
-  return '<div class="hk-card"><div class="hk-card-header" onclick="toggleHkEmner(this)">'
+  return '<div class="hk-card" data-prog-id="' + prog.id + '"><div class="hk-card-header" onclick="toggleHkEmner(this)">'
     + '<div><div class="hk-card-meta">' + meta + '</div>'
     + '<div class="hk-card-name">' + prog.name + '</div></div>'
     + '<div class="hk-card-right">'
@@ -850,9 +1072,218 @@ function enhanceTopbarBasket() {
     btn.style.position = 'relative';
     var badge = document.createElement('span');
     badge.id = 'topbar-basket-count';
-    badge.style.cssText = 'display:none;position:absolute;top:4px;right:4px;background:#c8233f;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;line-height:16px;text-align:center;';
+    badge.style.cssText = 'display:none;position:absolute;top:2px;right:2px;background:#c8233f;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box;';
     btn.appendChild(badge);
   }
+}
+
+/* ─── Send basket by email (stub) ─── */
+function sendBasketByEmail() {
+  alert('Send på e-post – ikke implementert ennå.');
+}
+
+/* ─── Enkeltemne: «Kjøp emnet» ───
+   På enkeltemne-sider skal «Kjøp emnet» legge emnet inn under en bachelorgrad.
+   Hvis emnet inngår i en bachelorgrad som allerede ligger i søknaden, legges det
+   rett dit. Ellers spør vi hvilken grad emnet skal inngå i (fra «Dette emnet
+   inngår i»-listen nederst på siden). */
+
+function normalizeProgName(s) {
+  return (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+function slugifyProgram(s) {
+  return 'emne-prog-' + (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+/* Emne-data fra React-props (subject-objektet bak «Kjøp emnet») */
+function extractEmneSubject() {
+  var props = window.__reactProps || {};
+  var keys = Object.keys(props);
+  for (var i = 0; i < keys.length; i++) {
+    var v = props[keys[i]];
+    if (v && v.subject && v.subject.code) return v.subject;
+  }
+  return null;
+}
+
+function buildEmneObj(subject) {
+  return {
+    code: subject.code,
+    name: subject.name || '',
+    pts: subject.credits || 0,
+    price: (subject.price && subject.price.amount) || 0
+  };
+}
+
+/* Programmene emnet inngår i («Dette emnet inngår i»-listen).
+   Kun bachelorprogrammer tas med (lenker med /bachelor/ i URL-en) –
+   årsstudier og enkeltemner utelates. */
+function getEmneIncludedPrograms() {
+  var strongs = document.querySelectorAll('strong, h2, h3');
+  for (var i = 0; i < strongs.length; i++) {
+    if (/Dette emnet inngår i/i.test(strongs[i].textContent || '')) {
+      var parent = strongs[i].parentElement;
+      var links = parent ? parent.querySelectorAll('ul a') : [];
+      var seen = {};
+      var out = [];
+      for (var j = 0; j < links.length; j++) {
+        var href = links[j].getAttribute('href') || '';
+        if (href.indexOf('/bachelor/') === -1) continue;
+        var txt = (links[j].textContent || '').trim();
+        var key = normalizeProgName(txt);
+        if (txt && !seen[key]) { seen[key] = 1; out.push({ name: txt, href: href }); }
+      }
+      return out;
+    }
+  }
+  return [];
+}
+
+/* Åpne riktig program-kort, scroll til den nye emne-raden og fremhev den */
+function revealEmne(programId, code) {
+  setTimeout(function() {
+    var card = document.querySelector('#hk-body .hk-card[data-prog-id="' + programId + '"]');
+    if (!card) return;
+    var list = card.querySelector('.hk-emner-list');
+    var chev = card.querySelector('.hk-chevron');
+    if (list && !list.classList.contains('open')) {
+      list.classList.add('open');
+      if (chev) chev.innerHTML = CHEVRON_UP;
+    }
+    var row = card.querySelector('.hk-emne-row[data-code="' + code + '"]');
+    if (!row) return;
+    row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    // Restart animasjonen om raden allerede har klassen
+    row.classList.remove('hk-emne-added');
+    void row.offsetWidth;
+    row.classList.add('hk-emne-added');
+    setTimeout(function() { row.classList.remove('hk-emne-added'); }, 2100);
+  }, 120);
+}
+
+/* Legg emnet til et eksisterende program i kurven */
+function addEmneToProgram(programId, emne) {
+  var b = getBasket();
+  var prog = b.programs.find(function(p) { return p.id === programId; });
+  if (!prog) return;
+  if (!prog.emner) prog.emner = [];
+  if (!prog.emner.find(function(e) { return e.code === emne.code; })) {
+    prog.emner.push(emne);
+  }
+  if (prog.type !== 'nett') prog.type = 'nett';
+  saveBasket(b);
+}
+
+/* Kjente nett-bachelorprogrammer med egen studieplanlegger – bruk samme id
+   slik at emnet havner på samme kort som studieplanleggeren bruker. */
+var KNOWN_PROGRAM_IDS = {
+  'administrasjon og ledelse': 'adm-ledelse-nett',
+  'anvendt psykologi': 'anvendt-psykologi-nett'
+};
+
+/* Opprett (eller finn) et program ut fra navn og legg emnet der */
+function chooseEmneProgram(emne, programName, programId) {
+  var b = getBasket();
+  var norm = normalizeProgName(programName);
+  if (!programId && KNOWN_PROGRAM_IDS[norm]) programId = KNOWN_PROGRAM_IDS[norm];
+  var prog = b.programs.find(function(p) {
+    return (programId && p.id === programId) || normalizeProgName(p.name) === norm;
+  });
+  if (!prog) {
+    prog = { id: programId || slugifyProgram(programName), name: programName,
+             level: 'Bachelor', points: '', type: 'nett', emner: [] };
+    b.programs.push(prog);
+  }
+  if (!prog.emner) prog.emner = [];
+  if (!prog.emner.find(function(e) { return e.code === emne.code; })) {
+    prog.emner.push(emne);
+  }
+  if (prog.type !== 'nett') prog.type = 'nett';
+  saveBasket(b);
+  openSoknaderPanel();
+  revealEmne(prog.id, emne.code);
+}
+
+/* Sidebar-valg: hvilken grad skal emnet inn i? */
+var _emneChoiceState = null;
+
+function showEmneProgramChoice(emne, programs, inCart) {
+  _emneChoiceState = { emne: emne, programs: programs };
+  injectSidebarPanel();
+  openSoknaderPanel();
+  var body = document.getElementById('hk-body');
+  var footer = document.getElementById('hk-footer');
+  var title = document.getElementById('hk-title');
+  if (!body) return;
+  if (footer) footer.style.display = 'none';
+  if (title) title.textContent = 'Velg studieprogram';
+
+  var intro = inCart
+    ? '<p style="font-size:18px;font-weight:500;margin:0 0 8px;color:#121212;line-height:1.4;">Emnet inngår i flere av studiene i søknaden din.</p>'
+      + '<p style="font-size:18px;font-weight:500;margin:0 0 24px;color:#121212;line-height:1.4;">Hvilken vil du legge det til i?</p>'
+    : '<p style="font-size:18px;font-weight:500;margin:0 0 8px;color:#121212;line-height:1.4;">Dette emnet tilhører flere studieprogrammer.</p>'
+      + '<p style="font-size:18px;font-weight:500;margin:0 0 24px;color:#121212;line-height:1.4;">Hvilket program ønsker du at emnet skal inngå i?</p>';
+
+  var html = '<div style="padding:8px 0;">' + intro;
+  programs.forEach(function(p, idx) {
+    html += '<button class="hk-prog-choice" onclick="pickEmneProgram(' + idx + ')"'
+      + ' style="display:block;width:100%;text-align:left;padding:20px;margin-bottom:12px;border:1px solid #c7c8ca;border-radius:12px;background:#fff;font-size:18px;font-weight:500;color:#121212;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;"'
+      + ' onmouseover="this.style.borderColor=\'#4e0000\';this.style.background=\'#faf5f5\'"'
+      + ' onmouseout="this.style.borderColor=\'#c7c8ca\';this.style.background=\'#fff\'"'
+      + '>' + p.name + '</button>';
+  });
+  html += '<div style="margin-top:12px;padding-top:20px;border-top:1px solid #e3e3e3;display:flex;flex-direction:column;align-items:center;gap:16px;">'
+    + '<p style="font-size:16px;font-weight:500;margin:0;color:#4e0000;text-align:center;">Logg inn for å finne påbegynte studieprogrammer</p>'
+    + '<button onclick="closeSoknaderPanel()" style="display:block;width:100%;text-align:center;padding:16px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;font-family:inherit;">Logg inn</button>'
+    + '</div></div>';
+  body.innerHTML = html;
+}
+
+function pickEmneProgram(idx) {
+  var st = _emneChoiceState;
+  if (!st || !st.programs[idx]) return;
+  var p = st.programs[idx];
+  chooseEmneProgram(st.emne, p.name, p.id || null);
+}
+
+function handleKjopEmnet() {
+  var subject = extractEmneSubject();
+  if (!subject) return;
+  var emne = buildEmneObj(subject);
+  var included = getEmneIncludedPrograms();
+  var includedNames = included.map(function(p) { return normalizeProgName(p.name); });
+
+  var b = getBasket();
+  var cartProgs = b.programs.filter(function(p) { return p.level === 'Bachelor'; });
+  var matches = cartProgs.filter(function(p) {
+    return includedNames.indexOf(normalizeProgName(p.name)) !== -1;
+  });
+
+  if (matches.length === 1) {
+    addEmneToProgram(matches[0].id, emne);
+    openSoknaderPanel();
+    revealEmne(matches[0].id, emne.code);
+  } else if (matches.length > 1) {
+    showEmneProgramChoice(emne, matches.map(function(p) { return { name: p.name, id: p.id }; }), true);
+  } else {
+    // Emnet inngår ikke i noen bachelorgrad i kurven – spør hvilken grad
+    var choices = included.length ? included : [{ name: subject.name }];
+    showEmneProgramChoice(emne, choices, false);
+  }
+}
+
+function interceptKjopEmnet() {
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    if (!btn.classList.contains('yEK9biWpMxeKit4W3SEn')) return;
+    if ((btn.textContent || '').trim().indexOf('Kjøp emnet') === -1) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    handleKjopEmnet();
+  }, true);
 }
 
 /* ─── Init ─── */
@@ -861,6 +1292,7 @@ function initBasket() {
   enhanceTopbarBasket();
   refreshBasketUI();
   interceptSokNaaButtons();
+  interceptKjopEmnet();
   injectBookmarkPanel();
   injectBookmarkButtons();
   injectTopbarBookmarkIcon();

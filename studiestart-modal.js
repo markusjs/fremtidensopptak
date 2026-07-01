@@ -528,8 +528,25 @@ window.ssStudiestotteSelect = function(val, card) {
 /* ── Public API ── */
 
 window.openStudiestartModal = function(pendingCourses, scenarioOverride, options) {
-  injectStyles();
   _ssPending = pendingCourses || [];
+
+  // skipAll: legg emnene direkte i kurven uten å vise noen modal
+  if (options && options.skipAll) {
+    _ssPending.forEach(function(c) {
+      if (typeof spCart !== 'undefined' && !spCart[c.code]) {
+        spCart[c.code] = { name: c.name, pts: c.pts, price: c.price, startDate: '' };
+        document.querySelectorAll('.sp-course-row[data-code="' + c.code + '"] .sp-add-btn').forEach(function(b) {
+          b.classList.add('added'); b.textContent = '✓';
+        });
+        if (c.btn) { c.btn.classList.add('added'); c.btn.textContent = '✓'; }
+      }
+    });
+    if (typeof spSyncToBasket === 'function') spSyncToBasket();
+    _ssPending = [];
+    return;
+  }
+
+  injectStyles();
 
   // Remove existing modal if any
   var old = document.getElementById('ss-backdrop');

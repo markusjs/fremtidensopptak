@@ -126,6 +126,17 @@ body {
 }
 .input-wrap input:focus { border-color: #06f; }
 .input-wrap.error input { border-color: #b60202; background: #fffbfb; }
+
+.input-wrap select {
+  width: 100%; border: 1.5px solid #c7c8ca; border-radius: 8px;
+  padding: 22px 40px 8px 16px; font-size: 15px; font-weight: 500; color: #121212;
+  background: #fff; font-family: 'Graphik', sans-serif; outline: none;
+  transition: border-color .15s; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  cursor: pointer;
+}
+.input-wrap select:focus { border-color: #06f; }
+.input-wrap-select label { top: 10px; transform: none; font-size: 11px; color: #555; }
+.select-chevron { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .error-msg { font-size: 12px; color: #b60202; margin-top: 4px; display: none; padding-left: 2px; }
 .input-wrap.error + .error-msg { display: block; }
 
@@ -406,6 +417,7 @@ body {
 
 .payment-expand { display: none; background: #f8f4f4; border-top: 1px solid #e8d4d4; padding: 20px; }
 .payment-expand.open { display: block; }
+#pd-body .payment-expand.open { background: transparent; border-top: none; padding: 0; }
 
 /* Card fields */
 .card-field-lbl { font-size: 15px; font-weight: 700; color: #121212; margin-bottom: 8px; }
@@ -550,7 +562,7 @@ body {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 20px;
 }
-.s0-section-label { font-size: 18px; font-weight: 700; color: #121212; }
+.s0-section-label { font-size: 18px; font-weight: 700; color: #4e0000; }
 .s0-faktor-badge {
   display: flex; align-items: center; gap: 6px;
   border: 1px solid #e0e0e0; border-radius: 20px;
@@ -813,6 +825,7 @@ body {
       <div class="s0-card" id="step0EmnerCard" style="display:none;margin-top:16px;">
         <div class="s0-section-header">
           <span class="s0-section-label">Emner</span>
+          <span class="payment-section-meta" id="step0EmnerMeta"></span>
         </div>
         <div id="step0EmnerList"></div>
         <button class="s0-legg-til-btn" onclick="window.location.href='/utdanning'">
@@ -968,6 +981,21 @@ body {
                   <div class="error-msg" id="err-etternavn">Oppgi etternavn</div>
                 </div>
               </div>
+              <div class="input-wrap input-wrap-select" id="wrap-land">
+                <select id="land">
+                  <option value="Norge" selected>Norge</option>
+                  <option value="Sverige">Sverige</option>
+                  <option value="Danmark">Danmark</option>
+                  <option value="Finland">Finland</option>
+                  <option value="Island">Island</option>
+                  <option value="Tyskland">Tyskland</option>
+                  <option value="Storbritannia">Storbritannia</option>
+                  <option value="USA">USA</option>
+                  <option value="Annet">Annet land</option>
+                </select>
+                <label for="land">Land</label>
+                <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#4e0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
             </div>
           </div>
 
@@ -1016,8 +1044,14 @@ body {
             </div>
           </div>
 
-          <!-- Oppstart (vises kun hvis kurven har emner) -->
-          <div id="oppstartSection" style="display:none;">
+          <button class="btn-primary" onclick="gaVidereStep3()">Gå videre</button>
+        </div>
+      </div>
+
+      <!-- Steg 3b: Oppstart -->
+      <div class="step" id="step3b">
+        <div class="form-col">
+          <div id="oppstartSection">
             <h2 class="step-subtitle" style="margin-bottom:20px;">Oppstart</h2>
             <div class="opp-emner-box">
               <div class="opp-emner-header">
@@ -1037,10 +1071,12 @@ body {
               <div id="sharedDateOptions"></div>
               <div class="opp-err" id="err-sharedDate">Velg en oppstartsdato for å gå videre</div>
             </div>
-            <div style="height:8px;"></div>
           </div>
 
-          <button class="btn-primary" onclick="gaVidereStep3()">Til betaling</button>
+          <div class="btn-row" style="margin-top:24px;">
+            <button class="btn-secondary" onclick="gaVidere(3)">Tilbake</button>
+            <button class="btn-primary" onclick="confirmOppstart()">Gå videre</button>
+          </div>
         </div>
       </div>
 
@@ -1103,7 +1139,6 @@ body {
                         <input type="text" id="card-cvc" placeholder="" inputmode="numeric" maxlength="4">
                       </div>
                     </div>
-                    <button class="btn-betal" id="betalBtn" onclick="gaVidereStep4()">Betal <span id="betalBtnAmount"></span></button>
                   </div>
                 </div>
 
@@ -1208,7 +1243,19 @@ body {
 
           <div class="btn-row">
             <button class="btn-secondary" onclick="gaVidere(3)">Tilbake til personopplysninger</button>
-            <button class="btn-primary" onclick="gaVidereStep4()">Send inn søknad</button>
+            <button class="btn-primary" onclick="gaVidereStep4()">Gå videre</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Steg 4b: Betalingsdetaljer -->
+      <div class="step" id="step4b">
+        <div class="form-col">
+          <h1 class="step-title" id="pd-title">Betaling</h1>
+          <div id="pd-body" style="margin-top:24px;"></div>
+          <div class="btn-row" style="margin-top:24px;">
+            <button class="btn-secondary" onclick="gaVidere(4)">Tilbake</button>
+            <button class="btn-primary" id="pd-cta" onclick="gaVidere(5)">Gå videre</button>
           </div>
         </div>
       </div>
@@ -1389,6 +1436,10 @@ function gaVidere(n) {
     document.getElementById('step' + _currentStep).classList.remove('active');
   }
   document.getElementById('feide-step').classList.remove('active');
+  document.getElementById('step3b').classList.remove('active');
+  document.getElementById('step4b').classList.remove('active');
+  document.getElementById('summarySidebar').style.display = '';
+  restorePaymentDetailNode();
   _currentStep = n;
   updateStepper(n);
 
@@ -1407,7 +1458,6 @@ function gaVidere(n) {
     document.getElementById('checkoutGrid').style.display = '';
     document.getElementById('step5Page').style.display = 'none';
     document.getElementById('step' + n).classList.add('active');
-    if (n === 3) renderOppstartSection();
   }
   window.scrollTo(0, 0);
 }
@@ -1508,6 +1558,14 @@ function renderStep0() {
   emnerCard.style.display = hasEmner ? '' : 'none';
 
   if (hasEmner) {
+    var emnerCount = 0, emnerTotal = 0;
+    nettPrograms.forEach(function(p) {
+      (p.emner || []).forEach(function(e) { emnerCount++; emnerTotal += (e.price || 0); });
+    });
+    looseEmner.forEach(function(e) { emnerCount++; emnerTotal += (e.price || 0); });
+    var emnerMetaEl = document.getElementById('step0EmnerMeta');
+    if (emnerMetaEl) emnerMetaEl.textContent = emnerCount + ' emne' + (emnerCount !== 1 ? 'r' : '') + ' · ' + emnerTotal.toLocaleString('nb-NO') + ' kr';
+
     var emnerHtml = '';
     nettPrograms.forEach(function(p, idx) {
       var badges = '<span class="s0-badge" style="background:#e8f0fe;color:#1a4db0;">Nett</span>';
@@ -1726,8 +1784,8 @@ function prefillFormData() {
   document.getElementById('fornavn').value = 'Lars Juster';
   document.getElementById('etternavn').value = 'Eilefsen';
   document.getElementById('gate').value = 'Akersveien 24F';
-  document.getElementById('postnr').value = '';
-  document.getElementById('poststed').value = '';
+  document.getElementById('postnr').value = '0177';
+  document.getElementById('poststed').value = 'Oslo';
   document.querySelectorAll('.input-wrap input').forEach(function(inp) {
     if (inp.value) inp.dispatchEvent(new Event('input'));
   });
@@ -1896,7 +1954,34 @@ function validateField(id, test) {
 }
 
 function gaVidereStep3() {
-  // Valider oppstartsdatoer
+  var ok = true;
+  if (!validateField('fnr', document.getElementById('fnr').value.replace(/\s/g,'').length >= 11)) ok = false;
+  if (!validateField('fornavn', document.getElementById('fornavn').value.trim().length > 0)) ok = false;
+  if (!validateField('etternavn', document.getElementById('etternavn').value.trim().length > 0)) ok = false;
+  if (!validateField('gate', document.getElementById('gate').value.trim().length > 0)) ok = false;
+  if (!validateField('postnr', /^\d{4}$/.test(document.getElementById('postnr').value.trim()))) ok = false;
+  if (!validateField('poststed', document.getElementById('poststed').value.trim().length > 0)) ok = false;
+  if (!ok) return;
+
+  var b = getBasket();
+  var hasEmner = (b.looseEmner && b.looseEmner.length > 0) ||
+    ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
+  if (hasEmner) {
+    showOppstartStep();
+  } else {
+    gaVidere(5);
+  }
+}
+
+/* Steg 3b: Oppstart (eget steg, kun når kurven har emner) */
+function showOppstartStep() {
+  renderOppstartSection();
+  document.getElementById('step3').classList.remove('active');
+  document.getElementById('step3b').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function confirmOppstart() {
   var emner = getAllCartEmner();
   if (emner.length > 0) {
     if (_oppstartMode === 'same') {
@@ -1918,23 +2003,8 @@ function gaVidereStep3() {
     saveOppstartDatesToBasket(emner);
   }
 
-  var ok = true;
-  if (!validateField('fnr', document.getElementById('fnr').value.replace(/\s/g,'').length >= 11)) ok = false;
-  if (!validateField('fornavn', document.getElementById('fornavn').value.trim().length > 0)) ok = false;
-  if (!validateField('etternavn', document.getElementById('etternavn').value.trim().length > 0)) ok = false;
-  if (!validateField('gate', document.getElementById('gate').value.trim().length > 0)) ok = false;
-  if (!validateField('postnr', /^\d{4}$/.test(document.getElementById('postnr').value.trim()))) ok = false;
-  if (!validateField('poststed', document.getElementById('poststed').value.trim().length > 0)) ok = false;
-  if (!ok) return;
-  var b = getBasket();
-  var hasEmner = (b.looseEmner && b.looseEmner.length > 0) ||
-    ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
-  if (hasEmner) {
-    renderPaymentStep();
-    gaVidere(4);
-  } else {
-    gaVidere(5);
-  }
+  renderPaymentStep();
+  gaVidere(4);
 }
 
 function updateSpraakRadio(input) {
@@ -2034,8 +2104,50 @@ function gaVidereStep4() {
     var errEl = document.getElementById('err-betaling');
     if (!checked) { errEl.style.display = 'block'; return; }
     errEl.style.display = 'none';
+    showPaymentDetail(checked.value);
+    return;
   }
   gaVidere(5);
+}
+
+/* Betalingsdetaljer (steg 4b) — vises etter valg av betalingsmetode */
+var PAYMENT_TITLES = { kort: 'Kortbetaling', avdrag: 'Avdrag', faktura: 'Faktura', arbeidsgiver: 'Arbeidsgiver eller NAV betaler' };
+var _paymentDetailHomes = {};
+var _currentPaymentMethod = null;
+
+function showPaymentDetail(method) {
+  var expand = document.getElementById('expand-' + method);
+  if (!expand) return;
+  if (!_paymentDetailHomes[method]) _paymentDetailHomes[method] = expand.parentElement;
+  _currentPaymentMethod = method;
+
+  document.getElementById('pd-title').textContent = PAYMENT_TITLES[method] || 'Betaling';
+  document.getElementById('pd-body').appendChild(expand);
+  expand.classList.add('open');
+
+  var cta = document.getElementById('pd-cta');
+  if (method === 'kort') {
+    cta.className = 'btn-betal';
+    cta.textContent = 'Betal ' + (_betalingTotal || 0).toLocaleString('nb-NO') + ' kr';
+  } else {
+    cta.className = 'btn-primary';
+    cta.textContent = 'Gå videre';
+  }
+
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('step4b').classList.add('active');
+  document.getElementById('summarySidebar').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function restorePaymentDetailNode() {
+  var method = _currentPaymentMethod;
+  if (!method) return;
+  var expand = document.getElementById('expand-' + method);
+  var home = _paymentDetailHomes[method];
+  if (expand && home) home.appendChild(expand);
+  if (expand) expand.classList.remove('open');
+  _currentPaymentMethod = null;
 }
 
 var _betalingTotal = 0;
@@ -2049,10 +2161,8 @@ function updateBetalingRadio(value) {
   ['kort','avdrag','faktura','arbeidsgiver'].forEach(function(v) {
     var pr = document.getElementById('pr-' + v);
     var opt = document.getElementById('opt-' + v);
-    var expand = document.getElementById('expand-' + v);
     if (pr) { if (v === value) pr.classList.add('selected'); else pr.classList.remove('selected'); }
     if (opt) { if (v === value) opt.classList.add('selected-option'); else opt.classList.remove('selected-option'); }
-    if (expand) { if (v === value) expand.classList.add('open'); else expand.classList.remove('open'); }
   });
 
   var errEl = document.getElementById('err-betaling');

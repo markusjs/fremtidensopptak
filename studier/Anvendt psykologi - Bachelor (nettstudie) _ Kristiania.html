@@ -315,7 +315,11 @@ cfg: { // Application Insights Configuration
 .sp-course-name{color:#111;text-decoration:none;font-size:14px;margin-right:auto}
 .sp-badge{background:#fff;border:1.5px solid #111;border-radius:20px;padding:4px 12px;font-size:13px;white-space:nowrap;font-weight:500}
 .sp-price{font-size:13px;color:#333;white-space:nowrap;min-width:80px;text-align:right}
+.sp-badge-bestatt{background:#eee;border:1.5px solid #bbb;color:#777}
+.sp-course-row.sp-completed-row{opacity:.7}
 .sp-add-btn{width:34px;height:34px;background:#111;color:#fff;border:none;border-radius:8px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;line-height:1;padding-bottom:2px}
+.sp-add-btn.completed{background:#e5e5e5;color:#999;cursor:not-allowed}
+.sp-add-btn.completed:hover{background:#e5e5e5}
 .sp-add-btn:hover{background:#444}
 .sp-add-btn.added{background:#8b1a1a}
 .sp-sem-footer{background:#f5f5f5;display:flex;justify-content:flex-end;padding:16px 24px}
@@ -736,6 +740,33 @@ cfg: { // Application Insights Configuration
 /* ── Studieplanlegger (event delegation) ── */
 var spCart = {};
 
+/* Demo: emnekoder studenten allerede har bestått i et tidligere semester.
+   Uavhengig av handlekurven — disse skal aldri kunne legges til på nytt. */
+var spCompletedCourses = ['ap-psyk101', 'ap-psyk102'];
+
+function spApplyCompletedState() {
+  spCompletedCourses.forEach(function(code) {
+    document.querySelectorAll('.sp-course-row[data-code="' + code + '"]').forEach(function(row) {
+      row.classList.add('sp-completed-row');
+      var btn = row.querySelector('.sp-add-btn');
+      if (btn) {
+        btn.classList.remove('added');
+        btn.classList.add('completed');
+        btn.disabled = true;
+        btn.title = 'Allerede bestått';
+        btn.textContent = '✓';
+      }
+      if (!row.querySelector('.sp-badge-bestatt')) {
+        var badge = document.createElement('span');
+        badge.className = 'sp-badge sp-badge-bestatt';
+        badge.textContent = 'Bestått';
+        var priceEl = row.querySelector('.sp-price');
+        if (priceEl) row.insertBefore(badge, priceEl);
+      }
+    });
+  });
+}
+
 function spTab(btn, panelId) {
   document.querySelectorAll('.sp-tab').forEach(function(t) { t.setAttribute('data-selected', 'false'); });
   document.querySelectorAll('.sp-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -765,6 +796,7 @@ function spAddCourse(btn) {
   var row = btn.closest('.sp-course-row');
   if (!row) return;
   var code = row.dataset.code;
+  if (spCompletedCourses.indexOf(code) > -1) return;
   if (spCart[code]) { spRemoveCourse(code); return; }
   openStudiestartModal([{
     btn: btn,
@@ -786,7 +818,7 @@ function spBestillAlle(btn) {
   var sem = btn.closest('.sp-semester');
   if (!sem) return;
   var pending = [];
-  sem.querySelectorAll('.sp-add-btn:not(.added)').forEach(function(b) {
+  sem.querySelectorAll('.sp-add-btn:not(.added):not(.completed)').forEach(function(b) {
     var row = b.closest('.sp-course-row');
     if (!row) return;
     pending.push({
@@ -839,6 +871,7 @@ function spSyncFromBasket() {
   var prog = b.programs.find(function(p) { return p.id === 'anvendt-psykologi-nett'; });
   if (!prog || !prog.emner || prog.emner.length === 0) return;
   prog.emner.forEach(function(e) {
+    if (spCompletedCourses.indexOf(e.code) > -1) return;
     if (!spCart[e.code]) {
       spCart[e.code] = { name: e.name, pts: e.pts, price: e.price || 0, startDate: e.startDate || null };
       document.querySelectorAll('.sp-course-row[data-code="' + e.code + '"] .sp-add-btn').forEach(function(btn) {
@@ -921,7 +954,7 @@ document.addEventListener('click', function(e) {
   if (row) { spOpenEmneDrawer(row); return; }
 });
 
-document.addEventListener('DOMContentLoaded', function() { setTimeout(spSyncFromBasket, 100); });
+document.addEventListener('DOMContentLoaded', function() { spApplyCompletedState(); setTimeout(spSyncFromBasket, 100); });
 </script>
 <script src="../studiestart-modal.js"></script>
 <script src="../basket.js"></script>

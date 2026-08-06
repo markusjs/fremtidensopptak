@@ -36,29 +36,36 @@ var BASKET_CSS = '\
 #sok-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1200;transition:opacity .3s;opacity:0}\
 #sok-panel{display:none;position:fixed;top:0;right:0;height:100%;width:460px;max-width:100vw;background:#fff;z-index:1201;box-shadow:-4px 0 32px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);flex-direction:column;font-family:inherit;overflow:hidden}\
 .hk-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;flex-shrink:0;border-bottom:1px solid #c7c8ca}\
-.hk-header h2{font-size:18px;font-weight:500;margin:0;color:#4e0000;line-height:24px}\
+.hk-header h2{font-size:28px;font-weight:700;margin:0;color:#4e0000;line-height:1.2}\
 .hk-close{background:none;border:none;cursor:pointer;padding:6px;color:#121212}\
+.hk-close svg{width:24px;height:24px}\
 .hk-body{flex:1;overflow-y:auto;padding:12px 20px}\
-.hk-card{border:1px solid #c7c8ca;border-radius:8px;margin-bottom:8px;overflow:hidden;background:#fff}\
-.hk-card-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px;gap:12px;cursor:default}\
+.hk-card{border:1px solid #e2e2e2;border-radius:12px;margin-bottom:16px;overflow:hidden;background:#fff;transition:border-color .2s}\
+.hk-card:has(.hk-emner-list.open){border-color:#e3b9b9}\
+.hk-card-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px;gap:12px;cursor:default;transition:background .2s}\
+.hk-card-header.hk-clickable{cursor:pointer}\
+.hk-card:has(.hk-emner-list.open) .hk-card-header{background:#fbeee4}\
 .hk-card-meta{font-size:14px;font-weight:400;color:#3f3f3f;line-height:17.5px;margin-bottom:4px}\
-.hk-card-name{font-size:16px;font-weight:500;color:#000;line-height:17.5px}\
+.hk-card-name{font-size:18px;font-weight:700;color:#000;line-height:1.3}\
 .hk-card-right{display:flex;align-items:center;gap:8px;flex-shrink:0}\
 .hk-badge{font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;white-space:nowrap;color:#101828;line-height:16px}\
 .hk-badge-sem{background:#f4ebe6}\
 .hk-badge-city{background:#f9ccd2}\
 .hk-badge-nett{background:#f9ccd2}\
-.hk-trash{background:none;border:none;cursor:pointer;padding:4px;color:#121212;transition:color .15s}\
-.hk-trash:hover{color:#4e0000}\
+.hk-trash{background:#eef1f6;border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;color:#3b6ea8;transition:background .15s,color .15s;flex-shrink:0}\
+.hk-trash:hover{background:#dde6f0;color:#254e75}\
 .hk-chevron{background:none;border:none;cursor:pointer;padding:4px;transition:transform .2s;color:#121212}\
-.hk-emner-list{border-top:1px solid #c7c8ca;display:none}\
+.hk-emner-list{border-top:1px solid #eee;display:none}\
 .hk-emner-list.open{display:block}\
-.hk-emne-row{display:flex;align-items:center;justify-content:space-between;padding:20px 16px;border-bottom:1px solid #c7c8ca;gap:8px;background:#f5f5f5}\
+.hk-card:has(.hk-emner-list.open) .hk-emner-list{border-top-color:#f0d9d9}\
+.hk-emne-row{display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid #eee;gap:8px;background:#fff}\
+.hk-emne-row:last-child{border-bottom:none}\
+.hk-card:has(.hk-emner-list.open) .hk-emne-row{border-bottom-color:#f0d9d9}\
 .hk-emner-list{overflow:hidden}\
 @keyframes hkEmneAdded{0%{background:#dbe5ff;box-shadow:inset 3px 0 0 #2f54eb}70%{background:#dbe5ff;box-shadow:inset 3px 0 0 #2f54eb}100%{background:transparent;box-shadow:inset 3px 0 0 transparent}}\
 .hk-emne-row.hk-emne-added{animation:hkEmneAdded 2s ease}\
 .hk-emne-meta{font-size:14px;font-weight:400;color:#3f3f3f;line-height:17.5px}\
-.hk-emne-name{font-size:16px;font-weight:500;color:#000;line-height:17.5px}\
+.hk-emne-name{font-size:18px;font-weight:700;color:#000;line-height:1.3}\
 .hk-emne-right{display:flex;align-items:center;gap:8px;flex-shrink:0}\
 .hk-badge-date{background:#fff;color:#101828;font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;line-height:16px}\
 .hk-section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px;cursor:pointer}\
@@ -746,7 +753,7 @@ function injectSidebarPanel() {
   // Inject HTML
   var html = '<div id="sok-backdrop" onclick="closeSoknaderPanel()"></div>'
     + '<div id="sok-panel">'
-    + '<div class="hk-header"><h2 id="hk-title">Søknader (0)</h2>'
+    + '<div class="hk-header"><h2 id="hk-title">Søknader</h2>'
     + '<button class="hk-close" onclick="closeSoknaderPanel()" aria-label="Lukk">'
     + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
     + '</button></div>'
@@ -785,7 +792,7 @@ function closeSoknaderPanel() {
 }
 
 /* ─── Trash SVG ─── */
-var TRASH_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var TRASH_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
 var CHEVRON_DOWN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var CHEVRON_UP = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -798,9 +805,8 @@ function renderBasketPanel() {
   var title = document.getElementById('hk-title');
   if (!body) return;
 
-  var count = getBasketCount();
   var totalItems = b.programs.length + b.looseEmner.length;
-  if (title) title.textContent = totalItems === 0 ? 'Søknader' : 'Søknader (' + count + ')';
+  if (title) title.textContent = 'Søknader';
 
   if (totalItems === 0) {
     body.innerHTML = '<div class="hk-empty">'
@@ -865,13 +871,11 @@ function renderNettCard(prog) {
     });
   }
 
-  return '<div class="hk-card" data-prog-id="' + prog.id + '"><div class="hk-card-header" onclick="toggleHkEmner(this)">'
+  return '<div class="hk-card" data-prog-id="' + prog.id + '"><div class="hk-card-header hk-clickable" onclick="toggleHkEmner(this)">'
     + '<div><div class="hk-card-meta">' + meta + '</div>'
     + '<div class="hk-card-name">' + prog.name + '</div></div>'
     + '<div class="hk-card-right">'
-    + '<span class="hk-badge hk-badge-nett">Nett</span>'
     + '<button class="hk-chevron">' + CHEVRON_DOWN + '</button>'
-    + '<button class="hk-trash" onclick="event.stopPropagation();removeProgram(\'' + prog.id + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
     + '</div></div>'
     + '<div class="hk-emner-list">' + emnerHtml + '</div></div>';
 }
@@ -886,7 +890,7 @@ function renderLooseEmner(emner) {
       + '<button class="hk-trash" onclick="removeLooseEmne(\'' + e.code + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
       + '</div></div>';
   });
-  return '<div class="hk-card"><div class="hk-card-header" onclick="toggleHkEmner(this)">'
+  return '<div class="hk-card"><div class="hk-card-header hk-clickable" onclick="toggleHkEmner(this)">'
     + '<div><div class="hk-section-title">Emner uten tilknytning til studieprogram</div>'
     + '<div style="font-weight:700;font-size:14px;">' + emner.length + ' emne' + (emner.length > 1 ? 'r' : '') + '</div></div>'
     + '<div class="hk-card-right"><button class="hk-chevron">' + CHEVRON_DOWN + '</button></div>'

@@ -1986,27 +1986,54 @@ cfg: { // Application Insights Configuration
 var spCart = {};
 
 /* Demo: emnekoder studenten allerede har bestått i et tidligere semester.
-   Uavhengig av handlekurven — disse skal aldri kunne legges til på nytt. */
-var spCompletedCourses = ['6277', '6024', '6340', '6336'];
+   Uavhengig av handlekurven — disse skal aldri kunne legges til på nytt.
+   Hentes fra den delte COMPLETED_COURSE_CODES-listen i basket.js (lastes etter
+   dette scriptet), filtrert til emnene som faktisk finnes på denne siden.
+   Vises kun når brukeren er innlogget — anonyme besøkende har ingen kjent
+   studiehistorikk å sjekke mot. */
+var spCompletedCourses = [];
 
 function spApplyCompletedState() {
-  spCompletedCourses.forEach(function(code) {
+  var loggedIn = (typeof getAuthState === 'function') && !!getAuthState();
+  var relevantCodes = (typeof COMPLETED_COURSE_CODES !== 'undefined') ? COMPLETED_COURSE_CODES : [];
+  spCompletedCourses = loggedIn ? relevantCodes.filter(function(code) {
+    return document.querySelector('.sp-course-row[data-code="' + code + '"]') !== null;
+  }) : [];
+
+  relevantCodes.forEach(function(code) {
     document.querySelectorAll('.sp-course-row[data-code="' + code + '"]').forEach(function(row) {
-      row.classList.add('sp-completed-row');
       var btn = row.querySelector('.sp-add-btn');
-      if (btn) {
-        btn.classList.remove('added');
-        btn.classList.add('completed');
-        btn.disabled = true;
-        btn.title = 'Allerede bestått';
-        btn.textContent = '✓';
-      }
-      if (!row.querySelector('.sp-badge-bestatt')) {
-        var badge = document.createElement('span');
-        badge.className = 'sp-badge sp-badge-bestatt';
-        badge.textContent = 'Bestått';
-        var priceEl = row.querySelector('.sp-price');
-        if (priceEl) row.insertBefore(badge, priceEl);
+      var badge = row.querySelector('.sp-badge-bestatt');
+
+      if (loggedIn) {
+        row.classList.add('sp-completed-row');
+        if (btn) {
+          btn.classList.remove('added');
+          btn.classList.add('completed');
+          btn.setAttribute('aria-disabled', 'true');
+          btn.setAttribute('aria-label', 'Allerede bestått. Dette emnet er tatt tidligere og kan ikke legges til på nytt.');
+          btn.title = 'Allerede bestått';
+          btn.textContent = '✓';
+        }
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.className = 'sp-badge sp-badge-bestatt';
+          badge.textContent = 'Bestått';
+          var priceEl = row.querySelector('.sp-price');
+          if (priceEl) row.insertBefore(badge, priceEl);
+        }
+      } else {
+        row.classList.remove('sp-completed-row');
+        if (btn) {
+          btn.classList.remove('completed');
+          btn.removeAttribute('aria-disabled');
+          btn.removeAttribute('aria-label');
+          btn.removeAttribute('title');
+          var code2 = row.dataset.code;
+          if (spCart[code2]) { btn.classList.add('added'); btn.textContent = '✓'; }
+          else { btn.classList.remove('added'); btn.textContent = '+'; }
+        }
+        if (badge) badge.remove();
       }
     });
   });

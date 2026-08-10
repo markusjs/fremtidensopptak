@@ -25,9 +25,59 @@
 var BASKET_KEY = 'kristiania_basket_v2';
 var EMPTY_BASKET = { programs: [], looseEmner: [] };
 
+/* Demo: emnekoder den innloggede brukeren allerede har bestått i et tidligere
+   semester, uavhengig av programmet emnet ligger under. Delt kilde brukt både
+   av Studieplanlegger (spCompletedCourses) og utsjekk-flyten i sok-skjema.html. */
+var COMPLETED_COURSE_CODES = ['6277', '6024', '6340', '6336', 'ap-psyk101', 'ap-psyk102'];
+
+/* Finn emner i kurven som allerede er bestått. Returnerer [] hvis ingen treff. */
+function getCompletedConflicts() {
+  var b = getBasket();
+  var conflicts = [];
+  (b.programs || []).forEach(function(p) {
+    if (p.type === 'nett' && p.emner) {
+      p.emner.forEach(function(e) {
+        if (COMPLETED_COURSE_CODES.indexOf(String(e.code)) > -1) {
+          conflicts.push({ code: e.code, name: e.name, source: 'program', programId: p.id });
+        }
+      });
+    }
+  });
+  (b.looseEmner || []).forEach(function(e) {
+    if (COMPLETED_COURSE_CODES.indexOf(String(e.code)) > -1) {
+      conflicts.push({ code: e.code, name: e.name, source: 'loose' });
+    }
+  });
+  return conflicts;
+}
+
 /* ─── Path helper ─── */
 function getSokSkjemaPath() {
   return '/sok-skjema.html';
+}
+
+/* ─── Innloggingsstatus (delt globalt, uavhengig av side) ─── */
+var AUTH_KEY = 'kristiania_auth_v1';
+
+function getAuthState() {
+  try {
+    var raw = localStorage.getItem(AUTH_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) { return null; }
+}
+
+function setAuthState(method, name) {
+  localStorage.setItem(AUTH_KEY, JSON.stringify({ method: method, name: name || 'Lars Juster Eilefsen' }));
+  if (typeof window._feideLoggedIn !== 'undefined') window._feideLoggedIn = (method === 'feide');
+  if (typeof spApplyCompletedState === 'function') spApplyCompletedState();
+  renderBasketPanel();
+}
+
+function clearAuthState() {
+  localStorage.removeItem(AUTH_KEY);
+  if (typeof window._feideLoggedIn !== 'undefined') window._feideLoggedIn = false;
+  if (typeof spApplyCompletedState === 'function') spApplyCompletedState();
+  renderBasketPanel();
 }
 
 /* ─── CSS (injiseres én gang) ─── */
@@ -70,7 +120,16 @@ var BASKET_CSS = '\
 .hk-badge-date{background:#fff;color:#101828;font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;line-height:16px}\
 .hk-section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0 8px;cursor:pointer}\
 .hk-section-title{font-size:14px;font-weight:400;color:#3f3f3f}\
-.hk-footer{padding:16px 20px;border-top:1px solid #c7c8ca;flex-shrink:0;display:flex;flex-direction:column;gap:10px}\
+.hk-footer{padding:16px 20px;border-top:1px solid #c7c8ca;flex-shrink:0;display:flex;flex-direction:column;gap:10px;position:sticky;bottom:0;background:#fff;z-index:2}\
+.hk-auth-row{display:flex;align-items:center;justify-content:space-between;gap:12px}\
+.hk-auth-row-loggedin{background:#f5f5f5;border-radius:10px;padding:10px 12px}\
+.hk-auth-prompt{font-size:14px;font-weight:500;color:#4e0000;flex:1;margin:0}\
+.hk-auth-identity{display:flex;align-items:center;gap:10px;min-width:0}\
+.hk-auth-avatar{width:36px;height:36px;border-radius:50%;background:#d8d8d8;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#333;flex-shrink:0}\
+.hk-auth-info{display:flex;flex-direction:column;gap:2px;min-width:0}\
+.hk-auth-name{font-size:14px;font-weight:500;color:#121212;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
+.hk-auth-source{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#4e0000;font-weight:500}\
+.hk-btn-small{display:inline-block !important;width:auto !important;padding:8px 16px !important;font-size:13px !important;white-space:nowrap;flex-shrink:0;text-decoration:none}\
 .hk-btn-outline{display:block;width:100%;text-align:center;padding:13px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:1.5px solid #4e0000;color:#4e0000;background:none;font-family:inherit}\
 .hk-btn-outline:hover{background:#faf5f5}\
 .hk-btn-primary{display:block;width:100%;text-align:center;padding:13px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;text-decoration:none;font-family:inherit}\
@@ -758,8 +817,9 @@ function injectSidebarPanel() {
     + '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
     + '</button></div>'
     + '<div class="hk-body" id="hk-body"></div>'
-    + '<div class="hk-footer" id="hk-footer" style="display:none">'
-    + '<a href="' + getSokSkjemaPath() + '" class="hk-btn-primary">Gå videre med søknaden</a>'
+    + '<div class="hk-footer" id="hk-footer">'
+    + '<div id="hk-auth-slot"></div>'
+    + '<a href="' + getSokSkjemaPath() + '" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre med søknaden</a>'
     + '</div>'
     + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
@@ -793,20 +853,59 @@ function closeSoknaderPanel() {
 
 /* ─── Trash SVG ─── */
 var TRASH_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+var LOCK_SVG_SMALL = '<svg width="11" height="11" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#4e0000" stroke-width="2.2"/><rect x="11" y="15" width="10" height="7" rx="1.5" stroke="#4e0000" stroke-width="1.8"/><path d="M13 15v-2.5a3 3 0 016 0V15" stroke="#4e0000" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="19" r="1.2" fill="#4e0000"/></svg>';
+
+/* Innloggingsrad i bunnen av Søknader-panelet — vises alltid, uansett kurvinnhold */
+function buildAuthFooterRow() {
+  var auth = getAuthState();
+  if (!auth) {
+    return '<div class="hk-auth-row">'
+      + '<p class="hk-auth-prompt">Logg inn for å finne påbegynte studieprogrammer</p>'
+      + '<a href="' + getSokSkjemaPath() + '?steg=login" class="hk-btn-outline hk-btn-small">Logg inn</a>'
+      + '</div>';
+  }
+  var parts = (auth.name || '').trim().split(/\s+/);
+  var initials = ((parts[0] || '')[0] || '') + ((parts[parts.length - 1] || '')[0] || '');
+  var methodLabel = auth.method === 'feide' ? 'Innlogget med FEIDE' : 'Innlogget';
+  return '<div class="hk-auth-row hk-auth-row-loggedin">'
+    + '<div class="hk-auth-identity">'
+    + '<div class="hk-auth-avatar">' + initials.toUpperCase() + '</div>'
+    + '<div class="hk-auth-info"><span class="hk-auth-name">' + auth.name + '</span>'
+    + '<span class="hk-auth-source">' + LOCK_SVG_SMALL + methodLabel + '</span></div>'
+    + '</div>'
+    + '<button class="hk-btn-outline hk-btn-small" onclick="clearAuthState()">Logg ut</button>'
+    + '</div>';
+}
 var CHEVRON_DOWN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var CHEVRON_UP = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 /* ─── Render ─── */
+/* Fyller innloggingsraden + viser/skjuler "Gå videre"-knappen. Kalles av alle
+   visninger i #sok-panel (søknadsliste, velg-studieprogram, velg-campus) slik
+   at bunnraden alltid er synlig og konsistent, uansett hva som vises i body. */
+function refreshSokPanelFooter() {
+  var authSlot = document.getElementById('hk-auth-slot');
+  if (authSlot) authSlot.innerHTML = buildAuthFooterRow();
+  var ctaBtn = document.getElementById('hk-cta-btn');
+  if (ctaBtn) {
+    var b = getBasket();
+    var totalItems = (b.programs || []).length + (b.looseEmner || []).length;
+    ctaBtn.style.display = totalItems > 0 ? 'block' : 'none';
+  }
+  var footer = document.getElementById('hk-footer');
+  if (footer) footer.style.display = 'flex';
+}
+
 function renderBasketPanel() {
   injectSidebarPanel();
   var b = getBasket();
   var body = document.getElementById('hk-body');
-  var footer = document.getElementById('hk-footer');
   var title = document.getElementById('hk-title');
   if (!body) return;
 
   var totalItems = b.programs.length + b.looseEmner.length;
   if (title) title.textContent = 'Søknader';
+  refreshSokPanelFooter();
 
   if (totalItems === 0) {
     body.innerHTML = '<div class="hk-empty">'
@@ -814,11 +913,7 @@ function renderBasketPanel() {
       + '<svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M22 9L12 5 2 9l10 4 10-4z" stroke="#121212" stroke-width="1.8" stroke-linejoin="round" fill="none"/><path d="M6 11v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5" stroke="#121212" stroke-width="1.8" stroke-linejoin="round" fill="none"/><line x1="22" y1="9" x2="22" y2="14" stroke="#121212" stroke-width="1.8" stroke-linecap="round"/></svg>'
       + '</div>'
       + '<a href="/utdanning" style="display:block;width:100%;text-align:center;padding:12px;border-radius:40px;font-size:16px;font-weight:500;cursor:pointer;border:1px solid #4e0000;color:#4e0000;background:none;font-family:inherit;text-decoration:none;">Legg til studier eller emner</a>'
-      + '<div style="border-top:1px solid #e3e3e3;width:100%;"></div>'
-      + '<p style="font-size:16px;font-weight:500;margin:0;color:#4e0000;">Logg inn for å finne påbegynte søknader</p>'
-      + '<button onclick="closeSoknaderPanel()" style="display:block;width:100%;text-align:center;padding:12px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;font-family:inherit;">Logg inn</button>'
       + '</div>';
-    if (footer) footer.style.display = 'none';
     return;
   }
 
@@ -836,7 +931,6 @@ function renderBasketPanel() {
   }
 
   body.innerHTML = html;
-  if (footer) footer.style.display = 'flex';
 }
 
 function renderCampusCard(prog) {
@@ -996,10 +1090,9 @@ function showCitySelectionInSidebar(cityMap) {
   injectSidebarPanel();
   openSoknaderPanel();
   var body = document.getElementById('hk-body');
-  var footer = document.getElementById('hk-footer');
   var title = document.getElementById('hk-title');
   if (!body) return;
-  if (footer) footer.style.display = 'none';
+  refreshSokPanelFooter();
   if (title) title.textContent = 'Velg campus';
 
   var studyName = '';
@@ -1217,10 +1310,9 @@ function showEmneProgramChoice(emne, programs, inCart) {
   injectSidebarPanel();
   openSoknaderPanel();
   var body = document.getElementById('hk-body');
-  var footer = document.getElementById('hk-footer');
   var title = document.getElementById('hk-title');
   if (!body) return;
-  if (footer) footer.style.display = 'none';
+  refreshSokPanelFooter();
   if (title) title.textContent = 'Velg studieprogram';
 
   var intro = inCart
@@ -1237,10 +1329,7 @@ function showEmneProgramChoice(emne, programs, inCart) {
       + ' onmouseout="this.style.borderColor=\'#c7c8ca\';this.style.background=\'#fff\'"'
       + '>' + p.name + '</button>';
   });
-  html += '<div style="margin-top:12px;padding-top:20px;border-top:1px solid #e3e3e3;display:flex;flex-direction:column;align-items:center;gap:16px;">'
-    + '<p style="font-size:16px;font-weight:500;margin:0;color:#4e0000;text-align:center;">Logg inn for å finne påbegynte studieprogrammer</p>'
-    + '<button onclick="closeSoknaderPanel()" style="display:block;width:100%;text-align:center;padding:16px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;font-family:inherit;">Logg inn</button>'
-    + '</div></div>';
+  html += '</div>';
   body.innerHTML = html;
 }
 

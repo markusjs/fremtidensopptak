@@ -139,6 +139,24 @@ body {
 .input-wrap-select label { top: 10px; transform: none; font-size: 11px; color: #555; }
 .select-chevron { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .error-msg { font-size: 12px; color: #b60202; margin-top: 4px; display: none; padding-left: 2px; }
+
+/* Konflikt-varsel: emner som allerede er bestått */
+.conflict-banner { background: #fff8e6; border: 1.5px solid #e8c877; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+.conflict-banner-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.conflict-banner-title { font-size: 15px; font-weight: 700; color: #6b4e00; margin: 0; }
+.conflict-banner-sub { font-size: 13px; color: #7a5c00; margin: 4px 0 12px; }
+.conflict-banner-close { background: none; border: none; cursor: pointer; padding: 2px; color: #7a5c00; flex-shrink: 0; }
+.conflict-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid #ecd9a0; }
+.conflict-row:first-of-type { border-top: none; }
+.conflict-row-name { font-size: 14px; font-weight: 500; color: #4a3600; }
+.conflict-row-code { font-size: 12px; color: #8a7030; }
+.conflict-row-remove { background: #fff; border: 1.5px solid #b60202; color: #b60202; border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; flex-shrink: 0; }
+.conflict-row-remove:hover { background: #fff0f0; }
+.conflict-banner.blocking { background: #fdecec; border-color: #e8a0a0; }
+.conflict-banner.blocking .conflict-banner-title { color: #7a1a1a; }
+.conflict-banner.blocking .conflict-banner-sub { color: #8a3a3a; }
+.conflict-banner.blocking .conflict-row { border-top-color: #f0c8c8; }
+.conflict-banner.blocking .conflict-row-code { color: #a06060; }
 .input-wrap.error + .error-msg { display: block; }
 
 /* Phone prefix */
@@ -1016,6 +1034,7 @@ body {
           <!-- Personopplysninger -->
           <div>
             <h2 class="step-subtitle" style="margin-bottom:16px;">Personopplysninger</h2>
+            <div id="completedConflictBannerStep3" class="conflict-banner" style="display:none;"></div>
             <div class="input-group">
               <div>
                 <div class="input-wrap" id="wrap-fnr">
@@ -1146,6 +1165,8 @@ body {
 
           <div>
             <h2 class="step-subtitle" style="margin-bottom:20px;">Betaling</h2>
+
+            <div id="completedConflictBannerStep4" class="conflict-banner" style="display:none;"></div>
 
             <div id="betalingSPSection" style="display:none;margin-bottom:20px;">
               <div class="payment-section-header" style="margin-bottom:8px;">
@@ -1518,8 +1539,44 @@ function gaVidere(n) {
     document.getElementById('checkoutGrid').style.display = '';
     document.getElementById('step5Page').style.display = 'none';
     document.getElementById('step' + n).classList.add('active');
+    if (n === 3) renderCompletedConflictBanner('completedConflictBannerStep3', false);
   }
   window.scrollTo(0, 0);
+}
+
+/* Emner allerede bestått — varsel på Opplysninger (avviselig), hard stopper på Betaling */
+function renderCompletedConflictBanner(targetId, blocking) {
+  var conflicts = getCompletedConflicts();
+  var banner = document.getElementById(targetId);
+  if (!banner) return conflicts;
+  if (conflicts.length === 0) { banner.style.display = 'none'; banner.innerHTML = ''; return conflicts; }
+
+  var rows = conflicts.map(function(c) {
+    return '<div class="conflict-row">'
+      + '<div><div class="conflict-row-name">' + c.name + '</div><div class="conflict-row-code">#' + c.code + '</div></div>'
+      + '<button class="conflict-row-remove" onclick="resolveCompletedConflict(\'' + targetId + '\',\'' + c.source + '\',\'' + (c.programId || '') + '\',\'' + c.code + '\')">Fjern</button>'
+      + '</div>';
+  }).join('');
+
+  var closeBtn = blocking ? '' : '<button class="conflict-banner-close" onclick="dismissCompletedConflictBanner(\'' + targetId + '\')" aria-label="Lukk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>';
+
+  banner.className = 'conflict-banner' + (blocking ? ' blocking' : '');
+  banner.innerHTML = '<div class="conflict-banner-header"><div><p class="conflict-banner-title">Du har allerede bestått disse emnene</p>'
+    + '<p class="conflict-banner-sub">Fjern dem fra søknaden for å gå videre til betaling.</p></div>' + closeBtn + '</div>' + rows;
+  banner.style.display = 'block';
+  return conflicts;
+}
+
+function resolveCompletedConflict(targetId, source, programId, code) {
+  if (source === 'program') removeEmne(programId, code);
+  else removeLooseEmne(code);
+  if (_currentStep === 4) renderPaymentStep();
+  else renderCompletedConflictBanner(targetId, targetId === 'completedConflictBannerStep4');
+}
+
+function dismissCompletedConflictBanner(targetId) {
+  var banner = document.getElementById(targetId);
+  if (banner) banner.style.display = 'none';
 }
 
 function showFeidePage() {
@@ -1909,7 +1966,7 @@ function gaVidereStep1() {
   gaVidere(2);
 }
 
-function simulateFeideLogin() { prefillFormData(); _feideLoggedIn = true; gaVidere(3); }
+function simulateFeideLogin() { prefillFormData(); _feideLoggedIn = true; setAuthState('feide', 'Lars Juster Eilefsen'); gaVidere(3); }
 
 
 function formatPhone(tel) {
@@ -1932,6 +1989,7 @@ function bekreftKode() {
   var code = Array.from(inputs).map(function(i) { return i.value; }).join('');
   if (code.length < 4) { inputs[0].focus(); return; }
   prefillFormData();
+  setAuthState('phone', 'Lars Juster Eilefsen');
   gaVidere(3);
 }
 
@@ -2173,6 +2231,8 @@ function updateSpraakRadio(input) {
 
 /* Step 4 */
 function renderPaymentStep() {
+  renderCompletedConflictBanner('completedConflictBannerStep4', true);
+
   var b = getBasket();
   var programs = b.programs || [];
   var loose = b.looseEmner || [];
@@ -2251,6 +2311,12 @@ function renderPaymentStep() {
 }
 
 function gaVidereStep4() {
+  var conflicts = renderCompletedConflictBanner('completedConflictBannerStep4', true);
+  if (conflicts.length > 0) {
+    document.getElementById('completedConflictBannerStep4').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
   var b = getBasket();
   var allEmner = [];
   (b.programs || []).forEach(function(p) { if (p.type === 'nett' && p.emner) p.emner.forEach(function(e) { allEmner.push(e); }); });
@@ -2833,7 +2899,12 @@ document.addEventListener('input', function(e) {
 
 document.addEventListener('DOMContentLoaded', function() {
   renderSidebar();
-  gaVidere(0);
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('steg') === 'login' && !_feideLoggedIn) {
+    gaVidere(1);
+  } else {
+    gaVidere(0);
+  }
 });
 </script>
 </body>

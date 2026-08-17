@@ -93,9 +93,6 @@
       "Bash(git push *)",
       "Bash(git fetch *)",
       "Bash(git rebase *)",
-<<<<<<< Updated upstream
-      "Bash(xargs -I{} basename {})"
-=======
       "Bash(xargs -I{} basename {})",
       "Bash(cp /Users/markus.sorem/Downloads/Icon.svg /Users/markus.sorem/Documents/GitHub/fremtidensopptak/feide-icon.svg && ls /Users/markus.sorem/Documents/GitHub/fremtidensopptak/feide-icon.svg)",
       "Bash(grep -oE 'publicPath[^,;]{0,40}' \"Cybersikkerhet - Bachelor _ Kristiania.html\")",
@@ -105,7 +102,10 @@
       "Bash(python3 localize_study_css.py)",
       "Bash(rm -f localize_study_css.py)",
       "Bash(python3 fix_study_css.py)"
->>>>>>> Stashed changes
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "mcp10x",
+    "drop"
+  ]
 }

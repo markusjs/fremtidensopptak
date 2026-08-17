@@ -140,23 +140,20 @@ body {
 .select-chevron { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; }
 .error-msg { font-size: 12px; color: #b60202; margin-top: 4px; display: none; padding-left: 2px; }
 
-/* Konflikt-varsel: emner som allerede er bestått */
-.conflict-banner { background: #fff8e6; border: 1.5px solid #e8c877; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
-.conflict-banner-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.conflict-banner-title { font-size: 15px; font-weight: 700; color: #6b4e00; margin: 0; }
-.conflict-banner-sub { font-size: 13px; color: #7a5c00; margin: 4px 0 12px; }
-.conflict-banner-close { background: none; border: none; cursor: pointer; padding: 2px; color: #7a5c00; flex-shrink: 0; }
-.conflict-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid #ecd9a0; }
+/* Konflikt-varsel: emner som allerede er bestått og automatisk fjernet */
+.conflict-banner { background: #f6ece3; border-radius: 12px; padding: 18px 20px; margin-bottom: 16px; }
+.conflict-banner-header { display: flex; align-items: flex-start; gap: 10px; }
+.conflict-banner-icon { color: #5c1a1a; font-size: 15px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+.conflict-banner-title { font-size: 15px; font-weight: 700; color: #5c1a1a; margin: 0; }
+.conflict-banner-sub { font-size: 13.5px; color: #555; margin: 10px 0 0; line-height: 1.55; padding-left: 25px; }
+.conflict-banner-sub a { color: #06f; }
+.conflict-banner-toggle { display: block; background: none; border: none; color: #06f; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; padding: 0; margin: 12px 0 0 25px; }
+.conflict-banner-list { margin: 12px 0 0; padding-left: 25px; }
+.conflict-row { display: flex; align-items: baseline; gap: 8px; padding: 8px 0; border-top: 1px solid #e7d8c8; }
 .conflict-row:first-of-type { border-top: none; }
-.conflict-row-name { font-size: 14px; font-weight: 500; color: #4a3600; }
-.conflict-row-code { font-size: 12px; color: #8a7030; }
-.conflict-row-remove { background: #fff; border: 1.5px solid #b60202; color: #b60202; border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; flex-shrink: 0; }
-.conflict-row-remove:hover { background: #fff0f0; }
-.conflict-banner.blocking { background: #fdecec; border-color: #e8a0a0; }
-.conflict-banner.blocking .conflict-banner-title { color: #7a1a1a; }
-.conflict-banner.blocking .conflict-banner-sub { color: #8a3a3a; }
-.conflict-banner.blocking .conflict-row { border-top-color: #f0c8c8; }
-.conflict-banner.blocking .conflict-row-code { color: #a06060; }
+.conflict-row-name { font-size: 14px; font-weight: 500; color: #333; }
+.conflict-row-code { font-size: 12px; color: #8a7060; }
+.summary-emner-group + .summary-emner-group { margin-top: 12px; }
 .input-wrap.error + .error-msg { display: block; }
 
 /* Phone prefix */
@@ -229,6 +226,17 @@ body {
   border: none; border-radius: 40px; cursor: pointer; width: 100%; transition: background 0.15s;
 }
 .btn-primary:hover { background: #0052cc; }
+.btn-primary:disabled { background: #c7cad1; cursor: not-allowed; }
+.btn-primary:disabled:hover { background: #c7cad1; }
+
+.btn-outline {
+  display: flex; align-items: center; justify-content: center;
+  height: 52px; background: #fff; color: #06f;
+  font-family: 'Graphik', sans-serif; font-size: 16px; font-weight: 600;
+  border: 1.5px solid #06f; border-radius: 40px; cursor: pointer;
+  transition: background 0.15s; padding: 0 28px; white-space: nowrap;
+}
+.btn-outline:hover { background: #f2f7ff; }
 
 .btn-secondary {
   display: flex; align-items: center; justify-content: center;
@@ -249,6 +257,7 @@ body {
 
 .btn-row { display: flex; gap: 12px; }
 .btn-row .btn-secondary { flex: 0 0 auto; }
+.btn-row .btn-outline { flex: 0 0 auto; }
 .btn-row .btn-primary { flex: 1; }
 
 /* OTP circles */
@@ -297,7 +306,7 @@ body {
 .sp-badges { display: flex; gap: 6px; }
 .badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
 .badge-gray { background: #f0f0f0; color: #555; }
-.badge-orange { background: #ffecd2; color: #7a4a00; }
+.badge-city { background: #F9CCD2; color: #121212; }
 
 /* Timeline payment layout */
 .timeline-wrap { display: flex; flex-direction: column; margin-bottom: 24px; }
@@ -329,11 +338,6 @@ body {
 
 /* Emner + payment combined box */
 .emner-payment-box { border: 1.5px solid #e8c8c8; border-radius: 10px; overflow: hidden; background: #fff; }
-.emner-payment-box .summary-emner-group { border: none; border-bottom: 1px solid #e8c8c8; border-radius: 0; overflow: visible; }
-.emner-payment-box .summary-emner-group:last-child { border-bottom: none; }
-.emner-payment-box .summary-emner-header { border-radius: 0; padding: 14px 16px; background: #fff8f0; }
-.emner-payment-box .summary-emner-header:hover { background: #fef2e4; }
-.emner-payment-box #betalingMetoderSection { border-top: 1.5px solid #e8c8c8; }
 .emner-payment-box #betalingMetoderSection .payment-options { border: none; border-radius: 0; background: #fff; }
 .emner-payment-box .payment-option-group { border-bottom: 1px solid #e8c8c8; background: #fff; }
 .emner-payment-box .payment-option-group:last-child { border-bottom: none; }
@@ -347,7 +351,6 @@ body {
 .emne-meta { font-size: 12px; color: #888; margin-bottom: 2px; }
 .emne-name { font-size: 14px; font-weight: 600; color: #121212; }
 .emne-badges { display: flex; gap: 6px; flex-shrink: 0; }
-.badge-nett { background: #fce8ec; color: #7a0000; }
 
 /* Rabattkode */
 .rabattkode-toggle {
@@ -409,26 +412,27 @@ body {
 .summary-emne-code { color: #888; font-size: 12px; }
 .summary-emne-name { color: #121212; font-weight: 500; font-size: 13px; }
 
-/* Paid emner box (sammendrag) */
-.paid-emner-box { border: 1.5px solid #068718; border-radius: 10px; overflow: hidden; background: #EDF7EF; }
-.paid-emner-box .summary-emner-group { border: none; border-radius: 0; }
-.paid-emner-box .summary-emner-header { background: #E3F2E7; border-bottom: 1px solid #CFE8D6; }
-.paid-emner-box .summary-emner-header:hover { background: #DCEEE1; }
-.paid-emner-box .summary-emner-list { border-top: none; }
-.paid-emner-box .emne-row-inner { border-bottom: 1px solid #CFE8D6; }
-.paid-emner-box .emne-row-inner:last-child { border-bottom: none; }
-.paid-receipt-row { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-top: 1px solid #CFE8D6; }
-
 /* Sidebar */
 .summary-col {
   background: #fff; border-radius: 12px; overflow: hidden; position: sticky; top: 112px;
 }
 .summary-header {
-  background: #fff; border-bottom: 1px solid #e8e8e8;
-  padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+  background: #faf1ed; border-bottom: 1px solid #f0e2dc;
+  padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; cursor: pointer;
 }
-.summary-header-label { font-size: 16px; font-weight: 500; color: #4e0000; }
-.summary-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.summary-header-label { font-size: 16px; font-weight: 700; color: #4e0000; }
+.summary-body { padding: 22px; display: flex; flex-direction: column; gap: 0; }
+
+/* Sidebar: seksjonsoverskrifter og prisoppstilling (steg 4) */
+.sb-section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.sb-section-label { font-size: 15px; font-weight: 700; color: #4e0000; }
+.sb-section-note { display: flex; align-items: center; gap: 5px; font-size: 13px; color: #4e0000; }
+.sb-section-amount { font-size: 15px; color: #121212; }
+.sb-divider { height: 1px; background: #eee; margin: 20px 0; }
+.sb-prio-label { font-size: 14px; font-weight: 700; color: #121212; margin-bottom: 3px; }
+.sb-prio-name { font-size: 15px; color: #121212; margin-bottom: 8px; }
+.sb-prio-block { margin-bottom: 14px; }
+.sb-prio-block:last-child { margin-bottom: 0; }
 
 /* Payment expand sections */
 .payment-option-group { border-bottom: 1px solid #e8e8e8; }
@@ -475,13 +479,6 @@ body {
   background: #fff; outline: none; transition: border-color .15s;
 }
 .card-row input:focus { border-color: #c06878; }
-.btn-betal {
-  width: 100%; height: 52px; background: #c06878; color: #fff; border: none;
-  border-radius: 40px; font-family: 'Graphik', sans-serif; font-size: 16px; font-weight: 600;
-  cursor: pointer; transition: background .15s;
-}
-.btn-betal:hover { background: #a85568; }
-
 /* Avdrag */
 .avdrag-title { font-size: 15px; font-weight: 700; color: #121212; margin-bottom: 12px; }
 .avdrag-option {
@@ -556,14 +553,28 @@ body {
   background: #fff; border-radius: 16px; padding: 48px 40px; max-width: 620px; width: 100%;
   text-align: center; box-shadow: 0 2px 16px rgba(0,0,0,.06);
 }
-.receipt-check {
-  width: 64px; height: 64px; border-radius: 50%; background: #15a34a;
-  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
-}
 .receipt-title { font-size: 28px; font-weight: 700; margin-bottom: 8px; color: #4e0000; }
 .receipt-subtitle { font-size: 15px; color: #555; margin-bottom: 28px; }
 .receipt-section-label { font-size: 14px; font-weight: 600; color: #4e0000; text-align: left; margin-bottom: 10px; }
-.receipt-items { text-align: left; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.receipt-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.receipt-section-head .receipt-section-label { margin-bottom: 0; }
+
+/* Betalingsmåte-oppsummering (steg 5) */
+.pay-summary-card { display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1.5px solid #e5e5e5; border-radius: 10px; padding: 14px 16px; }
+.pay-summary-main { min-width: 0; }
+.pay-summary-name { font-size: 15px; font-weight: 600; color: #121212; }
+.pay-summary-detail { font-size: 13px; color: #666; margin-top: 3px; }
+.pay-summary-amount { font-size: 16px; font-weight: 700; color: #121212; white-space: nowrap; }
+.pay-summary-change { display: block; background: none; border: none; color: #06f; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Graphik', sans-serif; padding: 10px 0 0; }
+.pay-summary-change:hover { text-decoration: underline; }
+
+/* Betalingsstatus på kvitteringen */
+.receipt-paid-row { display: flex; align-items: center; gap: 12px; background: #E3F2E7; border-radius: 10px; padding: 14px 16px; text-align: left; }
+.receipt-paid-check { width: 22px; height: 22px; border-radius: 9999px; background: #068718; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.receipt-paid-title { font-size: 14px; font-weight: 600; color: #1C4B24; }
+.receipt-paid-sub { font-size: 12px; color: #3D6A44; margin-top: 2px; }
+.receipt-pending-row { font-size: 14px; color: #555; background: #f5f5f5; border-radius: 10px; padding: 14px 16px; text-align: left; }
+.receipt-items { text-align: left; display: flex; flex-direction: column; gap: 18px; margin-bottom: 36px; }
 .receipt-next { text-align: left; margin-bottom: 28px; }
 .receipt-next-title { font-size: 20px; font-weight: 700; color: #4e0000; margin-bottom: 16px; }
 .receipt-next-steps { display: flex; flex-direction: column; gap: 16px; }
@@ -606,29 +617,7 @@ body {
   margin-bottom: 10px;
 }
 .s0-prioritet-label { font-size: 13px; color: #888; font-weight: 500; }
-.s0-dots-btn {
-  background: none; border: none; cursor: pointer;
-  padding: 4px 6px; font-size: 18px; color: #888; line-height: 1;
-  border-radius: 6px; letter-spacing: 2px; position: relative;
-}
-.s0-dots-btn:hover { background: #f5f5f5; }
-.s0-dropdown {
-  position: absolute; right: 0; top: calc(100% + 6px);
-  background: #1c1c1c; border-radius: 10px;
-  box-shadow: 0 8px 28px rgba(0,0,0,.4); z-index: 50; min-width: 180px;
-  overflow: hidden;
-}
-.s0-dropdown-item {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; text-align: left;
-  padding: 13px 16px; background: none;
-  border: none; border-top: 1px solid rgba(220,50,50,.22);
-  font-size: 14px; color: #fff; cursor: pointer;
-  font-family: 'Graphik', sans-serif; line-height: 1;
-}
-.s0-dropdown-item:first-child { border-top: none; }
-.s0-dropdown-item:hover { background: rgba(255,255,255,.09); }
-.s0-prioritet-card { transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); position: relative; }
+.s0-prioritet-card { position: relative; }
 .s0-badges { display: flex; gap: 6px; margin-bottom: 8px; }
 .s0-badge {
   display: inline-flex; align-items: center;
@@ -636,6 +625,7 @@ body {
   font-size: 12px; font-weight: 500;
   background: #f5e6e6; color: #6b2020;
 }
+.s0-badge-city { background: #F9CCD2; color: #121212; }
 .s0-program-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 4px; }
 .s0-program-meta { font-size: 13px; color: #888; }
 .s0-legg-til-btn {
@@ -689,6 +679,69 @@ body {
   font-family: 'Graphik', sans-serif; margin-top: 24px;
 }
 .s0-btn-primary:hover { background: #0052cc; }
+
+/* Redigerbare kort for program/emner — delt mellom Studievalg og Betaling */
+.s0-invoice-note { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #888; }
+
+/* Betaling (steg 4) */
+.bt-section-title { font-size: 19px; font-weight: 700; color: #4e0000; margin: 28px 0 12px; }
+.bt-trust-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; font-size: 13.5px; color: #7a4a4a; flex-wrap: wrap; }
+.bt-fineprint { font-size: 13px; color: #8a6a6a; margin-top: 14px; }
+
+.s0-card-actions { display: flex; align-items: center; gap: 2px; }
+.s0-reorder-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; color: #888; border-radius: 6px; display: flex; align-items: center; }
+.s0-reorder-btn:hover { background: #f5f5f5; color: #121212; }
+.s0-reorder-btn-disabled { padding: 4px 6px; color: #ddd; display: flex; align-items: center; }
+.s0-remove-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; color: #888; border-radius: 6px; display: flex; align-items: center; }
+.s0-remove-btn:hover { background: #f5f5f5; color: #b60202; }
+
+.s0-emnegroup { border: 1.5px solid #eee; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+.s0-emnegroup-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: #f4eae6; padding: 16px 22px; cursor: pointer; }
+.s0-emnegroup-name { font-weight: 700; font-size: 15px; color: #4e0000; display: block; margin-bottom: 3px; }
+.s0-emnegroup-count { font-size: 14px; color: #8a6a63; }
+.s0-emnegroup-chevron { flex-shrink: 0; transition: transform 0.2s; }
+.s0-emnegroup-chevron.open { transform: rotate(180deg); }
+.s0-emnegroup-list { display: none; }
+.s0-emnegroup-list.open { display: block; }
+.s0-emne-row { padding: 18px 22px; border-top: 1px solid #eee; position: relative; }
+.s0-emnegroup-list > .s0-emne-row:first-of-type { border-top: none; }
+.s0-emne-badges { display: flex; gap: 8px; margin-bottom: 12px; }
+.s0-badge-nett { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; background: #E5CCF9; color: #121212; }
+.s0-emne-remove { position: absolute; top: 16px; right: 18px; background: none; border: none; cursor: pointer; padding: 4px; color: #888; border-radius: 6px; }
+.s0-emne-remove:hover { background: #f5f5f5; color: #b60202; }
+.s0-emne-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 10px; padding-right: 32px; }
+.s0-emne-row-bottom { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.s0-emne-meta { font-size: 14px; color: #7a5c56; }
+.s0-emne-price { font-size: 18px; font-weight: 700; color: #121212; }
+.s0-emne-price-strike { text-decoration: line-through; color: #aaa; font-weight: 400; margin-right: 6px; }
+
+.s0-rabatt-toggle { display: flex; align-items: center; gap: 6px; color: #06f; font-size: 14px; font-weight: 500; background: none; border: none; cursor: pointer; padding: 10px 0 0; font-family: 'Graphik', sans-serif; }
+.s0-rabatt-toggle:hover { text-decoration: underline; }
+.s0-rabatt-row { display: none; gap: 8px; margin-top: 10px; }
+.s0-rabatt-row.open { display: flex; }
+.s0-rabatt-row input { flex: 1; border: 1.5px solid #c7c8ca; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: 'Graphik', sans-serif; outline: none; }
+.s0-rabatt-row input:focus { border-color: #06f; }
+.s0-rabatt-row button { padding: 0 18px; background: #06f; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; }
+.s0-rabatt-feedback { font-size: 13px; margin-top: 8px; }
+.s0-rabatt-applied { display: inline-flex; align-items: center; gap: 10px; margin-top: 12px; padding: 9px 14px; border-radius: 8px; background: #f6f0ec; font-size: 14px; color: #333; }
+.s0-rabatt-applied-remove { background: none; border: none; color: #06f; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; padding: 0; }
+
+.s0-summary-betnow-title { font-size: 15px; font-weight: 700; color: #121212; margin-bottom: 10px; }
+.s0-summary-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 15px; color: #121212; padding: 5px 0; }
+.s0-summary-discount { color: #121212; }
+.s0-summary-divider { height: 1px; background: #eee; margin: 12px 0; }
+.s0-summary-sum-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 15px; font-weight: 700; color: #121212; }
+.s0-summary-sum-row strong { font-size: 22px; }
+.s0-summary-strike { text-decoration: line-through; color: #aaa; font-weight: 400; font-size: 15px; margin-right: 6px; }
+.s0-help-card { display: flex; align-items: center; gap: 12px; background: #f7f2ea; border-radius: 10px; padding: 14px 16px; margin-top: 22px; }
+.s0-help-avatar { width: 38px; height: 38px; border-radius: 50%; background: #06f; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.s0-help-title { font-size: 14px; font-weight: 700; color: #121212; }
+.s0-help-sub { font-size: 13px; color: #666; }
+
+@media (max-width: 1023px) {
+  .s0-layout { grid-template-columns: 1fr; padding: 24px 16px; }
+  .s0-summary-col { position: static; }
+}
 /* Sidebar priority labels and rediger link */
 .sidebar-prioritet-label {
   font-size: 12px; color: #888; margin-bottom: 4px;
@@ -729,6 +782,31 @@ body {
 .person-save-btn:hover { background:#3d0000; }
 .person-cancel-btn { font-size:14px; color:#888; background:none; border:none; cursor:pointer; font-family:'Graphik',sans-serif; }
 .person-cancel-btn:hover { color:#121212; }
+
+/* Steg 3: read-only personopplysninger for FEIDE-innloggede */
+/* Innlogget-kort med «Logg ut» (Opplysninger) */
+.auth-card { display:flex; align-items:center; gap:16px; background:#f5f5f5; border-radius:12px; padding:16px 20px; margin-bottom:20px; }
+.auth-card-avatar { width:48px; height:48px; border-radius:50%; background:#dcdcdc; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#444; flex-shrink:0; }
+.auth-card-info { flex:1; min-width:0; }
+.auth-card-name { font-size:17px; color:#121212; margin-bottom:3px; }
+.auth-card-method { display:flex; align-items:center; gap:6px; font-size:14px; color:#4e0000; }
+.auth-card-logout { background:none; border:1.5px solid #4e0000; color:#4e0000; border-radius:40px; padding:11px 24px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Graphik',sans-serif; flex-shrink:0; }
+.auth-card-logout:hover { background:#4e0000; color:#fff; }
+
+.person-profile-card { display:flex; align-items:center; gap:14px; background:#fff; border:1.5px solid #e5e5e5; border-radius:12px; padding:18px 20px; margin-bottom:16px; }
+.person-profile-avatar { width:48px; height:48px; border-radius:50%; background:#eef0f6; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#1a3fb0; }
+.person-profile-name { font-size:16px; font-weight:700; color:#121212; }
+.person-profile-badge { display:flex; align-items:center; gap:5px; font-size:13px; color:#666; margin-top:3px; }
+.person-info-card { background:#fff; border:1.5px solid #e5e5e5; border-radius:12px; padding:20px; margin-bottom:16px; }
+.person-info-card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.person-info-card-title { font-size:16px; font-weight:700; color:#121212; }
+.person-info-edit-link { display:flex; align-items:center; gap:4px; background:none; border:none; color:#06f; font-size:14px; font-weight:600; cursor:pointer; font-family:'Graphik',sans-serif; padding:0; }
+.person-info-row { display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:12px 0; border-top:1px solid #eee; }
+.person-info-row:first-child { border-top:none; padding-top:0; }
+.person-info-label { font-size:13px; color:#888; flex-shrink:0; }
+.person-info-value { font-size:14px; font-weight:500; color:#121212; text-align:right; }
+.step3-tilbake-link { background:none; border:none; color:#555; font-size:15px; font-weight:500; cursor:pointer; font-family:'Graphik',sans-serif; padding:0; }
+.step3-tilbake-link:hover { color:#121212; }
 
 /* Faktureres-tooltip */
 .s0-info-wrap { position: relative; display: inline-flex; align-items: center; }
@@ -796,14 +874,6 @@ body {
 
 
 /* Oppstart section */
-.opp-emner-box { border:1.5px solid #e5e5e5; border-radius:12px; overflow:hidden; margin-bottom:16px; }
-.opp-emner-header { background:#f8f8f8; padding:12px 16px; border-bottom:1px solid #e5e5e5; }
-.opp-emne-row { display:flex; align-items:flex-start; justify-content:space-between; padding:14px 16px; border-bottom:1px solid #f0f0f0; gap:12px; flex-wrap:wrap; }
-.opp-emne-row:last-child { border-bottom:none; }
-.opp-emne-info { flex:1; min-width:0; }
-.opp-emne-meta { font-size:12px; color:#888; margin-bottom:3px; }
-.opp-emne-name { font-size:14px; font-weight:600; color:#121212; }
-.opp-emne-right { display:flex; align-items:center; gap:8px; flex-shrink:0; }
 .opp-velg-link { font-size:13px; color:#06f; background:none; border:none; cursor:pointer; font-family:'Graphik',sans-serif; padding:0; white-space:nowrap; }
 .opp-velg-link:hover { text-decoration:underline; }
 .opp-date-done { font-size:13px; color:#15a34a; font-weight:500; white-space:nowrap; }
@@ -917,8 +987,42 @@ body {
   <div class="checkout-grid" id="checkoutGrid" style="display:none;">
 
     <div>
-      <!-- Steg 1: Opprett søknad -->
+      <!-- Steg 1: Har du studert ved Kristiania før? -->
       <div class="step" id="step1">
+        <div class="form-col">
+          <h1 class="step-title">Har du studert ved Kristiania før?</h1>
+          <p style="font-size:15px;color:#555;margin-bottom:20px;">Svaret avgjør bare hvordan du logger inn. Det påvirker ikke søknaden.</p>
+
+          <div id="studentBeforeGroup">
+            <div class="opp-date-option" data-value="nei" onclick="selectStudentBefore('nei')">
+              <div class="payment-radio" style="margin-top:2px;flex-shrink:0;"></div>
+              <div>
+                <div class="opp-date-label">Nei, dette er første gang</div>
+                <div class="opp-date-sub" style="margin-bottom:0;">Du bekrefter deg med telefonnummer</div>
+              </div>
+            </div>
+            <div class="opp-date-option" data-value="ja" onclick="selectStudentBefore('ja')">
+              <div class="payment-radio" style="margin-top:2px;flex-shrink:0;"></div>
+              <div>
+                <div class="opp-date-label">Ja, jeg er eller har vært student</div>
+                <div class="opp-date-sub" style="margin-bottom:0;">Du logger inn med FEIDE-brukeren din</div>
+              </div>
+            </div>
+            <div class="opp-date-option" data-value="usikker" onclick="selectStudentBefore('usikker')">
+              <div class="payment-radio" style="margin-top:2px;flex-shrink:0;"></div>
+              <div>
+                <div class="opp-date-label">Jeg er usikker</div>
+                <div class="opp-date-sub" style="margin-bottom:0;">Vi sjekker det for deg med telefonnummeret</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-primary" id="studentBeforeContinueBtn" onclick="gaVidereStudentBefore()" style="margin-top:24px;" disabled>Gå videre</button>
+        </div>
+      </div>
+
+      <!-- Steg 1b: Opprett søknad (telefonnummer) -->
+      <div class="step" id="step1b">
         <div class="form-col">
           <h1 class="step-title">Opprett søknad</h1>
 
@@ -944,23 +1048,11 @@ body {
                   Jeg samtykker til å bli kontaktet av en studierådgiver og har lest <a href="#" onclick="event.stopPropagation()">personvernerklæringen</a>.
                 </span>
               </div>
-              <button class="btn-primary" onclick="gaVidereStep1()">Gå videre</button>
+              <div class="btn-row">
+                <button class="btn-secondary" onclick="gaVidere(1)">Tilbake til innlogging</button>
+                <button class="btn-primary" onclick="gaVidereStep1()">Gå videre</button>
+              </div>
             </div>
-          </div>
-
-          <div class="eller-row">
-            <div class="eller-line"></div>
-            <span class="eller-text">ELLER</span>
-            <div class="eller-line"></div>
-          </div>
-
-          <div>
-            <h2 class="step-subtitle" style="margin-bottom:4px;">Logg inn</h2>
-            <p style="font-size:14px;color:#4e0000;margin-bottom:16px;">Student ved Kristiania med aktiv FEIDE-bruker.</p>
-            <button class="feide-btn" onclick="showFeidePage()">
-              Fortsett med FEIDE
-              <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="#4e0000" stroke-width="1.5"/><rect x="11" y="14" width="10" height="8" rx="1.5" stroke="#4e0000" stroke-width="1.5"/><path d="M13 14v-3a3 3 0 016 0v3" stroke="#4e0000" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="18.5" r="1.5" fill="#4e0000"/></svg>
-            </button>
           </div>
         </div>
       </div>
@@ -1031,12 +1123,18 @@ body {
       <div class="step" id="step3">
         <div class="form-col">
 
+          <!-- Innlogget-kort med utloggingsmulighet (vises når brukeren er innlogget) -->
+          <div id="step3AuthCard"></div>
+
+          <!-- Personopplysninger: read-only kort for FEIDE-innloggede -->
+          <div id="step3ReadonlyView" style="display:none;"></div>
+
+          <div id="step3EditableFields">
           <!-- Personopplysninger -->
           <div>
             <h2 class="step-subtitle" style="margin-bottom:16px;">Personopplysninger</h2>
-            <div id="completedConflictBannerStep3" class="conflict-banner" style="display:none;"></div>
             <div class="input-group">
-              <div>
+              <div id="fnrFieldWrap">
                 <div class="input-wrap" id="wrap-fnr">
                   <input type="text" id="fnr" placeholder=" " maxlength="11" inputmode="numeric" autocomplete="off">
                   <label for="fnr">Fødselsnummer (eventuelt D-nummer)</label>
@@ -1122,7 +1220,40 @@ body {
             </div>
           </div>
 
-          <button class="btn-primary" onclick="gaVidereStep3()">Gå videre</button>
+          <div>
+            <h2 class="step-subtitle" style="margin-bottom:16px;">Kontaktinformasjon</h2>
+            <div class="input-group">
+              <div>
+                <div class="input-wrap" id="wrap-epost">
+                  <input type="email" id="epost" placeholder=" " autocomplete="email">
+                  <label for="epost">E-postadresse</label>
+                </div>
+              </div>
+              <div class="phone-row">
+                <div class="phone-prefix">+47</div>
+                <div class="input-wrap" id="wrap-telefonPerson">
+                  <input type="tel" id="telefonPerson" placeholder=" " autocomplete="tel" inputmode="numeric">
+                  <label for="telefonPerson">Telefonnummer</label>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+
+          <button class="btn-primary" id="step3BottomDefault" onclick="gaVidereStep3()">Gå videre</button>
+
+          <div class="btn-row" id="step3BottomReadonly" style="display:none;">
+            <button class="step3-tilbake-link" onclick="gaVidere(0)">Tilbake til studievalg</button>
+            <button class="btn-primary" style="width:auto;padding:0 28px;flex:none;margin-left:auto;" onclick="gaVidereStep3()">
+              Neste steg
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:8px;"><path d="M5 12h14M13 6l6 6-6 6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+
+          <div class="btn-row" id="step3BottomEditing" style="display:none;">
+            <button class="btn-secondary" onclick="cancelStep3Edit()">Avbryt</button>
+            <button class="btn-primary" onclick="saveStep3Person()">Lagre</button>
+          </div>
         </div>
       </div>
 
@@ -1131,13 +1262,7 @@ body {
         <div class="form-col">
           <div id="oppstartSection">
             <h2 class="step-subtitle" style="margin-bottom:20px;">Oppstart</h2>
-            <div class="opp-emner-box">
-              <div class="opp-emner-header">
-                <div style="font-size:13px;color:#888;" id="oppstartProgLabel"></div>
-                <div style="font-size:15px;font-weight:700;color:#121212;" id="oppstartEmneCountLabel"></div>
-              </div>
-              <div id="oppstartEmnerList"></div>
-            </div>
+            <div id="oppstartEmnerList" style="margin-bottom:16px;"></div>
             <div class="checkbox-row" style="margin-bottom:16px;" id="sammeDatoRow">
               <div class="checkbox-box checked" id="cb-sammedato" onclick="toggleSammeDato()">
                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1152,7 +1277,7 @@ body {
           </div>
 
           <div class="btn-row" style="margin-top:24px;">
-            <button class="btn-secondary" onclick="gaVidere(3)">Tilbake</button>
+            <button class="btn-secondary" onclick="gaVidere(3)">Tilbake til personopplysninger</button>
             <button class="btn-primary" onclick="confirmOppstart()">Gå videre</button>
           </div>
         </div>
@@ -1161,33 +1286,19 @@ body {
       <!-- Steg 4: Betaling -->
       <div class="step" id="step4">
         <div class="form-col">
-          <h1 class="step-title">Fullfør søknaden</h1>
+          <h1 class="step-title">Betaling</h1>
 
           <div>
-            <h2 class="step-subtitle" style="margin-bottom:20px;">Betaling</h2>
+            <!-- Siste gjennomgang av søkeren før innsending -->
+            <div id="betalingSokerRow"></div>
 
-            <div id="completedConflictBannerStep4" class="conflict-banner" style="display:none;"></div>
+            <div id="betalingEmnerSection" style="display:none;">
+              <div id="betalingEmnerGroups"></div>
 
-            <div id="betalingSPSection" style="display:none;margin-bottom:20px;">
-              <div class="payment-section-header" style="margin-bottom:8px;">
-                <span class="payment-section-label">Studieprogram</span>
-                <span class="payment-section-meta">Faktureres per semester</span>
-              </div>
-              <div class="sp-row">
-                <span style="font-size:14px;font-weight:500;color:#121212;" id="betalingSPName"></span>
-                <div class="sp-badges" id="betalingSPBadges"></div>
-              </div>
-            </div>
-
-            <div id="betalingEmnerSection" style="display:none;margin-bottom:20px;">
-              <div class="payment-section-header" style="margin-bottom:8px;">
-                <span class="payment-section-label">Emner</span>
-                <span class="payment-section-meta" id="betalingEmnerCount"></span>
-              </div>
+              <h2 class="bt-section-title">Betalingsmåte</h2>
               <div class="emner-payment-box">
-                <div id="betalingEmnerAccordion"></div>
                 <div id="betalingMetoderSection">
-                  <div class="payment-options" id="betalingGroup" style="overflow:visible;border-top:1px solid #e8e8e8;border-radius:0 0 10px 10px;">
+                  <div class="payment-options" id="betalingGroup" style="overflow:visible;border-radius:10px;">
 
                 <!-- Kortbetaling -->
                 <div class="payment-option-group">
@@ -1304,26 +1415,39 @@ body {
                   <div class="error-msg" id="err-betaling" style="display:none;padding:4px 16px 8px;">Velg en betalingsmetode</div>
                 </div><!-- /betalingMetoderSection -->
               </div><!-- /emner-payment-box -->
+
+              <div class="bt-trust-row">
+                <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px;margin-right:5px;"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Sikker betaling</span>
+                <span>Alltid 14 dagers angrerett</span>
+              </div>
+
+              <div id="betalingRabattSection"></div>
             </div><!-- /betalingEmnerSection -->
 
-            <div style="margin-top:16px;margin-bottom:4px;">
-              <button class="rabattkode-toggle" onclick="toggleRabattkode()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg>
-                Har du en rabattkode?
-              </button>
-              <div class="rabattkode-row" id="rabattkodeRow" style="margin-top:8px;">
-                <input type="text" id="rabattkode" placeholder="Skriv inn rabattkode">
-                <button onclick="applyRabattkode()">Bruk</button>
+            <div class="checkbox-row" style="margin-top:20px;">
+              <div class="checkbox-box" id="cb-personvern" onclick="this.classList.toggle('checked')">
+                <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
-              <div id="rabattkodeFeedback" style="display:none;font-size:13px;margin-top:8px;"></div>
+              <span class="checkbox-label" onclick="document.getElementById('cb-personvern').classList.toggle('checked')">
+                Jeg bekrefter og aksepterer <a href="#" onclick="event.stopPropagation()">Kristianias personvern-erklæring</a>
+              </span>
             </div>
+            <div class="checkbox-row" style="margin-top:10px;">
+              <div class="checkbox-box" id="cb-betingelser" onclick="this.classList.toggle('checked')">
+                <svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="checkbox-label" onclick="document.getElementById('cb-betingelser').classList.toggle('checked')">
+                Jeg bekrefter og aksepterer <a href="#" onclick="event.stopPropagation()">Kristianias studiebetingelser</a>
+              </span>
+            </div>
+            <div class="error-msg" id="err-samtykke" style="display:none;margin-top:8px;">Du må godta personvernerklæringen og studiebetingelsene for å gå videre</div>
 
-            <p style="font-size:12px;color:#888;margin-top:12px;">Alltid 14 dagers angrerett. Alle transaksjoner er sikre og krypterte.</p>
-          </div>
+            <p class="bt-fineprint" id="step4CommitNote"></p>
 
-          <div class="btn-row">
-            <button class="btn-secondary" onclick="gaVidere(3)">Tilbake til personopplysninger</button>
-            <button class="btn-primary" onclick="gaVidereStep4()">Gå videre</button>
+            <div class="btn-row" style="margin-top:24px;">
+              <button class="btn-outline" onclick="gaVidere(3)">Tilbake til personopplysninger</button>
+              <button class="btn-primary" onclick="gaVidereStep4()">Gå videre</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1333,8 +1457,9 @@ body {
         <div class="form-col">
           <h1 class="step-title" id="pd-title">Betaling</h1>
           <div id="pd-body" style="margin-top:24px;"></div>
+          <p class="bt-fineprint" id="pd-charge-note" style="display:none;">Kortet blir ikke belastet nå — beløpet trekkes først når du sender inn søknaden i neste steg.</p>
           <div class="btn-row" style="margin-top:24px;">
-            <button class="btn-secondary" onclick="gaVidere(4)">Tilbake</button>
+            <button class="btn-secondary" onclick="gaVidere(4)">Tilbake til betaling</button>
             <button class="btn-primary" id="pd-cta" onclick="confirmPaymentDetail()">Gå videre</button>
           </div>
         </div>
@@ -1344,7 +1469,7 @@ body {
     <!-- Sidebar -->
     <aside class="summary-col" id="summarySidebar">
       <div class="summary-header" onclick="toggleDesktopSummary()">
-        <span class="summary-header-label">Sammendrag av søknad</span>
+        <span class="summary-header-label" id="summaryHeaderLabel">Oppsummering</span>
         <svg id="desktopChevron" width="24" height="24" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;transform:rotate(180deg);">
           <path d="M6 9l6 6 6-6" stroke="#4e0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -1353,6 +1478,7 @@ body {
         <div id="sidebar-programs"></div>
         <div id="sidebar-emner"></div>
         <div id="sidebar-rediger"></div>
+        <div id="sidebar-betaling"></div>
       </div>
     </aside>
 
@@ -1376,12 +1502,14 @@ body {
           </div>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:32px;">
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
           <div id="step5Programs"></div>
           <div id="step5Emner"></div>
+          <div id="step5Betaling"></div>
         </div>
 
-        <button class="btn-primary" onclick="animateSend()">Send inn søknad</button>
+        <button class="btn-primary" id="step5SendBtn" onclick="animateSend()">Send inn søknad</button>
+        <p class="bt-fineprint" id="step5SendNote" style="text-align:center;"></p>
       </div>
     </div>
   </div>
@@ -1390,15 +1518,13 @@ body {
 <!-- KVITTERINGSSIDE -->
 <div class="receipt-page" id="receiptPage">
   <div class="receipt-card">
-    <div class="receipt-check">
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </div>
     <h1 class="receipt-title">Takk for din søknad! 🎉</h1>
     <p class="receipt-subtitle">Din søknad er mottatt og behandles nå av opptaksavdelingen</p>
 
     <div class="receipt-items">
       <div id="receiptPrograms"></div>
       <div id="receiptEmner"></div>
+      <div id="receiptBetaling"></div>
     </div>
 
     <div class="receipt-next">
@@ -1432,7 +1558,7 @@ var _phoneNumber = '';
 var _feideLoggedIn = false;
 var _rabattCode = null;
 var _rabattPercent = 0;
-var VALID_RABATTKODER = { 'RABATT20': 20 };
+var VALID_RABATTKODER = { 'RABATT20': 20, 'SOMMER15': 15 };
 
 /* Stepper */
 var STEPPER_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -1452,9 +1578,17 @@ function basketHasEmner() {
     ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
 }
 
+// Logg inn vises kun når brukeren ikke er innlogget. Siste fase er alltid
+// commit-punktet: Betaling når det er noe å betale, ellers Sammendrag.
 function getActivePhases() {
-  if (basketHasEmner()) return ALL_PHASES;
-  return ALL_PHASES.filter(function(p) { return p.key !== 'betaling'; });
+  var isAuthed = !!getAuthState();
+  var harEmner = basketHasEmner();
+  return ALL_PHASES.filter(function(p) {
+    if (p.key === 'login' && isAuthed) return false;
+    if (p.key === 'betaling' && !harEmner) return false;
+    if (p.key === 'sammendrag' && harEmner) return false;
+    return true;
+  });
 }
 
 function stepToPhaseKey(n) {
@@ -1467,6 +1601,29 @@ function stepToPhaseKey(n) {
 
 var PHASE_TO_STEP = { studievalg: 0, login: 1, opplysninger: 3, betaling: 4, sammendrag: 5 };
 
+/* Én kilde til sannhet for «hvor går vi etter Studievalg»: innlogging hoppes over
+   når brukeren allerede er innlogget. Brukes både av «Gå videre» på Studievalg og
+   av inngangen fra handlekurven (?steg=login). */
+function stegEtterStudievalg() {
+  return getAuthState() ? 3 : 1;
+}
+
+/* Innlogget bruker skal alltid ha personopplysningene sine tilgjengelig, også
+   etter en sidelast der vi ikke har gått gjennom innloggingsflyten. */
+function sikrePersonopplysninger() {
+  var auth = getAuthState();
+  if (!auth) return;
+  _feideLoggedIn = auth.method === 'feide';
+  if (!document.getElementById('fornavn').value) prefillFormData();
+}
+
+/* Gå til første steg etter Studievalg, med riktig tilstand på plass */
+function gaTilStegEtterStudievalg() {
+  var steg = stegEtterStudievalg();
+  if (steg === 3) sikrePersonopplysninger();
+  gaVidere(steg);
+}
+
 // Naviger bakover til en fullført fase ved klikk i stepperen
 function goToPhase(key) {
   var step = PHASE_TO_STEP[key];
@@ -1477,9 +1634,20 @@ function goToPhase(key) {
 function updateStepper(n) {
   var phases = getActivePhases();
   var currentKey = stepToPhaseKey(n);
-  var currentIdx = 0;
+  var currentIdx = -1;
   for (var k = 0; k < phases.length; k++) {
     if (phases[k].key === currentKey) { currentIdx = k; break; }
+  }
+
+  // Fasen er skjult (f.eks. innlogging for en innlogget bruker). Marker nærmeste
+  // foregående synlige fase i stedet for å falle tilbake til første steg — ellers
+  // ser stepperen ut som man er tilbake på Studievalg.
+  if (currentIdx === -1) {
+    var currentStep = PHASE_TO_STEP[currentKey];
+    for (var j = 0; j < phases.length; j++) {
+      if (PHASE_TO_STEP[phases[j].key] <= currentStep) currentIdx = j;
+    }
+    if (currentIdx === -1) currentIdx = 0;
   }
 
   var html = '';
@@ -1516,6 +1684,7 @@ function gaVidere(n) {
     document.getElementById('step' + _currentStep).classList.remove('active');
   }
   document.getElementById('feide-step').classList.remove('active');
+  document.getElementById('step1b').classList.remove('active');
   document.getElementById('step3b').classList.remove('active');
   document.getElementById('step4b').classList.remove('active');
   document.getElementById('summarySidebar').style.display = '';
@@ -1539,44 +1708,79 @@ function gaVidere(n) {
     document.getElementById('checkoutGrid').style.display = '';
     document.getElementById('step5Page').style.display = 'none';
     document.getElementById('step' + n).classList.add('active');
-    if (n === 3) renderCompletedConflictBanner('completedConflictBannerStep3', false);
+    if (n === 3) renderStep3Person();
+    renderSidebar();
   }
   window.scrollTo(0, 0);
 }
 
-/* Emner allerede bestått — varsel på Opplysninger (avviselig), hard stopper på Betaling */
-function renderCompletedConflictBanner(targetId, blocking) {
-  var conflicts = getCompletedConflicts();
-  var banner = document.getElementById(targetId);
-  if (!banner) return conflicts;
-  if (conflicts.length === 0) { banner.style.display = 'none'; banner.innerHTML = ''; return conflicts; }
+/* Emner allerede bestått — fjernes automatisk fra søknaden, varsel vises i sammendraget blant emnene */
+var _removedCompletedConflicts = [];
 
-  var rows = conflicts.map(function(c) {
+function processCompletedConflicts() {
+  if (!getAuthState()) return _removedCompletedConflicts;
+  getCompletedConflicts().forEach(function(c) {
+    if (c.source === 'program') removeEmne(c.programId, c.code);
+    else removeLooseEmne(c.code);
+    if (!_removedCompletedConflicts.some(function(r) { return r.code === c.code; })) {
+      _removedCompletedConflicts.push(c);
+    }
+  });
+  return _removedCompletedConflicts;
+}
+
+function buildConflictBannerHtml() {
+  if (_removedCompletedConflicts.length === 0) return '';
+
+  var remaining = getAllCartEmner().length;
+  var rows = _removedCompletedConflicts.map(function(c) {
     return '<div class="conflict-row">'
-      + '<div><div class="conflict-row-name">' + c.name + '</div><div class="conflict-row-code">#' + c.code + '</div></div>'
-      + '<button class="conflict-row-remove" onclick="resolveCompletedConflict(\'' + targetId + '\',\'' + c.source + '\',\'' + (c.programId || '') + '\',\'' + c.code + '\')">Fjern</button>'
+      + '<div class="conflict-row-name">' + c.name + '</div><div class="conflict-row-code">#' + c.code + '</div>'
       + '</div>';
   }).join('');
 
-  var closeBtn = blocking ? '' : '<button class="conflict-banner-close" onclick="dismissCompletedConflictBanner(\'' + targetId + '\')" aria-label="Lukk"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>';
-
-  banner.className = 'conflict-banner' + (blocking ? ' blocking' : '');
-  banner.innerHTML = '<div class="conflict-banner-header"><div><p class="conflict-banner-title">Du har allerede bestått disse emnene</p>'
-    + '<p class="conflict-banner-sub">Fjern dem fra søknaden for å gå videre til betaling.</p></div>' + closeBtn + '</div>' + rows;
-  banner.style.display = 'block';
-  return conflicts;
+  return '<div class="conflict-banner">'
+    + '<div class="conflict-banner-header">'
+    + '<span class="conflict-banner-icon">&#10003;</span>'
+    + '<p class="conflict-banner-title">Vi tok ut ' + _removedCompletedConflicts.length + ' emne' + (_removedCompletedConflicts.length > 1 ? 'r' : '') + ' du har bestått</p>'
+    + '</div>'
+    + '<p class="conflict-banner-sub">De kan ikke tas om igjen, så du betaler bare for de '
+    + remaining + ' som er igjen. Stemmer ikke dette, ta kontakt på <a href="mailto:opptaknettstudier@kristiania.no">opptaknettstudier@kristiania.no</a> eller 21 09 30 00.</p>'
+    + '<button class="conflict-banner-toggle" onclick="toggleConflictList(this)">Se hvilke</button>'
+    + '<div class="conflict-banner-list" style="display:none;">' + rows + '</div>'
+    + '</div>';
 }
 
-function resolveCompletedConflict(targetId, source, programId, code) {
-  if (source === 'program') removeEmne(programId, code);
-  else removeLooseEmne(code);
-  if (_currentStep === 4) renderPaymentStep();
-  else renderCompletedConflictBanner(targetId, targetId === 'completedConflictBannerStep4');
+function toggleConflictList(btn) {
+  var list = btn.nextElementSibling;
+  if (!list) return;
+  var show = list.style.display === 'none';
+  list.style.display = show ? 'block' : 'none';
+  btn.textContent = show ? 'Skjul' : 'Se hvilke';
 }
 
-function dismissCompletedConflictBanner(targetId) {
-  var banner = document.getElementById(targetId);
-  if (banner) banner.style.display = 'none';
+var _studentBefore = null;
+
+function selectStudentBefore(val) {
+  _studentBefore = val;
+  var group = document.getElementById('studentBeforeGroup');
+  group.querySelectorAll('.opp-date-option').forEach(function(o) {
+    o.classList.toggle('selected', o.getAttribute('data-value') === val);
+  });
+  group.querySelectorAll('.payment-radio').forEach(function(r) {
+    r.classList.toggle('selected', r.closest('.opp-date-option').getAttribute('data-value') === val);
+  });
+  document.getElementById('studentBeforeContinueBtn').disabled = false;
+}
+
+function gaVidereStudentBefore() {
+  if (!_studentBefore) return;
+  if (_studentBefore === 'ja') {
+    showFeidePage();
+  } else {
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step1b').classList.add('active');
+  }
 }
 
 function showFeidePage() {
@@ -1595,7 +1799,7 @@ function showFeidePage() {
 
 /* Step 0 */
 function gaVidereFraSteg0() {
-  gaVidere(1);
+  gaTilStegEtterStudievalg();
 }
 
 /* Felles illustrert konvolutt brukt av begge animasjonene */
@@ -1740,35 +1944,16 @@ function renderStep0() {
     document.getElementById('step0PrioritetList').innerHTML =
       '<p style="font-size:14px;color:#888;padding:16px 0;">Ingen studieprogram lagt til ennå.</p>';
   } else {
-    var html = '';
-    programs.forEach(function(p, idx) {
-      var badges = '';
-      if (p.city) badges += '<span class="s0-badge">' + p.city + '</span>';
-      if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
-
-      var meta = '';
-      if (p.points) meta += p.points + ' stp.';
-      if (p.level === 'Bachelor') meta += (meta ? ' · ' : '') + '3 år';
-      else if (p.level === 'Master') meta += (meta ? ' · ' : '') + '2 år';
-
-      var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : idx.toString();
-      html += '<div class="s0-prioritet-card">'
-        + '<div class="s0-prioritet-header">'
-        + '<span class="s0-prioritet-label">' + (idx + 1) + '. prioritet</span>'
-        + '<button class="s0-dots-btn" onclick="toggleS0Menu(this,\'' + safeId + '\',' + idx + ',' + programs.length + ')" aria-label="Alternativer">⋯</button>'
-        + '</div>'
-        + (badges ? '<div class="s0-badges">' + badges + '</div>' : '')
-        + '<div class="s0-program-name">' + (p.level ? p.level + ' i ' : '') + p.name + '</div>'
-        + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
-        + '</div>';
-    });
-    document.getElementById('step0PrioritetList').innerHTML = html;
+    document.getElementById('step0PrioritetList').innerHTML = programs.map(function(p, idx) {
+      return buildPrioritetCardHtml(p, idx, programs.length, 's0RemoveProgram', 'moveProgram');
+    }).join('');
   }
 
   // --- Emner (nettbaserte program + løse emner) ---
   var emnerCard = document.getElementById('step0EmnerCard');
   var hasEmner = nettPrograms.length > 0 || looseEmner.length > 0;
   emnerCard.style.display = hasEmner ? '' : 'none';
+  if (!hasEmner) document.getElementById('step0EmnerList').innerHTML = '';
 
   if (hasEmner) {
     var emnerCount = 0, emnerTotal = 0;
@@ -1780,47 +1965,109 @@ function renderStep0() {
     if (emnerMetaEl) emnerMetaEl.textContent = emnerCount + ' emne' + (emnerCount !== 1 ? 'r' : '') + ' · ' + emnerTotal.toLocaleString('nb-NO') + ' kr';
 
     var emnerHtml = '';
-    nettPrograms.forEach(function(p, idx) {
-      var badges = '<span class="s0-badge" style="background:#e8f0fe;color:#1a4db0;">Nett</span>';
-      if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
-
-      var meta = '';
-      if (p.points) meta += p.points + ' stp.';
-      if (p.emner && p.emner.length) meta += (meta ? ' · ' : '') + p.emner.length + ' emner';
-
-      var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : ('nett-' + idx);
-      emnerHtml += '<div class="s0-prioritet-card">'
-        + '<div class="s0-prioritet-header">'
-        + '<div class="s0-badges">' + badges + '</div>'
-        + '<button class="s0-dots-btn" onclick="toggleS0EmneMenu(this,\'' + safeId + '\',false)" aria-label="Alternativer">⋯</button>'
-        + '</div>'
-        + '<div class="s0-program-name">' + p.name + '</div>'
-        + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
-        + '</div>';
+    nettPrograms.forEach(function(p) {
+      var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : '';
+      var meta = (p.points ? studiepoengTekst(p.points) + ' · ' : '') + (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '');
+      emnerHtml += buildEmnegroupHtml(p.name, meta, p.emner || [], safeId, false, 's0RemoveEmne', false);
     });
-    looseEmner.forEach(function(e, idx) {
-      var safeCode = e.code ? e.code.toString().replace(/'/g, "\\'") : ('loose-' + idx);
-      var meta = e.pts ? e.pts + ' stp.' : '';
-      emnerHtml += '<div class="s0-prioritet-card">'
-        + '<div class="s0-prioritet-header">'
-        + '<span></span>'
-        + '<button class="s0-dots-btn" onclick="toggleS0EmneMenu(this,\'' + safeCode + '\',true)" aria-label="Alternativer">⋯</button>'
-        + '</div>'
-        + '<div class="s0-program-name">' + e.name + '</div>'
-        + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
-        + '</div>';
-    });
+    if (looseEmner.length > 0) {
+      emnerHtml += buildEmnegroupHtml('Emner uten tilknytning til studieprogram', looseEmner.length + ' emne' + (looseEmner.length !== 1 ? 'r' : ''), looseEmner, null, true, 's0RemoveEmne', false);
+    }
     document.getElementById('step0EmnerList').innerHTML = emnerHtml;
   }
 }
 
-var ICON_REMOVE = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+function s0RemoveEmne(programId, code, isLoose) {
+  if (isLoose) removeLooseEmne(code);
+  else removeEmne(programId, code);
+  renderStep0();
+  renderSidebar();
+}
+
 var ICON_UP    = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var ICON_DOWN  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M19 12l-7 7-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var ICON_X_PLAIN = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+var ICON_INFO_SB = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="display:block;"><circle cx="12" cy="12" r="9.2" stroke="#4e0000" stroke-width="1.7"/><path d="M12 11v5.2" stroke="#4e0000" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.9" r="1.05" fill="#4e0000"/></svg>';
+
+/* Delt kort-oppbygging for redigerbare program/emner-lister (Studievalg + Betaling) */
+function buildPrioritetCardHtml(p, idx, total, removeFn, moveFn) {
+  var badges = '';
+  if (p.city) badges += '<span class="s0-badge s0-badge-city">' + p.city + '</span>';
+  if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
+
+  var meta = '';
+  if (p.points) meta += studiepoengTekst(p.points);
+  if (p.level === 'Bachelor') meta += (meta ? ' · ' : '') + '3 år';
+  else if (p.level === 'Master') meta += (meta ? ' · ' : '') + '2 år';
+
+  var displayName = programVisningsnavn(p);
+  var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : idx.toString();
+  var upBtn = idx > 0
+    ? '<button class="s0-reorder-btn" onclick="' + moveFn + '(\'' + safeId + '\',\'up\')" aria-label="Flytt opp">' + ICON_UP + '</button>'
+    : '<span class="s0-reorder-btn-disabled">' + ICON_UP + '</span>';
+  var downBtn = idx < total - 1
+    ? '<button class="s0-reorder-btn" onclick="' + moveFn + '(\'' + safeId + '\',\'down\')" aria-label="Flytt ned">' + ICON_DOWN + '</button>'
+    : '<span class="s0-reorder-btn-disabled">' + ICON_DOWN + '</span>';
+
+  return '<div class="s0-prioritet-card">'
+    + '<div class="s0-prioritet-header">'
+    + '<span class="s0-prioritet-label">' + (idx + 1) + '. prioritet</span>'
+    + '<div class="s0-card-actions">' + upBtn + downBtn
+    + '<button class="s0-remove-btn" onclick="' + removeFn + '(\'' + safeId + '\')" aria-label="Fjern">' + ICON_X_PLAIN + '</button>'
+    + '</div>'
+    + '</div>'
+    + (badges ? '<div class="s0-badges">' + badges + '</div>' : '')
+    + '<div class="s0-program-name">' + displayName + '</div>'
+    + (meta ? '<div class="s0-program-meta">' + meta + '</div>' : '')
+    + '</div>';
+}
+
+function buildEmneRowHtml(e, removeFnCall, showPrice) {
+  var oppstart = e.startDate ? e.startDate : (e.startSemester ? e.startSemester : '');
+  var priceHtml = '';
+  if (showPrice) {
+    var price = e.price || 0;
+    var after = _rabattPercent > 0 ? price - Math.round(price * _rabattPercent / 100) : price;
+    priceHtml = _rabattPercent > 0
+      ? '<span class="s0-emne-price-strike">' + price.toLocaleString('nb-NO') + ',-</span><span class="s0-emne-price">' + after.toLocaleString('nb-NO') + ',-</span>'
+      : '<span class="s0-emne-price">' + price.toLocaleString('nb-NO') + ',-</span>';
+  }
+  return '<div class="s0-emne-row">'
+    + '<button class="s0-emne-remove" onclick="' + removeFnCall + '" aria-label="Fjern">' + ICON_X_PLAIN + '</button>'
+    + '<div class="s0-emne-badges"><span class="s0-badge-nett">Nett</span>' + (oppstart ? '<span class="s0-badge">Oppstart ' + oppstart + '</span>' : '') + '</div>'
+    + '<div class="s0-emne-name">' + e.name + '</div>'
+    + '<div class="s0-emne-row-bottom">'
+    + '<span class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</span>'
+    + priceHtml
+    + '</div>'
+    + '</div>';
+}
+
+function buildEmnegroupHtml(label, meta, emner, groupId, isLoose, removeFn, showPrice) {
+  var rows = emner.map(function(e) {
+    var safeCode = e.code ? e.code.toString().replace(/'/g, "\\'") : '';
+    var removeFnCall = removeFn + "(" + (groupId ? "'" + groupId + "'" : 'null') + ",'" + safeCode + "'," + (isLoose ? 'true' : 'false') + ")";
+    return buildEmneRowHtml(e, removeFnCall, showPrice);
+  }).join('');
+  return '<div class="s0-emnegroup">'
+    + '<div class="s0-emnegroup-header" onclick="toggleS0EmnegroupOpen(this)">'
+    + '<div><span class="s0-emnegroup-name">' + label + '</span><span class="s0-emnegroup-count">' + meta + '</span></div>'
+    + '<svg class="s0-emnegroup-chevron open" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '</div>'
+    + '<div class="s0-emnegroup-list open">' + rows + '</div>'
+    + '</div>';
+}
+
+function toggleS0EmnegroupOpen(header) {
+  var list = header.nextElementSibling;
+  var chevron = header.querySelector('.s0-emnegroup-chevron');
+  list.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
 
 function toggleFaktorTooltip(e) {
   e.stopPropagation();
-  var tip = document.getElementById('faktorTooltip');
+  var tip = e.currentTarget.parentElement.querySelector('.s0-tooltip');
   if (!tip) return;
   var isVisible = tip.classList.contains('visible');
   tip.classList.toggle('visible', !isVisible);
@@ -1837,76 +2084,13 @@ function toggleS0Faq(btn) {
   chevron.classList.toggle('open');
 }
 
-function toggleS0Menu(btn, programId, idx, total) {
-  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
-  var dropdown = document.createElement('div');
-  dropdown.className = 's0-dropdown';
-
-  function makeItem(icon, label, fn) {
-    var item = document.createElement('button');
-    item.className = 's0-dropdown-item';
-    item.innerHTML = icon + '<span>' + label + '</span>';
-    item.onclick = function(e) { e.stopPropagation(); fn(); };
-    dropdown.appendChild(item);
-  }
-
-  if (idx > 0)           makeItem(ICON_UP,   'Flytt opp',      function() { moveProgram(programId, 'up'); });
-  if (idx < total - 1)   makeItem(ICON_DOWN, 'Flytt ned',      function() { moveProgram(programId, 'down'); });
-  makeItem(ICON_REMOVE, 'Trekk søknaden', function() { s0RemoveProgram(programId); });
-
-  btn.appendChild(dropdown);
-  setTimeout(function() {
-    document.addEventListener('click', function closeMenu(e) {
-      if (!dropdown.contains(e.target) && e.target !== btn) {
-        dropdown.remove();
-        document.removeEventListener('click', closeMenu);
-      }
-    });
-  }, 0);
-}
-
 function s0RemoveProgram(programId) {
-  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
   removeProgram(programId);
   renderStep0();
   renderSidebar();
 }
 
-function toggleS0EmneMenu(btn, id, isLoose) {
-  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
-  var dropdown = document.createElement('div');
-  dropdown.className = 's0-dropdown';
-
-  var item = document.createElement('button');
-  item.className = 's0-dropdown-item';
-  item.innerHTML = ICON_REMOVE + '<span>Fjern</span>';
-  item.onclick = function(e) {
-    e.stopPropagation();
-    dropdown.remove();
-    if (isLoose) {
-      removeLooseEmne(id);
-    } else {
-      removeProgram(id);
-    }
-    renderStep0();
-    renderSidebar();
-  };
-  dropdown.appendChild(item);
-  btn.appendChild(dropdown);
-
-  setTimeout(function() {
-    document.addEventListener('click', function closeMenu(e) {
-      if (!dropdown.contains(e.target) && e.target !== btn) {
-        dropdown.remove();
-        document.removeEventListener('click', closeMenu);
-      }
-    });
-  }, 0);
-}
-
 function moveProgram(programId, direction) {
-  document.querySelectorAll('.s0-dropdown').forEach(function(d) { d.remove(); });
-
   var b = getBasket();
   var allProgs = b.programs || [];
   var campusProgs = allProgs.filter(function(p) { return p.type !== 'nett'; });
@@ -1916,42 +2100,15 @@ function moveProgram(programId, direction) {
   var newCampusIdx = direction === 'up' ? campusIdx - 1 : campusIdx + 1;
   if (newCampusIdx < 0 || newCampusIdx >= campusProgs.length) return;
 
-  var cards = Array.from(document.querySelectorAll('.s0-prioritet-card'));
-  var cardA = cards[campusIdx];
-  var cardB = cards[newCampusIdx];
-  if (!cardA || !cardB) return;
-
-  var rectA = cardA.getBoundingClientRect();
-  var rectB = cardB.getBoundingClientRect();
-  var deltaA = rectB.top - rectA.top;
-  var deltaB = rectA.top - rectB.top;
-
-  // Disable transition temporarily, then apply transform
-  cardA.style.transition = 'none';
-  cardB.style.transition = 'none';
-  requestAnimationFrame(function() {
-    cardA.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.2,1)';
-    cardB.style.transition = 'transform 0.28s cubic-bezier(0.4,0,0.2,1)';
-    cardA.style.zIndex = '2';
-    cardA.style.transform = 'translateY(' + deltaA + 'px)';
-    cardB.style.transform = 'translateY(' + deltaB + 'px)';
-
-    setTimeout(function() {
-      // Swap in the full program array
-      var idxA = allProgs.findIndex(function(p) { return p.id === campusProgs[campusIdx].id; });
-      var idxB = allProgs.findIndex(function(p) { return p.id === campusProgs[newCampusIdx].id; });
-      var tmp = allProgs[idxA];
-      allProgs[idxA] = allProgs[idxB];
-      allProgs[idxB] = tmp;
-      b.programs = allProgs;
-      saveBasket(b);
-      cardA.style.transform = '';
-      cardB.style.transform = '';
-      cardA.style.zIndex = '';
-      renderStep0();
-      renderSidebar();
-    }, 300);
-  });
+  var idxA = allProgs.findIndex(function(p) { return p.id === campusProgs[campusIdx].id; });
+  var idxB = allProgs.findIndex(function(p) { return p.id === campusProgs[newCampusIdx].id; });
+  var tmp = allProgs[idxA];
+  allProgs[idxA] = allProgs[idxB];
+  allProgs[idxB] = tmp;
+  b.programs = allProgs;
+  saveBasket(b);
+  renderStep0();
+  renderSidebar();
 }
 
 /* Step 1 */
@@ -2000,9 +2157,168 @@ function prefillFormData() {
   document.getElementById('gate').value = 'Akersveien 24F';
   document.getElementById('postnr').value = '0177';
   document.getElementById('poststed').value = 'Oslo';
+  document.getElementById('epost').value = 'lars.j.eilefsen@eksempel.no';
+  document.getElementById('telefonPerson').value = _phoneNumber || '98765432';
   document.querySelectorAll('.input-wrap input').forEach(function(inp) {
     if (inp.value) inp.dispatchEvent(new Event('input'));
   });
+}
+
+/* Steg 3: read-only personopplysninger når innlogget med FEIDE */
+var _step3Editing = false;
+
+var PERSON_AVATAR_SVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="#1a3fb0" stroke-width="1.8"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" stroke="#1a3fb0" stroke-width="1.8" stroke-linecap="round"/></svg>';
+var FEIDE_BADGE_CHECK_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#666" stroke-width="1.6"/><path d="M8.5 12.5l2.3 2.3 4.7-5.6" stroke="#666" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var PERSON_EDIT_PENCIL_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 20h4L19.5 8.5a2.1 2.1 0 000-3L18 4a2.1 2.1 0 00-3 0L4 15v5z" stroke="#06f" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+var AUTH_LOCK_SVG = '<svg width="13" height="13" viewBox="0 0 32 32" fill="none" style="flex-shrink:0;"><circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.2"/><rect x="11" y="15" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M13 15v-2.5a3 3 0 016 0V15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="19" r="1.2" fill="currentColor"/></svg>';
+
+function renderStep3Person() {
+  _step3Editing = false;
+  updateStep3View();
+}
+
+function isFeideAuth() {
+  var auth = getAuthState();
+  return !!(auth && auth.method === 'feide');
+}
+
+function updateStep3View() {
+  var isFeide = isFeideAuth();
+  var fnrWrap = document.getElementById('fnrFieldWrap');
+  var editFields = document.getElementById('step3EditableFields');
+  var roView = document.getElementById('step3ReadonlyView');
+  var btnDefault = document.getElementById('step3BottomDefault');
+  var btnReadonly = document.getElementById('step3BottomReadonly');
+  var btnEditing = document.getElementById('step3BottomEditing');
+
+  renderStep3AuthCard();
+  fnrWrap.style.display = isFeide ? 'none' : '';
+
+  if (!isFeide) {
+    editFields.style.display = '';
+    roView.style.display = 'none';
+    btnDefault.style.display = '';
+    btnReadonly.style.display = 'none';
+    btnEditing.style.display = 'none';
+    return;
+  }
+
+  if (_step3Editing) {
+    editFields.style.display = '';
+    roView.style.display = 'none';
+    btnDefault.style.display = 'none';
+    btnReadonly.style.display = 'none';
+    btnEditing.style.display = 'flex';
+  } else {
+    editFields.style.display = 'none';
+    roView.style.display = 'block';
+    renderStep3ReadonlyCards();
+    btnDefault.style.display = 'none';
+    btnReadonly.style.display = 'flex';
+    btnEditing.style.display = 'none';
+  }
+}
+
+/* Innlogget-kort på Opplysninger — gir brukeren mulighet til å logge ut */
+function renderStep3AuthCard() {
+  var el = document.getElementById('step3AuthCard');
+  if (!el) return;
+
+  var auth = getAuthState();
+  if (!auth) { el.innerHTML = ''; return; }
+
+  var navn = (auth.name || '').trim();
+  var deler = navn.split(/\s+/);
+  var initialer = (((deler[0] || '')[0] || '') + ((deler[deler.length - 1] || '')[0] || '')).toUpperCase();
+  var metodeLabel = auth.method === 'feide' ? 'Innlogget med FEIDE' : 'Innlogget';
+
+  el.innerHTML = '<div class="auth-card">'
+    + '<div class="auth-card-avatar">' + initialer + '</div>'
+    + '<div class="auth-card-info">'
+    + '<div class="auth-card-name">' + navn + '</div>'
+    + '<div class="auth-card-method">' + AUTH_LOCK_SVG + metodeLabel + '</div>'
+    + '</div>'
+    + '<button class="auth-card-logout" onclick="loggUt()">Logg ut</button>'
+    + '</div>';
+}
+
+/* Logg ut og send brukeren tilbake til innloggingssteget */
+function loggUt() {
+  clearAuthState();
+  _feideLoggedIn = false;
+  _step3Editing = false;
+  _studentBefore = null;
+
+  // Nullstill forhåndsutfylte personopplysninger fra forrige innlogging
+  ['fnr', 'fornavn', 'etternavn', 'gate', 'postnr', 'poststed', 'epost', 'telefonPerson'].forEach(function(id) {
+    var f = document.getElementById(id);
+    if (f) f.value = '';
+  });
+
+  document.getElementById('cb-personvern').classList.remove('checked');
+  document.getElementById('cb-betingelser').classList.remove('checked');
+
+  renderStep3AuthCard();
+  selectStudentBeforeReset();
+  gaVidere(1);
+}
+
+function selectStudentBeforeReset() {
+  var group = document.getElementById('studentBeforeGroup');
+  if (!group) return;
+  group.querySelectorAll('.opp-date-option').forEach(function(o) { o.classList.remove('selected'); });
+  group.querySelectorAll('.payment-radio').forEach(function(r) { r.classList.remove('selected'); });
+  var btn = document.getElementById('studentBeforeContinueBtn');
+  if (btn) btn.disabled = true;
+}
+
+function renderStep3ReadonlyCards() {
+  var fornavn = document.getElementById('fornavn').value;
+  var etternavn = document.getElementById('etternavn').value;
+  var gate = document.getElementById('gate').value;
+  var postnr = document.getElementById('postnr').value;
+  var poststed = document.getElementById('poststed').value;
+  var epost = document.getElementById('epost').value;
+  var telefon = document.getElementById('telefonPerson').value;
+
+  var fullName = (fornavn + ' ' + etternavn).trim();
+  var adresse = (gate ? gate + ', ' : '') + [postnr, poststed].filter(Boolean).join(' ');
+
+  var roView = document.getElementById('step3ReadonlyView');
+  roView.innerHTML = buildPersonInfoCard('Personalia', [
+        { label: 'Fullt navn', value: fullName },
+        { label: 'Folkeregistrert adresse', value: adresse || '—' }
+      ])
+    + buildPersonInfoCard('Kontaktinformasjon', [
+        { label: 'E-postadresse', value: epost || '—' },
+        { label: 'Telefonnummer', value: telefon ? '+47 ' + telefon : '—' }
+      ]);
+}
+
+function buildPersonInfoCard(title, rows) {
+  var rowsHtml = rows.map(function(r) {
+    return '<div class="person-info-row"><span class="person-info-label">' + r.label + '</span><span class="person-info-value">' + r.value + '</span></div>';
+  }).join('');
+  return '<div class="person-info-card">'
+    + '<div class="person-info-card-header"><span class="person-info-card-title">' + title + '</span>'
+    + '<button class="person-info-edit-link" onclick="toggleStep3Edit()">' + PERSON_EDIT_PENCIL_SVG + ' Rediger</button></div>'
+    + rowsHtml
+    + '</div>';
+}
+
+function toggleStep3Edit() {
+  _step3Editing = true;
+  updateStep3View();
+}
+
+function cancelStep3Edit() {
+  _step3Editing = false;
+  updateStep3View();
+}
+
+function saveStep3Person() {
+  _step3Editing = false;
+  updateStep3View();
 }
 
 /* Step 3 – Oppstart */
@@ -2043,41 +2359,73 @@ function renderDateCards(fnName, extraArg, selectedIdx) {
   }).join('');
 }
 
+/* Oppstart bruker samme emnegruppe-design som Betaling, men med datovelger per emne */
 function renderOppstartEmnerList(emner) {
-  var html = '';
+  // Grupper per studieprogram, men behold den opprinnelige indeksen — den styrer
+  // _individualDates og selectIndividualDate()
+  var grupper = [];
   emner.forEach(function(x, idx) {
-    var e = x.e;
-    var code = e.code ? String(e.code) : ('emne-' + idx);
-    var dateIdx = _individualDates[code];
-    var hasDate = dateIdx !== undefined;
-    var isActive = _oppstartMode === 'individual' && idx === _activeEmneIdx && !hasDate;
-
-    html += '<div class="opp-emne-row">';
-    html += '<div class="opp-emne-info">';
-    html += '<div class="opp-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</div>';
-    html += '<div class="opp-emne-name">' + e.name + '</div>';
-    html += '</div>';
-    html += '<div class="opp-emne-right">';
-    if (_oppstartMode === 'individual') {
-      if (hasDate) {
-        html += '<span class="opp-date-done">' + CHECK_SVG + ' ' + OPPSTART_DATES[dateIdx].badge + '</span>';
-      } else {
-        html += '<button class="opp-velg-link" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
-      }
-    }
-    html += '<span class="badge badge-nett">Nett</span>';
-    html += '</div>';
-
-    if (_oppstartMode === 'individual') {
-      html += '<div class="opp-inline-picker' + (isActive ? ' open' : '') + '" id="opp-picker-' + idx + '">';
-      html += '<p class="opp-section-title" style="margin-bottom:12px;">Velg oppstartsdato</p>';
-      html += renderDateCards('selectIndividualDate', idx, hasDate ? dateIdx : null);
-      html += '</div>';
-    }
-
-    html += '</div>';
+    var label = x.progName || 'Emner uten tilknytning til studieprogram';
+    var g = grupper.filter(function(gr) { return gr.label === label; })[0];
+    if (!g) { g = { label: label, rader: [] }; grupper.push(g); }
+    g.rader.push({ e: x.e, idx: idx });
   });
+
+  var html = grupper.map(function(g) {
+    var meta = g.rader.length + ' emne' + (g.rader.length !== 1 ? 'r' : '');
+    var rows = g.rader.map(function(r) { return buildOppstartEmneRow(r.e, r.idx); }).join('');
+    return '<div class="s0-emnegroup">'
+      + '<div class="s0-emnegroup-header" onclick="toggleS0EmnegroupOpen(this)">'
+      + '<div><span class="s0-emnegroup-name">' + g.label + '</span><span class="s0-emnegroup-count">' + meta + '</span></div>'
+      + '<svg class="s0-emnegroup-chevron open" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      + '</div>'
+      + '<div class="s0-emnegroup-list open">' + rows + '</div>'
+      + '</div>';
+  }).join('');
+
   document.getElementById('oppstartEmnerList').innerHTML = html;
+}
+
+function buildOppstartEmneRow(e, idx) {
+  var code = e.code ? String(e.code) : ('emne-' + idx);
+  var dateIdx = _individualDates[code];
+  var hasDate = dateIdx !== undefined;
+  var isActive = _oppstartMode === 'individual' && idx === _activeEmneIdx && !hasDate;
+
+  // Oppstartsbadge vises først når datoen er kjent
+  var oppstartBadge = '';
+  if (_oppstartMode === 'individual' && hasDate) {
+    oppstartBadge = '<span class="s0-badge">Oppstart ' + OPPSTART_DATES[dateIdx].badge + '</span>';
+  } else if (_oppstartMode === 'same' && _sharedDateIdx !== null) {
+    oppstartBadge = '<span class="s0-badge">Oppstart ' + OPPSTART_DATES[_sharedDateIdx].badge + '</span>';
+  }
+
+  var price = e.price || 0;
+  var after = _rabattPercent > 0 ? price - Math.round(price * _rabattPercent / 100) : price;
+  var priceHtml = _rabattPercent > 0
+    ? '<span class="s0-emne-price-strike">' + price.toLocaleString('nb-NO') + ',-</span><span class="s0-emne-price">' + after.toLocaleString('nb-NO') + ',-</span>'
+    : '<span class="s0-emne-price">' + price.toLocaleString('nb-NO') + ',-</span>';
+
+  var html = '<div class="s0-emne-row">'
+    + '<div class="s0-emne-badges"><span class="s0-badge-nett">Nett</span>' + oppstartBadge + '</div>'
+    + '<div class="s0-emne-name">' + e.name + '</div>'
+    + '<div class="s0-emne-row-bottom">'
+    + '<span class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</span>'
+    + priceHtml
+    + '</div>';
+
+  // Per-emne datovalg — bare i «individuell»-modus
+  if (_oppstartMode === 'individual') {
+    if (!hasDate) {
+      html += '<button class="opp-velg-link" style="margin-top:10px;" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
+    }
+    html += '<div class="opp-inline-picker' + (isActive ? ' open' : '') + '" id="opp-picker-' + idx + '">'
+      + '<p class="opp-section-title" style="margin-bottom:12px;">Velg oppstartsdato</p>'
+      + renderDateCards('selectIndividualDate', idx, hasDate ? dateIdx : null)
+      + '</div>';
+  }
+
+  return html + '</div>';
 }
 
 function renderOppstartSection() {
@@ -2093,11 +2441,6 @@ function renderOppstartSection() {
   _activeEmneIdx = 0;
   document.getElementById('cb-sammedato').classList.add('checked');
   document.getElementById('sharedDateSection').style.display = 'block';
-
-  var progNames = [];
-  emner.forEach(function(x) { if (x.progName && progNames.indexOf(x.progName) === -1) progNames.push(x.progName); });
-  document.getElementById('oppstartProgLabel').textContent = progNames.length ? progNames.join(', ') : 'Emner';
-  document.getElementById('oppstartEmneCountLabel').textContent = emner.length + ' emne' + (emner.length !== 1 ? 'r' : '');
 
   renderOppstartEmnerList(emner);
   document.getElementById('sharedDateOptions').innerHTML = renderDateCards('selectSharedDate', null, _sharedDateIdx);
@@ -2124,6 +2467,8 @@ function selectSharedDate(idx) {
   document.getElementById('sharedDateOptions').innerHTML = renderDateCards('selectSharedDate', null, idx);
   var err = document.getElementById('err-sharedDate');
   if (err) err.classList.remove('show');
+  // Oppdater oppstartsbadgen på emnene
+  renderOppstartEmnerList(getAllCartEmner());
 }
 
 function selectIndividualDate(emneIdx, dateIdx) {
@@ -2176,6 +2521,8 @@ function gaVidereStep3() {
   if (!validateField('postnr', /^\d{4}$/.test(document.getElementById('postnr').value.trim()))) ok = false;
   if (!validateField('poststed', document.getElementById('poststed').value.trim().length > 0)) ok = false;
   if (!ok) return;
+
+  processCompletedConflicts();
 
   var b = getBasket();
   var hasEmner = (b.looseEmner && b.looseEmner.length > 0) ||
@@ -2231,91 +2578,142 @@ function updateSpraakRadio(input) {
 
 /* Step 4 */
 function renderPaymentStep() {
-  renderCompletedConflictBanner('completedConflictBannerStep4', true);
+  processCompletedConflicts();
 
   var b = getBasket();
   var programs = b.programs || [];
   var loose = b.looseEmner || [];
 
-  // Campus programs → Studieprogram section (separate, above emner)
-  var campusPrograms = programs.filter(function(p) { return p.type !== 'nett'; });
-  var spSection = document.getElementById('betalingSPSection');
-  if (campusPrograms.length > 0) {
-    var cp = campusPrograms[0];
-    document.getElementById('betalingSPName').textContent = (cp.level ? cp.level + ' i ' : '') + cp.name;
-    var badges = '';
-    if (cp.startSemester) badges += '<span class="badge badge-gray">' + cp.startSemester + '</span>';
-    if (cp.city) badges += '<span class="badge badge-orange">' + cp.city + '</span>';
-    document.getElementById('betalingSPBadges').innerHTML = badges;
-    spSection.style.display = 'block';
-  } else {
-    spSection.style.display = 'none';
-  }
-
-  // Nett emner → combined emner + payment section
-  var allEmner = [];
-  programs.forEach(function(p) {
-    if (p.type === 'nett' && p.emner) p.emner.forEach(function(e) { allEmner.push({ e: e, prog: p.name }); });
-  });
-  loose.forEach(function(e) { allEmner.push({ e: e, prog: null }); });
-
+  // Nett emner (nettprogram + løse emner) → redigerbare emnegrupper
+  var nettPrograms = programs.filter(function(p) { return p.type === 'nett'; });
+  var allEmner = getAllCartEmner().map(function(x) { return x.e; });
   var emnerSection = document.getElementById('betalingEmnerSection');
-  var total = allEmner.reduce(function(s, x) { return s + (x.e.price || 0); }, 0);
+  var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
   var after = _rabattPercent > 0 ? total - Math.round(total * _rabattPercent / 100) : total;
   _betalingTotal = after;
 
-  var betalBtn = document.getElementById('betalBtnAmount');
-  if (betalBtn) betalBtn.textContent = after.toLocaleString('nb-NO') + ' kr';
-
   if (allEmner.length > 0) {
     emnerSection.style.display = 'block';
-
-    var countEl = document.getElementById('betalingEmnerCount');
-    if (_rabattPercent > 0) {
-      countEl.innerHTML = allEmner.length + ' emner &middot; <span style="text-decoration:line-through;color:#aaa;">' + total.toLocaleString('nb-NO') + ' kr</span> <strong>' + after.toLocaleString('nb-NO') + ' kr</strong>';
-    } else {
-      countEl.textContent = allEmner.length + ' emner · ' + after.toLocaleString('nb-NO') + ' kr';
-    }
-
-    var groups = {};
-    allEmner.forEach(function(x) {
-      var key = x.prog || '__loes__';
-      if (!groups[key]) groups[key] = { label: x.prog || 'Emner uten tilknytning til studieprogram', emner: [] };
-      groups[key].emner.push(x.e);
-    });
-    var html = '';
-    Object.keys(groups).forEach(function(k) {
-      var g = groups[k];
-      html += '<div class="summary-emner-group">'
-        + '<div class="summary-emner-header" onclick="toggleSummaryGroup(this)">'
-        + '<div><span class="seg-label" style="font-size:13px;color:#888;">' + g.label + '</span><br>'
-        + '<span class="summary-emner-count" style="font-size:15px;font-weight:700;color:#121212;">' + g.emner.length + ' emne' + (g.emner.length > 1 ? 'r' : '') + '</span></div>'
-        + '<svg class="seg-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-        + '</div><div class="summary-emner-list">';
-      g.emner.forEach(function(e) {
-        var oppstart = e.startDate ? e.startDate : (e.startSemester ? e.startSemester : '');
-        html += '<div class="emne-row-inner">'
-          + '<div><div class="emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</div>'
-          + '<div class="emne-name">' + e.name + '</div></div>'
-          + '<div class="emne-badges">'
-          + (oppstart ? '<span class="badge badge-gray">' + oppstart + '</span>' : '')
-          + (e.type === 'nett' || !e.type ? '<span class="badge badge-nett">Nett</span>' : '')
-          + '</div></div>';
-      });
-      html += '</div></div>';
-    });
-    document.getElementById('betalingEmnerAccordion').innerHTML = html;
+    renderBetalingEmnerGroups(nettPrograms, loose);
   } else {
     emnerSection.style.display = 'none';
   }
+
+  renderBetalingRabattSection();
+  renderBetalingSokerRow();
+  updateStep4Cta();
+}
+
+/* Søkeren, slik at man kan verifisere seg selv rett før innsending */
+function renderBetalingSokerRow() {
+  var el = document.getElementById('betalingSokerRow');
+  if (!el) return;
+
+  var navn = (document.getElementById('fornavn').value + ' ' + document.getElementById('etternavn').value).trim();
+  if (!navn) { el.innerHTML = ''; return; }
+
+  var epost = document.getElementById('epost').value;
+  el.innerHTML = '<div class="pay-summary-card" style="margin-bottom:24px;">'
+    + '<div class="pay-summary-main">'
+    + '<div class="pay-summary-name">' + navn + '</div>'
+    + '<div class="pay-summary-detail">' + (epost || 'Søker') + '</div>'
+    + '</div>'
+    + '<button class="pay-summary-change" style="padding:0;" onclick="gaVidere(3)">Endre</button>'
+    + '</div>';
+}
+
+/* Forklaringen under betalingsmåtene følger valget. Selve knappen på Betaling
+   er alltid «Gå videre» — innsending og betaling skjer på bekreftelsesskjermen. */
+function updateStep4Cta() {
+  var note = document.getElementById('step4CommitNote');
+  if (!note) return;
+
+  var checked = document.querySelector('input[name="betaling"]:checked');
+  note.textContent = commitNoteText(checked ? checked.value : null);
+}
+
+function renderBetalingEmnerGroups(nettPrograms, looseEmner) {
+  var html = '';
+  nettPrograms.forEach(function(p) {
+    var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : '';
+    var meta = (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '');
+    html += buildEmnegroupHtml(p.name, meta, p.emner || [], safeId, false, 'btRemoveEmne', true);
+  });
+  if (looseEmner.length > 0) {
+    html += buildEmnegroupHtml('Emner uten tilknytning til studieprogram', looseEmner.length + ' emne' + (looseEmner.length !== 1 ? 'r' : ''), looseEmner, null, true, 'btRemoveEmne', true);
+  }
+  document.getElementById('betalingEmnerGroups').innerHTML = html;
+}
+
+function btRemoveEmne(programId, code, isLoose) {
+  if (isLoose) removeLooseEmne(code);
+  else removeEmne(programId, code);
+  renderPaymentStep();
+  renderSidebar();
+}
+
+function renderBetalingRabattSection() {
+  var el = document.getElementById('betalingRabattSection');
+  if (!el) return;
+
+  if (_rabattPercent > 0) {
+    var allEmner = getAllCartEmner().map(function(x) { return x.e; });
+    var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
+    var discountAmt = Math.round(total * _rabattPercent / 100);
+    el.innerHTML = '<div class="s0-rabatt-applied">'
+      + '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="#7a5c56" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="#7a5c56"/></svg>'
+      + '<span><strong style="font-weight:600;">' + _rabattCode.toLowerCase() + '</strong> &nbsp;&minus;' + discountAmt.toLocaleString('nb-NO') + ',-</span>'
+      + '<button class="s0-rabatt-applied-remove" onclick="clearRabattkode()">Fjern</button></div>';
+  } else {
+    el.innerHTML = '<button class="s0-rabatt-toggle" onclick="toggleRabattkode()">'
+      + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg>'
+      + 'Har du en rabattkode?</button>'
+      + '<div class="s0-rabatt-row" id="rabattkodeRow">'
+      + '<input type="text" id="rabattkode" placeholder="Skriv inn rabattkode">'
+      + '<button onclick="applyRabattkode()">Bruk</button>'
+      + '</div>'
+      + '<div id="rabattkodeFeedback" class="s0-rabatt-feedback" style="display:none;"></div>';
+  }
+}
+
+function toggleRabattkode() {
+  var row = document.getElementById('rabattkodeRow');
+  if (!row) return;
+  row.classList.toggle('open');
+  if (row.classList.contains('open')) document.getElementById('rabattkode').focus();
+}
+
+function applyRabattkode() {
+  var input = document.getElementById('rabattkode');
+  var code = input.value.trim().toUpperCase();
+  if (!code) return;
+  var valid = VALID_RABATTKODER.hasOwnProperty(code);
+  if (valid) { _rabattCode = code; _rabattPercent = VALID_RABATTKODER[code]; }
+  else { _rabattCode = null; _rabattPercent = 0; }
+
+  renderPaymentStep();
+  renderSidebar();
+
+  if (!valid) {
+    var fb = document.getElementById('rabattkodeFeedback');
+    if (fb) { fb.style.display = 'block'; fb.innerHTML = '<span style="color:#b60202;">Ugyldig rabattkode.</span>'; }
+  }
+}
+
+function clearRabattkode() {
+  _rabattCode = null; _rabattPercent = 0;
+  renderPaymentStep();
+  renderSidebar();
 }
 
 function gaVidereStep4() {
-  var conflicts = renderCompletedConflictBanner('completedConflictBannerStep4', true);
-  if (conflicts.length > 0) {
-    document.getElementById('completedConflictBannerStep4').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
+  processCompletedConflicts();
+
+  var personvernOk = document.getElementById('cb-personvern').classList.contains('checked');
+  var betingelserOk = document.getElementById('cb-betingelser').classList.contains('checked');
+  var samtykkeErr = document.getElementById('err-samtykke');
+  if (!personvernOk || !betingelserOk) { samtykkeErr.style.display = 'block'; return; }
+  samtykkeErr.style.display = 'none';
 
   var b = getBasket();
   var allEmner = [];
@@ -2326,21 +2724,33 @@ function gaVidereStep4() {
     var errEl = document.getElementById('err-betaling');
     if (!checked) { errEl.style.display = 'block'; return; }
     errEl.style.display = 'none';
-    if (checked.value === 'kort') {
-      showPaymentDetail('kort');
-    } else {
-      gaVidere(5);
-    }
+    _valgtBetalingsmate = checked.value;
+
+    // Alle betalingsmåter får en bekreftelsesskjerm (steg 4b) der commit-knappen
+    // ligger. Da betyr «Gå videre» her alltid bare «gå videre».
+    showPaymentDetail(checked.value);
     return;
   }
+
+  // Ingenting å betale for → søknaden sendes inn fra sammendraget
+  _valgtBetalingsmate = null;
   gaVidere(5);
 }
 
 /* Betalingsdetaljer (steg 4b) — vises etter valg av betalingsmetode */
-var PAYMENT_TITLES = { kort: 'Kortbetaling' };
+var PAYMENT_TITLES = {
+  kort: 'Kortbetaling',
+  avdrag: 'Avdrag',
+  faktura: 'Faktura',
+  arbeidsgiver: 'Arbeidsgiver eller NAV betaler'
+};
 var _paymentDetailHomes = {};
 var _currentPaymentMethod = null;
 var _paidReceipt = null;
+
+/* Registrert betalingsmåte — brukes i oppsummeringen på steg 5 og ved innsending */
+var _valgtBetalingsmate = null;
+var _valgtKortSiffer = '';
 
 function showPaymentDetail(method) {
   var expand = document.getElementById('expand-' + method);
@@ -2353,13 +2763,15 @@ function showPaymentDetail(method) {
   document.getElementById('pd-body').appendChild(expand);
   expand.classList.add('open');
 
+  // Kortdetaljer er siste skjerm: her skjer både betaling og innsending
   var cta = document.getElementById('pd-cta');
-  if (method === 'kort') {
-    cta.className = 'btn-betal';
-    cta.textContent = 'Betal ' + (_betalingTotal || 0).toLocaleString('nb-NO') + ' kr';
-  } else {
-    cta.className = 'btn-primary';
-    cta.textContent = 'Gå videre';
+  cta.className = 'btn-primary';
+  cta.textContent = commitCtaLabel(method);
+
+  var note = document.getElementById('pd-charge-note');
+  if (note) {
+    note.textContent = commitNoteText(method);
+    note.style.display = 'block';
   }
 
   document.getElementById('step4').classList.remove('active');
@@ -2379,16 +2791,23 @@ function restorePaymentDetailNode() {
   _currentPaymentMethod = null;
 }
 
+/* Kortdetaljer bekreftet → betal og send inn i samme handling */
 function confirmPaymentDetail() {
-  if (_currentPaymentMethod === 'kort') _paidReceipt = buildReceipt();
-  gaVidere(5);
+  _valgtBetalingsmate = _currentPaymentMethod;
+  _valgtKortSiffer = kortSisteFire();
+  animateSend();
+}
+
+function kortSisteFire() {
+  var input = document.getElementById('card-number');
+  var digits = input ? input.value.replace(/\D/g, '') : '';
+  return digits.slice(-4);
 }
 
 function buildReceipt() {
   var MONTHS = ['januar','februar','mars','april','mai','juni','juli','august','september','oktober','november','desember'];
   var d = new Date();
-  var cardInput = document.getElementById('card-number');
-  var last4 = (cardInput ? cardInput.value.replace(/\D/g, '') : '').slice(-4) || '4021';
+  var last4 = _valgtKortSiffer || kortSisteFire() || '4021';
   var order = Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(100 + Math.random() * 900);
   return {
     amount: _betalingTotal || 0,
@@ -2400,6 +2819,7 @@ function buildReceipt() {
 
 var _betalingTotal = 0;
 var _selectedAvdrag = 3;
+var _fakturaDager = 14;
 
 function updateBetalingRadio(value) {
   // Update radio checked state
@@ -2421,6 +2841,9 @@ function updateBetalingRadio(value) {
 
   // Render avdrag content when opened
   if (value === 'avdrag') renderAvdrag(_selectedAvdrag);
+
+  // Knappeteksten må si om innsendingen også belaster
+  updateStep4Cta();
 }
 
 function renderAvdrag(n) {
@@ -2453,6 +2876,7 @@ function toggleEhf() {
 }
 
 function selectFaktura(days) {
+  _fakturaDager = days;
   document.getElementById('fc-14').classList.toggle('selected', days === 14);
   document.getElementById('fc-45').classList.toggle('selected', days === 45);
 }
@@ -2466,31 +2890,6 @@ function formatExpiry(input) {
   var v = input.value.replace(/\D/g, '').substring(0, 4);
   if (v.length >= 3) v = v.substring(0, 2) + '/' + v.substring(2);
   input.value = v;
-}
-
-function toggleRabattkode() {
-  var row = document.getElementById('rabattkodeRow');
-  row.classList.toggle('open');
-  if (row.classList.contains('open')) document.getElementById('rabattkode').focus();
-}
-
-function applyRabattkode() {
-  var input = document.getElementById('rabattkode');
-  var feedback = document.getElementById('rabattkodeFeedback');
-  var code = input.value.trim().toUpperCase();
-  if (!code) return;
-  if (VALID_RABATTKODER.hasOwnProperty(code)) {
-    _rabattCode = code; _rabattPercent = VALID_RABATTKODER[code];
-    input.disabled = true;
-    feedback.style.display = 'block';
-    feedback.innerHTML = '<span style="color:#2d6a2d;font-weight:500;">✓ Rabattkoden «' + code + '» er aktivert (−' + _rabattPercent + '%).</span>';
-  } else {
-    _rabattCode = null; _rabattPercent = 0;
-    feedback.style.display = 'block';
-    feedback.innerHTML = '<span style="color:#b60202;">Ugyldig rabattkode.</span>';
-  }
-  renderPaymentStep();
-  renderSidebar();
 }
 
 /* Step 5 */
@@ -2607,12 +3006,12 @@ function renderStep5() {
     campusPrograms.forEach(function(p, idx) {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
-      if (p.city) badges += '<span class="badge badge-orange">' + p.city + '</span>';
+      if (p.city) badges += '<span class="badge badge-city">' + p.city + '</span>';
       progHtml += '<div style="margin-bottom:10px;">'
         + '<div class="sidebar-prioritet-label">' + (idx + 1) + '. prioritet</div>'
         + '<div style="border:1.5px solid #e5e5e5;border-radius:10px;padding:12px 14px;">'
         + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'
-        + '<span style="font-size:14px;font-weight:500;">' + (p.level ? p.level + ' i ' : '') + p.name + '</span>'
+        + '<span style="font-size:14px;font-weight:500;">' + programVisningsnavn(p) + '</span>'
         + '<div style="display:flex;gap:4px;">' + badges + '</div></div></div></div>';
     });
   }
@@ -2631,53 +3030,123 @@ function renderStep5() {
   var emnerHtml = '';
   if (allEmner.length > 0) {
     var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
-    var paid = !!_paidReceipt;
     emnerHtml += '<div class="summary-section-header"><span class="summary-label">Emner</span>'
-      + '<span style="display:flex;align-items:center;gap:8px;"><span class="summary-meta">' + allEmner.length + ' emner · ' + total.toLocaleString('nb-NO') + ' kr</span>' + (paid ? PAID_CHECK_ICON : '') + '</span></div>';
-    if (paid) {
-      emnerHtml += buildPaidEmnerBox(emnerByProg, loose, _paidReceipt);
-    } else {
-      Object.keys(emnerByProg).forEach(function(pname) { emnerHtml += buildEmnerGroup(pname, emnerByProg[pname]); });
-      if (loose.length > 0) emnerHtml += buildEmnerGroup('Emner uten tilknytning til studieprogram', loose);
-    }
+      + '<span class="summary-meta">' + allEmner.length + ' emner · ' + total.toLocaleString('nb-NO') + ' kr</span></div>';
+    Object.keys(emnerByProg).forEach(function(pname) { emnerHtml += buildEmnerGroup(pname, emnerByProg[pname]); });
+    if (loose.length > 0) emnerHtml += buildEmnerGroup('Emner uten tilknytning til studieprogram', loose);
   }
   document.getElementById('step5Emner').innerHTML = emnerHtml;
+
+  renderStep5Betaling(allEmner);
 }
 
-var PAID_CHECK_ICON = '<span style="display:inline-flex;width:20px;height:20px;border-radius:9999px;background:#068718;color:#fff;align-items:center;justify-content:center;flex-shrink:0;">'
-  + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:11px;height:11px;"><path d="M5 13l4.5 4.5L19 7"></path></svg></span>';
-
-function buildPaidEmnerBox(emnerByProg, loose, r) {
-  var html = '<div class="paid-emner-box">';
-  Object.keys(emnerByProg).forEach(function(pname) { html += buildPaidEmnerGroup(pname, emnerByProg[pname]); });
-  if (loose.length > 0) html += buildPaidEmnerGroup('Emner uten tilknytning til studieprogram', loose);
-  html += '<div class="paid-receipt-row">'
-    + '<div style="width:22px;height:22px;border-radius:9999px;background:#068718;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'
-    + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="width:13px;height:13px;"><path d="M5 13l4.5 4.5L19 7"></path></svg></div>'
-    + '<div style="display:flex;flex-direction:column;">'
-    + '<span style="font-size:14px;font-weight:600;color:#1C4B24;">Betalt ' + r.amount.toLocaleString('nb-NO') + ' kr &middot; ' + r.date + '</span>'
-    + '<span style="font-size:12px;color:#3D6A44;">Kort &bull;&bull;&bull;&bull; ' + r.last4 + '</span>'
-    + '</div></div>';
-  return html + '</div>';
+/* p.points er noen ganger et tall (180) og noen ganger ferdig tekst («180 studiepoeng») */
+function studiepoengTekst(points) {
+  if (!points) return '';
+  return /^[\d\s.,]+$/.test(String(points)) ? points + ' studiepoeng' : String(points);
 }
 
-function buildPaidEmnerGroup(label, emner) {
-  var html = '<div class="summary-emner-group">'
-    + '<div class="summary-emner-header" onclick="toggleSummaryGroup(this)">'
-    + '<div><span class="seg-label">' + label + '</span><br><span class="summary-emner-count">' + emner.length + ' emne' + (emner.length > 1 ? 'r' : '') + '</span></div>'
-    + '<svg class="seg-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#3D6A44" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-    + '</div><div class="summary-emner-list">';
-  emner.forEach(function(e) {
-    var oppstart = e.startDate ? e.startDate : (e.startSemester ? e.startSemester : '');
-    html += '<div class="emne-row-inner">'
-      + '<div><div class="emne-meta">' + (e.code ? '#' + e.code + ' &middot; ' : '') + (e.pts || '7,5') + ' studiepoeng</div>'
-      + '<div class="emne-name">' + e.name + '</div></div>'
-      + '<div class="emne-badges">'
-      + (oppstart ? '<span class="badge badge-gray">Oppstart ' + oppstart + '</span>' : '')
-      + '<span class="badge badge-nett">Nett</span>'
-      + '</div></div>';
-  });
-  return html + '</div></div>';
+/* Programnavn inneholder ofte nivået alt («Bachelor i …») — unngå dobbelt prefiks */
+function programVisningsnavn(p) {
+  if (!p.level) return p.name;
+  return p.name.toLowerCase().indexOf(p.level.toLowerCase()) === 0 ? p.name : p.level + ' i ' + p.name;
+}
+
+/* Betaling og innsending er én handling — teksten sier begge deler.
+   Brukes både på Betaling (steg 4) og kortdetaljer (steg 4b). */
+function belopAaBetale() {
+  var allEmner = getAllCartEmner().map(function(x) { return x.e; });
+  var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
+  return _rabattPercent > 0 ? total - Math.round(total * _rabattPercent / 100) : total;
+}
+
+function trekkesVedInnsending(metode) {
+  return metode === 'kort' || metode === 'avdrag';
+}
+
+function commitCtaLabel(metode) {
+  if (!basketHasEmner()) return 'Send inn søknad';
+  return trekkesVedInnsending(metode)
+    ? 'Send inn søknad og betal ' + belopAaBetale().toLocaleString('nb-NO') + ' kr'
+    : 'Send inn søknad';
+}
+
+function commitNoteText(metode) {
+  if (!basketHasEmner() || !metode) return '';
+  return trekkesVedInnsending(metode)
+    ? 'Beløpet trekkes når du sender inn. Da er søknaden registrert.'
+    : 'Du får faktura når opptaket er godkjent. Søknaden registreres når du sender inn.';
+}
+
+/* Oppsummering av valgt betalingsmåte + innsendingsknapp som sier hva som faktisk skjer */
+var BETALINGSMATE_LABEL = {
+  kort: 'Kortbetaling',
+  avdrag: 'Avdrag',
+  faktura: 'Faktura',
+  arbeidsgiver: 'Arbeidsgiver eller NAV betaler'
+};
+
+function betalingsmateDetalj(metode, belop) {
+  if (metode === 'kort') {
+    return _valgtKortSiffer
+      ? 'Visa/Mastercard &bull;&bull;&bull;&bull; ' + _valgtKortSiffer
+      : 'Visa eller Mastercard';
+  }
+  if (metode === 'avdrag') {
+    var perMnd = Math.round(belop / _selectedAvdrag);
+    return _selectedAvdrag + ' månedlige betalinger på ca. ' + perMnd.toLocaleString('nb-NO') + ' kr';
+  }
+  if (metode === 'faktura') {
+    return 'Betal innen ' + _fakturaDager + ' dager etter godkjent opptak'
+      + (_fakturaDager === 45 ? ' (300 kr gebyr)' : '');
+  }
+  if (metode === 'arbeidsgiver') {
+    var navn = (document.getElementById('ag-navn') || {}).value || '';
+    return navn ? 'Faktureres ' + navn : 'Faktureres arbeidsgiver';
+  }
+  return '';
+}
+
+function renderStep5Betaling(allEmner) {
+  var el = document.getElementById('step5Betaling');
+  var btn = document.getElementById('step5SendBtn');
+  var note = document.getElementById('step5SendNote');
+  if (!el || !btn) return;
+
+  var metode = _valgtBetalingsmate;
+
+  // Ingen emner å betale for → ren søknadsinnsending
+  if (!allEmner.length || !metode) {
+    el.innerHTML = '';
+    btn.textContent = 'Send inn søknad';
+    if (note) note.textContent = '';
+    return;
+  }
+
+  var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
+  var belop = _rabattPercent > 0 ? total - Math.round(total * _rabattPercent / 100) : total;
+  var trekkesNa = metode === 'kort' || metode === 'avdrag';
+
+  el.innerHTML = '<div class="summary-section-header"><span class="summary-label">Betalingsmåte</span></div>'
+    + '<div class="pay-summary-card">'
+    + '<div class="pay-summary-main">'
+    + '<div class="pay-summary-name">' + (BETALINGSMATE_LABEL[metode] || 'Betaling') + '</div>'
+    + '<div class="pay-summary-detail">' + betalingsmateDetalj(metode, belop) + '</div>'
+    + '</div>'
+    + '<div class="pay-summary-amount">' + belop.toLocaleString('nb-NO') + ' kr</div>'
+    + '</div>'
+    + '<button class="pay-summary-change" onclick="gaVidere(4)">Endre betalingsmåte</button>';
+
+  // Knappen sier eksplisitt at innsending og betaling skjer samtidig
+  btn.textContent = trekkesNa
+    ? 'Send inn søknad og betal ' + belop.toLocaleString('nb-NO') + ' kr'
+    : 'Send inn søknad';
+
+  if (note) {
+    note.textContent = trekkesNa
+      ? 'Beløpet trekkes når du sender inn. Da er søknaden registrert.'
+      : 'Du får faktura når opptaket er godkjent. Søknaden registreres når du sender inn.';
+  }
 }
 
 function buildEmnerGroup(label, emner) {
@@ -2707,6 +3176,13 @@ function toggleSummaryGroup(header) {
 }
 
 function animateSend() {
+  // Innsending og betaling skjer samtidig — her belastes kortet
+  if (_valgtBetalingsmate === 'kort' || _valgtBetalingsmate === 'avdrag') {
+    _paidReceipt = buildReceipt();
+  } else {
+    _paidReceipt = null;
+  }
+
   var el = document.createElement('div');
   el.className = 'snd-ov';
   el.innerHTML = '<div class="snd-center">'
@@ -2761,16 +3237,25 @@ function sendSoknad() {
   var programs = b.programs || [];
   var loose = b.looseEmner || [];
 
-  // Studieprogram
+  // Hele program — samme oppsett som i oppsummeringen: prioritet, navn, badges
   var campusPrograms = programs.filter(function(p) { return p.type !== 'nett'; });
   var progHtml = '';
   if (campusPrograms.length > 0) {
-    progHtml += '<div class="receipt-section-label">Studieprogram</div>';
-    campusPrograms.forEach(function(p) {
+    progHtml += '<div class="receipt-section-head">'
+      + '<span class="receipt-section-label">Hele program</span>'
+      + '<span class="sb-section-note">Faktureres per semester'
+      + '<span class="s0-info-wrap"><button class="s0-info-btn" onclick="toggleFaktorTooltip(event)" aria-label="Mer informasjon">' + ICON_INFO_SB + '</button>'
+      + '<span class="s0-tooltip">Studieavgiften deles i to like betalinger — én ved semesterstart om høsten og én om våren.</span></span>'
+      + '</span></div>';
+    campusPrograms.forEach(function(p, idx) {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
-      if (p.city) badges += '<span class="badge badge-orange">' + p.city + '</span>';
-      progHtml += '<div class="sp-row"><span style="font-size:14px;font-weight:500;">' + (p.level ? p.level + ' i ' : '') + p.name + '</span><div class="sp-badges">' + badges + '</div></div>';
+      if (p.city) badges += '<span class="badge badge-city">' + p.city + '</span>';
+      progHtml += '<div class="sb-prio-block">'
+        + '<div class="sb-prio-label">' + (idx + 1) + '. prioritet</div>'
+        + '<div class="sb-prio-name">' + programVisningsnavn(p) + '</div>'
+        + '<div style="display:flex;gap:4px;flex-wrap:wrap;">' + badges + '</div>'
+        + '</div>';
     });
   }
   document.getElementById('receiptPrograms').innerHTML = progHtml;
@@ -2794,6 +3279,26 @@ function sendSoknad() {
   }
   document.getElementById('receiptEmner').innerHTML = emnerHtml;
 
+  // Betaling — kvitteringen er stedet der betalingsstatus hører hjemme
+  var betEl = document.getElementById('receiptBetaling');
+  if (betEl) {
+    if (_paidReceipt) {
+      var r = _paidReceipt;
+      betEl.innerHTML = '<div class="receipt-section-label">Betaling</div>'
+        + '<div class="receipt-paid-row">'
+        + '<div class="receipt-paid-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" style="width:13px;height:13px;"><path d="M5 13l4.5 4.5L19 7"/></svg></div>'
+        + '<div><div class="receipt-paid-title">Betalt ' + r.amount.toLocaleString('nb-NO') + ' kr</div>'
+        + '<div class="receipt-paid-sub">Kort &bull;&bull;&bull;&bull; ' + r.last4 + ' &middot; ' + r.date + ' &middot; Ordre ' + r.order + '</div></div>'
+        + '</div>';
+    } else if (_valgtBetalingsmate) {
+      betEl.innerHTML = '<div class="receipt-section-label">Betaling</div>'
+        + '<div class="receipt-pending-row">' + (BETALINGSMATE_LABEL[_valgtBetalingsmate] || 'Betaling')
+        + ' &middot; ' + betalingsmateDetalj(_valgtBetalingsmate, _betalingTotal || 0) + '</div>';
+    } else {
+      betEl.innerHTML = '';
+    }
+  }
+
   // Email
   var emailEl = document.getElementById('epost');
   var email = emailEl ? emailEl.value.trim() : '';
@@ -2807,6 +3312,8 @@ function sendSoknad() {
 
 /* Sidebar */
 function renderSidebar() {
+  processCompletedConflicts();
+
   var b = getBasket();
   var programs = b.programs || [];
   var loose = b.looseEmner || [];
@@ -2817,19 +3324,20 @@ function renderSidebar() {
     campusPrograms.forEach(function(p, idx) {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
-      if (p.city) badges += '<span class="badge badge-orange">' + p.city + '</span>';
-      progHtml += '<div style="margin-bottom:14px;">'
-        + '<div style="font-size:13px;font-weight:700;color:#121212;margin-bottom:4px;">' + (idx + 1) + '. prioritet</div>'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-left:8px;">'
-        + '<span style="font-size:14px;font-weight:400;color:#121212;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + p.name + '</span>'
-        + '<div style="display:flex;gap:4px;flex-shrink:0;">' + badges + '</div>'
-        + '</div>'
+      if (p.city) badges += '<span class="badge badge-city">' + p.city + '</span>';
+      progHtml += '<div class="sb-prio-block">'
+        + '<div class="sb-prio-label">' + (idx + 1) + '. prioritet</div>'
+        + '<div class="sb-prio-name">' + p.name + '</div>'
+        + '<div style="display:flex;gap:4px;flex-wrap:wrap;">' + badges + '</div>'
         + '</div>';
     });
     if (progHtml) {
-      progHtml = '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;">'
-        + '<span style="font-size:13px;font-weight:700;color:#4e0000;">Hele program</span>'
-        + '<span style="font-size:12px;color:#4e0000;">Faktureres per semester</span></div>'
+      progHtml = '<div class="sb-section-head">'
+        + '<span class="sb-section-label">Hele program</span>'
+        + '<span class="sb-section-note">Faktureres per semester'
+        + '<span class="s0-info-wrap"><button class="s0-info-btn" onclick="toggleFaktorTooltip(event)" aria-label="Mer informasjon">' + ICON_INFO_SB + '</button>'
+        + '<span class="s0-tooltip">Studieavgiften deles i to like betalinger — én ved semesterstart om høsten og én om våren.</span></span>'
+        + '</span></div>'
         + progHtml;
     }
   }
@@ -2850,10 +3358,13 @@ function renderSidebar() {
     var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
     var after = _rabattPercent > 0 ? total - Math.round(total * _rabattPercent / 100) : total;
     var priceStr = _rabattPercent > 0
-      ? '<span style="text-decoration:line-through;color:#aaa;">' + total.toLocaleString('nb-NO') + ' kr</span> <strong>' + after.toLocaleString('nb-NO') + ' kr</strong>'
-      : total.toLocaleString('nb-NO') + ' kr';
-    if (progHtml) emnerHtml += '<div style="height:1px;background:#e8e8e8;margin:12px 0;"></div>';
-    emnerHtml += '<div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:8px;"><span style="font-size:12px;font-weight:600;color:#4e0000;letter-spacing:.5px;">Emner</span><span style="font-size:12px;color:#666;">' + allEmner.length + ' emner &middot; ' + priceStr + '</span></div>';
+      ? '<span style="text-decoration:line-through;color:#aaa;">' + total.toLocaleString('nb-NO') + '</span> <strong>' + after.toLocaleString('nb-NO') + '</strong>'
+      : total.toLocaleString('nb-NO');
+    if (progHtml) emnerHtml += '<div class="sb-divider"></div>';
+    emnerHtml += '<div class="sb-section-head">'
+      + '<span class="sb-section-label">Emner (' + allEmner.length + ' stk.)</span>'
+      + '<span class="sb-section-amount">' + priceStr + '</span></div>';
+    emnerHtml += buildConflictBannerHtml();
     Object.keys(emnerByProg).forEach(function(pname) { emnerHtml += buildSidebarGroup(pname, emnerByProg[pname]); });
     if (loose.length > 0) emnerHtml += buildSidebarGroup('Emner uten tilknytning til studieprogram', loose);
   }
@@ -2863,12 +3374,42 @@ function renderSidebar() {
   document.getElementById('sidebar-rediger').innerHTML = hasAnything
     ? '<button class="sidebar-rediger-link" onclick="gaVidere(0)">Rediger</button>'
     : '';
+
+  // Steg 4: prisoppstilling nederst. Ingen samlet «Betales nå»-tittel — studieprogram
+  // faktureres per semester, så bare emne-delen hører under «Betales nå».
+  var betalingEl = document.getElementById('sidebar-betaling');
+  if (betalingEl) betalingEl.innerHTML = _currentStep === 4 ? buildBetalingOppsummeringHtml(allEmner) : '';
+}
+
+function buildBetalingOppsummeringHtml(allEmner) {
+  var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
+  var after = _rabattPercent > 0 ? total - Math.round(total * _rabattPercent / 100) : total;
+  var discountAmt = total - after;
+  var hasEmner = allEmner.length > 0;
+
+  var html = '';
+  if (hasEmner) {
+    html += '<div class="sb-divider"></div>'
+      + '<div class="s0-summary-betnow-title">Betales nå</div>'
+      + '<div class="s0-summary-row"><span>Nettemner (' + allEmner.length + ' stk.)</span><span>' + total.toLocaleString('nb-NO') + '</span></div>';
+    if (discountAmt > 0) {
+      html += '<div class="s0-summary-row s0-summary-discount"><span>Rabatt (' + _rabattCode.toLowerCase() + ')</span><span>&minus; ' + discountAmt.toLocaleString('nb-NO') + '</span></div>';
+    }
+    html += '<div class="s0-summary-divider"></div>'
+      + '<div class="s0-summary-sum-row"><span>Sum</span><span>'
+      + (discountAmt > 0 ? '<span class="s0-summary-strike">' + total.toLocaleString('nb-NO') + '</span> ' : '')
+      + '<strong>' + after.toLocaleString('nb-NO') + '</strong></span></div>';
+  }
+
+  html += '<div class="s0-help-card"><div class="s0-help-avatar">VI</div><div><div class="s0-help-title">Trenger du hjelp?</div><div class="s0-help-sub">Chat med en studieveileder nå.</div></div></div>';
+
+  return html;
 }
 
 function buildSidebarGroup(label, emner) {
   return '<div class="summary-emner-group">'
     + '<div class="summary-emner-header" onclick="toggleSummaryGroup(this)">'
-    + '<div><span class="seg-label" style="font-size:13px;">' + label + '</span><br>'
+    + '<div><span class="seg-label" style="display:block;font-size:15px;font-weight:400;margin-bottom:2px;">' + label + '</span>'
     + '<span class="summary-emner-count">' + emner.length + ' emne' + (emner.length > 1 ? 'r' : '') + '</span></div>'
     + '<svg class="seg-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
     + '</div><div class="summary-emner-list">'
@@ -2900,11 +3441,13 @@ document.addEventListener('input', function(e) {
 document.addEventListener('DOMContentLoaded', function() {
   renderSidebar();
   var params = new URLSearchParams(window.location.search);
-  if (params.get('steg') === 'login' && !_feideLoggedIn) {
-    gaVidere(1);
-  } else {
-    gaVidere(0);
-  }
+
+  // Uten ?steg=login starter vi på Studievalg som før
+  if (params.get('steg') !== 'login') { gaVidere(0); return; }
+
+  // Fra handlekurven er studievalget gjort → hopp forbi Studievalg (og forbi
+  // innlogging hvis brukeren allerede er innlogget)
+  gaTilStegEtterStudievalg();
 });
 </script>
 </body>

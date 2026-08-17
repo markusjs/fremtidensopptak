@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "mcp10x": {
+      "type": "http",
+      "url": "https://mcp10x.forteapps.net/mcp"
+    },
+    "drop": {
+      "type": "http",
+      "url": "https://mcp.drop.forteapps.net/mcp"
+    }
+  }
+}

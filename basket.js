@@ -101,7 +101,6 @@ var BASKET_CSS = '\
 .hk-badge{font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;white-space:nowrap;color:#101828;line-height:16px}\
 .hk-badge-sem{background:#f4ebe6}\
 .hk-badge-city{background:#f9ccd2}\
-.hk-badge-nett{background:#f9ccd2}\
 .hk-trash{background:#eef1f6;border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;color:#3b6ea8;transition:background .15s,color .15s;flex-shrink:0}\
 .hk-trash:hover{background:#dde6f0;color:#254e75}\
 .hk-chevron{background:none;border:none;cursor:pointer;padding:4px;transition:transform .2s;color:#121212}\
@@ -135,6 +134,29 @@ var BASKET_CSS = '\
 .hk-btn-primary{display:block;width:100%;text-align:center;padding:13px;border-radius:40px;font-size:16px;font-weight:600;cursor:pointer;border:none;background:#06f;color:#fff;text-decoration:none;font-family:inherit}\
 .hk-btn-primary:hover{background:#0052cc}\
 .hk-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;padding:64px 16px 16px;color:#888}\
+.hk-save-card{background:#fbeee4;border:1px solid #f0dfd2;border-radius:12px;margin-bottom:16px;overflow:hidden}\
+.hk-save-card .hk-card-header{padding:16px;align-items:center}\
+.hk-save-title{font-size:16px;font-weight:700;color:#121212;margin:0}\
+.hk-save-body{padding:0 16px 20px}\
+.hk-radio-group{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px}\
+.hk-radio-option{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:15px;color:#121212}\
+.hk-radio-option input{position:absolute;opacity:0;width:0;height:0}\
+.hk-radio-dot{position:relative;width:20px;height:20px;border-radius:50%;border:1.5px solid #06f;background:#fff;flex-shrink:0;box-sizing:border-box}\
+.hk-radio-dot::after{content:"";position:absolute;top:50%;left:50%;width:10px;height:10px;border-radius:50%;background:transparent;transform:translate(-50%,-50%)}\
+.hk-radio-option input:checked + .hk-radio-dot::after{background:#06f}\
+.hk-save-consent-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:16px}\
+.hk-save-cb{width:20px;height:20px;min-width:20px;border:1.5px solid #c7c8ca;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;margin-top:1px;transition:background .15s,border-color .15s}\
+.hk-save-cb.checked{background:#06f;border-color:#06f}\
+.hk-save-cb-label{font-size:14px;color:#121212;line-height:1.4;cursor:pointer}\
+.hk-save-input-row{display:flex;gap:10px}\
+.hk-save-input{flex:1;min-width:0;border:1.5px solid #c7c8ca;border-radius:8px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;background:#fff}\
+.hk-save-input:focus{border-color:#06f}\
+.hk-save-send-btn{background:#06f;color:#fff;border:none;border-radius:8px;padding:0 22px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}\
+.hk-save-send-btn:hover{background:#0052cc}\
+.hk-save-privacy{font-size:13px;color:#3f3f3f;line-height:1.5;margin:14px 0 0}\
+.hk-save-privacy a{color:#121212}\
+.hk-save-success-row{display:flex;gap:10px;align-items:flex-start}\
+.hk-save-success{font-size:15px;color:#121212;font-weight:400;margin:0;line-height:1.5}\
 .hk-city-popover{position:fixed;z-index:1300;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);padding:16px;min-width:200px}\
 .hk-city-popover h4{margin:0 0 12px;font-size:15px;font-weight:700;color:#111}\
 .hk-city-btn{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:6px;border:1.5px solid #ddd;border-radius:8px;background:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}\
@@ -819,7 +841,8 @@ function injectSidebarPanel() {
     + '<div class="hk-body" id="hk-body"></div>'
     + '<div class="hk-footer" id="hk-footer">'
     + '<div id="hk-auth-slot"></div>'
-    + '<a href="' + getSokSkjemaPath() + '" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre med søknaden</a>'
+    // Fra handlekurven er studievalget allerede gjort → hopp rett til innlogging
+    + '<a href="' + getSokSkjemaPath() + '?steg=login" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre med søknaden</a>'
     + '</div>'
     + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
@@ -879,6 +902,80 @@ function buildAuthFooterRow() {
 var CHEVRON_DOWN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 var CHEVRON_UP = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+/* ─── «Lagre og fortsett senere» — send søknaden til seg selv på e-post/SMS ─── */
+var _hkSaveOpen = false;
+var _hkSaveMethod = 'epost'; // 'epost' | 'sms'
+var _hkSaveConsent = false;
+
+function hkSaveBoxHtml() {
+  var isEpost = _hkSaveMethod === 'epost';
+  var body = '';
+  if (_hkSaveOpen) {
+    body = '<div class="hk-save-body">'
+      + '<div class="hk-radio-group">'
+      + '<label class="hk-radio-option"><input type="radio" name="hk-save-method"' + (isEpost ? ' checked' : '') + ' onchange="setHkSaveMethod(\'epost\')"><span class="hk-radio-dot"></span>Send på e-post</label>'
+      + '<label class="hk-radio-option"><input type="radio" name="hk-save-method"' + (!isEpost ? ' checked' : '') + ' onchange="setHkSaveMethod(\'sms\')"><span class="hk-radio-dot"></span>Send på SMS</label>'
+      + '</div>'
+      + '<div class="hk-save-consent-row">'
+      + '<div id="hk-save-cb" class="hk-save-cb' + (_hkSaveConsent ? ' checked' : '') + '" onclick="hkToggleSaveConsent()">' + (_hkSaveConsent ? CHECK_SVG_SMALL : '') + '</div>'
+      + '<span class="hk-save-cb-label" onclick="hkToggleSaveConsent()">En studierådgiver kan ta kontakt for å hjelpe meg med studievalg (valgfritt).</span>'
+      + '</div>'
+      + '<div class="hk-save-input-row">'
+      + '<input type="' + (isEpost ? 'email' : 'tel') + '" id="hk-save-input" class="hk-save-input" placeholder="' + (isEpost ? 'Din e-postadresse' : 'Ditt mobilnummer') + '">'
+      + '<button class="hk-save-send-btn" onclick="sendBasketSave()">Send</button>'
+      + '</div>'
+      + '<p class="hk-save-privacy">Vi behandler opplysningene dine i tråd med <a href="#">personvernerklæringen</a>.</p>'
+      + '</div>';
+  }
+  return '<div class="hk-card hk-save-card" id="hk-save-box">'
+    + '<div class="hk-card-header hk-clickable" onclick="toggleHkSaveBox()">'
+    + '<p class="hk-save-title">Lagre og fortsett senere</p>'
+    + '<button class="hk-chevron">' + (_hkSaveOpen ? CHEVRON_UP : CHEVRON_DOWN) + '</button>'
+    + '</div>'
+    + body
+    + '</div>';
+}
+
+var CHECK_SVG_SMALL = '<svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var CHECK_SVG_DARK = '<svg width="16" height="12" viewBox="0 0 16 12" fill="none" style="flex-shrink:0;margin-top:3px"><path d="M1 6l4.5 4.5L15 1" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function toggleHkSaveBox() {
+  _hkSaveOpen = !_hkSaveOpen;
+  var box = document.getElementById('hk-save-box');
+  if (box) box.outerHTML = hkSaveBoxHtml();
+}
+
+function hkToggleSaveConsent() {
+  _hkSaveConsent = !_hkSaveConsent;
+  var cb = document.getElementById('hk-save-cb');
+  if (cb) {
+    cb.classList.toggle('checked', _hkSaveConsent);
+    cb.innerHTML = _hkSaveConsent ? CHECK_SVG_SMALL : '';
+  }
+}
+
+function setHkSaveMethod(method) {
+  _hkSaveMethod = method;
+  var box = document.getElementById('hk-save-box');
+  if (box) box.outerHTML = hkSaveBoxHtml();
+}
+
+function sendBasketSave() {
+  var input = document.getElementById('hk-save-input');
+  if (!input) return;
+  var val = input.value.trim();
+  var valid = _hkSaveMethod === 'epost'
+    ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)
+    : val.replace(/\s/g, '').length >= 8;
+  if (!valid) { input.style.borderColor = '#b60202'; input.focus(); return; }
+  var body = input.closest('.hk-save-body');
+  if (!body) return;
+  var safeVal = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  body.innerHTML = '<div class="hk-save-success-row">' + CHECK_SVG_DARK
+    + '<p class="hk-save-success">En lenke har blitt sendt til «' + safeVal + '». Bruk den for å fortsette søknaden senere.</p>'
+    + '</div>';
+}
+
 /* ─── Render ─── */
 /* Fyller innloggingsraden + viser/skjuler "Gå videre"-knappen. Kalles av alle
    visninger i #sok-panel (søknadsliste, velg-studieprogram, velg-campus) slik
@@ -930,7 +1027,33 @@ function renderBasketPanel() {
     html += renderLooseEmner(b.looseEmner);
   }
 
+  if (!getAuthState()) html += hkSaveBoxHtml();
+
   body.innerHTML = html;
+}
+
+/* Fjerning fra Søknader-panelet må også oppdatere søknadsskjemaet bak panelet,
+   ellers står den siden med utdatert innhold. Funksjonene finnes bare der. */
+function refreshSoknadsskjemaOmTilstede() {
+  var steg = (typeof _currentStep !== 'undefined') ? _currentStep : null;
+  if (steg === 0 && typeof renderStep0 === 'function') renderStep0();
+  if (steg === 4 && typeof renderPaymentStep === 'function') renderPaymentStep();
+  if (typeof renderSidebar === 'function') renderSidebar();
+}
+
+function hkRemoveProgram(id) {
+  removeProgram(id);
+  refreshSoknadsskjemaOmTilstede();
+}
+
+function hkRemoveEmne(programId, code) {
+  removeEmne(programId, code);
+  refreshSoknadsskjemaOmTilstede();
+}
+
+function hkRemoveLooseEmne(code) {
+  removeLooseEmne(code);
+  refreshSoknadsskjemaOmTilstede();
 }
 
 function renderCampusCard(prog) {
@@ -941,7 +1064,7 @@ function renderCampusCard(prog) {
     + '<div><div class="hk-card-meta">' + (prog.level || '') + (prog.points ? ' · ' + prog.points : '') + '</div>'
     + '<div class="hk-card-name">' + prog.name + '</div></div>'
     + '<div class="hk-card-right">' + badges
-    + '<button class="hk-trash" onclick="removeProgram(\'' + prog.id + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
+    + '<button class="hk-trash" onclick="hkRemoveProgram(\'' + prog.id + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
     + '</div></div></div>';
 }
 
@@ -960,7 +1083,7 @@ function renderNettCard(prog) {
         + '<div class="hk-emne-name">' + e.name + '</div></div>'
         + '<div class="hk-emne-right">'
         + (e.startDate ? '<span class="hk-badge-date">' + e.startDate + '</span>' : '')
-        + '<button class="hk-trash" onclick="removeEmne(\'' + prog.id + '\',\'' + e.code + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
+        + '<button class="hk-trash" onclick="hkRemoveEmne(\'' + prog.id + '\',\'' + e.code + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
         + '</div></div>';
     });
   }
@@ -970,6 +1093,7 @@ function renderNettCard(prog) {
     + '<div class="hk-card-name">' + prog.name + '</div></div>'
     + '<div class="hk-card-right">'
     + '<button class="hk-chevron">' + CHEVRON_DOWN + '</button>'
+    + '<button class="hk-trash" onclick="event.stopPropagation();hkRemoveProgram(\'' + prog.id + '\')" aria-label="Fjern hele studieprogrammet">' + TRASH_SVG + '</button>'
     + '</div></div>'
     + '<div class="hk-emner-list">' + emnerHtml + '</div></div>';
 }
@@ -981,7 +1105,7 @@ function renderLooseEmner(emner) {
       + '<div><div class="hk-emne-meta">' + (e.program || 'Enkeltemne') + ' · ' + (e.pts || 0) + ' stp</div>'
       + '<div class="hk-emne-name">' + e.name + '</div></div>'
       + '<div class="hk-emne-right">'
-      + '<button class="hk-trash" onclick="removeLooseEmne(\'' + e.code + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
+      + '<button class="hk-trash" onclick="hkRemoveLooseEmne(\'' + e.code + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
       + '</div></div>';
   });
   return '<div class="hk-card"><div class="hk-card-header hk-clickable" onclick="toggleHkEmner(this)">'
@@ -1172,11 +1296,6 @@ function enhanceTopbarBasket() {
     badge.style.cssText = 'display:none;position:absolute;top:2px;right:2px;background:#c8233f;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:700;line-height:16px;text-align:center;box-sizing:border-box;';
     btn.appendChild(badge);
   }
-}
-
-/* ─── Send basket by email (stub) ─── */
-function sendBasketByEmail() {
-  alert('Send på e-post – ikke implementert ennå.');
 }
 
 /* ─── Enkeltemne: «Kjøp emnet» ───

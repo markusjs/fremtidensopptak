@@ -25,10 +25,53 @@
 var BASKET_KEY = 'kristiania_basket_v2';
 var EMPTY_BASKET = { programs: [], looseEmner: [] };
 
-/* Demo: emnekoder den innloggede brukeren allerede har bestått i et tidligere
-   semester, uavhengig av programmet emnet ligger under. Delt kilde brukt både
-   av Studieplanlegger (spCompletedCourses) og utsjekk-flyten i sok-skjema.html. */
-var COMPLETED_COURSE_CODES = ['6277', '6024', '6340', '6336', 'ap-psyk101', 'ap-psyk102'];
+/* Demo: studiehistorikken til den innloggede brukeren – emner som er bestått i
+   et tidligere semester, gruppert på studieprogrammet de ble tatt i. Et program
+   med minst ett bestått emne regnes som påbegynt, se getStartedPrograms().
+   `href` må matche lenken programmet har i «Dette emnet inngår i»-listen på
+   enkeltemnesidene, siden det er nøkkelen vi kobler på. */
+/* Demo-studiehistorikk. `completed` er de beståtte emnene med studiepoeng,
+   `localUrl` siden i prototypen kortet lenker til – med anker rett ned til
+   studieplanleggeren, som er det studenten skal videre i. */
+var COMPLETED_BY_PROGRAM = [
+  { id: 'adm-ledelse-nett',
+    name: 'Administrasjon og ledelse',
+    href: '/studier/nettstudier/bachelor/administrasjon-og-ledelse/',
+    localUrl: '/studier/Administrasjon og ledelse - Bachelor (nettstudie)#studieplanlegger',
+    level: 'Bachelor', totalCredits: 180,
+    completed: [{ code: '6277', pts: 7.5 }, { code: '6024', pts: 7.5 },
+                { code: '6340', pts: 7.5 }, { code: '6336', pts: 7.5 }] },
+  { id: 'anvendt-psykologi-nett',
+    name: 'Anvendt psykologi',
+    href: '/studier/nettstudier/bachelor/bachelor-i-anvendt-psykologi/',
+    localUrl: '/studier/Anvendt psykologi - Bachelor (nettstudie) _ Kristiania#emner-seksjon',
+    level: 'Bachelor', totalCredits: 180,
+    completed: [{ code: 'ap-psyk101', pts: 15 }, { code: 'ap-psyk102', pts: 15 }] }
+];
+
+/* Utled kodelistene, så resten av koden kan fortsette å bruke .codes. */
+COMPLETED_BY_PROGRAM.forEach(function(p) {
+  p.codes = p.completed.map(function(e) { return e.code; });
+  p.completedCredits = p.completed.reduce(function(sum, e) { return sum + e.pts; }, 0);
+});
+
+/* Flat liste over alle beståtte emnekoder, uavhengig av program. Beholdt som
+   egen variabel fordi studieplanleggerne og utsjekk-flyten bruker den direkte. */
+var COMPLETED_COURSE_CODES = COMPLETED_BY_PROGRAM.reduce(function(acc, p) {
+  return acc.concat(p.codes);
+}, []);
+
+function isCompletedCourse(code) {
+  return COMPLETED_COURSE_CODES.indexOf(String(code)) > -1;
+}
+
+/* Studieprogrammer studenten har påbegynt: har minst ett bestått emne.
+   Kun relevant når brukeren er innlogget – anonyme besøkende har ingen kjent
+   studiehistorikk å slå opp i. */
+function getStartedPrograms() {
+  if (!getAuthState()) return [];
+  return COMPLETED_BY_PROGRAM.filter(function(p) { return p.codes.length > 0; });
+}
 
 /* Finn emner i kurven som allerede er bestått. Returnerer [] hvis ingen treff. */
 function getCompletedConflicts() {
@@ -94,13 +137,14 @@ var BASKET_CSS = '\
 .hk-card:has(.hk-emner-list.open){border-color:#e3b9b9}\
 .hk-card-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px;gap:12px;cursor:default;transition:background .2s}\
 .hk-card-header.hk-clickable{cursor:pointer}\
-.hk-card:has(.hk-emner-list.open) .hk-card-header{background:#fbeee4}\
+.hk-card:has(.hk-emner-list) .hk-card-header{background:#fbeee4}\
 .hk-card-meta{font-size:14px;font-weight:400;color:#3f3f3f;line-height:17.5px;margin-bottom:4px}\
 .hk-card-name{font-size:18px;font-weight:700;color:#000;line-height:1.3}\
 .hk-card-right{display:flex;align-items:center;gap:8px;flex-shrink:0}\
-.hk-badge{font-size:14px;font-weight:400;padding:6px 10px;border-radius:16777200px;white-space:nowrap;color:#101828;line-height:16px}\
-.hk-badge-sem{background:#f4ebe6}\
-.hk-badge-city{background:#f9ccd2}\
+.hk-badge{font-size:14px;font-weight:500;padding:5px 12px;border-radius:16777200px;white-space:nowrap;line-height:16px;border:1px solid transparent}\
+.hk-badge-sem{background:#fdf3f4;border-color:#8a1c2b;color:#8a1c2b}\
+.hk-badge-city{background:#f6faff;border-color:#1a6dff;color:#1a6dff}\
+.hk-badge-nett{background:#f8f4fe;border-color:#9a5cf0;color:#9a5cf0}\
 .hk-trash{background:#eef1f6;border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;color:#3b6ea8;transition:background .15s,color .15s;flex-shrink:0}\
 .hk-trash:hover{background:#dde6f0;color:#254e75}\
 .hk-chevron{background:none;border:none;cursor:pointer;padding:4px;transition:transform .2s;color:#121212}\
@@ -121,6 +165,13 @@ var BASKET_CSS = '\
 .hk-section-title{font-size:14px;font-weight:400;color:#3f3f3f}\
 .hk-footer{padding:16px 20px;border-top:1px solid #c7c8ca;flex-shrink:0;display:flex;flex-direction:column;gap:10px;position:sticky;bottom:0;background:#fff;z-index:2}\
 .hk-auth-row{display:flex;align-items:center;justify-content:space-between;gap:12px}\
+.hk-studying{margin:-16px -20px 0;border-bottom:1px solid #e6e6e6}\
+.hk-studying-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 20px;background:none;cursor:pointer;font-family:inherit;border:none;width:100%;text-align:left}\
+.hk-studying-bar b{font-size:15px;font-weight:700;color:#121212}\
+.hk-studying-bar span.hk-studying-count{font-size:15px;font-weight:400;color:#6b5b52}\
+.hk-studying-bar span.hk-studying-toggle{font-size:14px;font-weight:500;color:#121212;white-space:nowrap}\
+.hk-studying-list{display:none;padding:0 20px 4px;max-height:230px;overflow-y:auto}\
+.hk-studying-list.open{display:block}\
 .hk-auth-row-loggedin{background:#f5f5f5;border-radius:10px;padding:10px 12px}\
 .hk-auth-prompt{font-size:14px;font-weight:500;color:#4e0000;flex:1;margin:0}\
 .hk-auth-identity{display:flex;align-items:center;gap:10px;min-width:0}\
@@ -840,9 +891,10 @@ function injectSidebarPanel() {
     + '</button></div>'
     + '<div class="hk-body" id="hk-body"></div>'
     + '<div class="hk-footer" id="hk-footer">'
+    + '<div id="hk-studying-slot"></div>'
     + '<div id="hk-auth-slot"></div>'
     // Fra handlekurven er studievalget allerede gjort → hopp rett til innlogging
-    + '<a href="' + getSokSkjemaPath() + '?steg=login" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre med søknaden</a>'
+    + '<a href="' + getSokSkjemaPath() + '?steg=login" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre</a>'
     + '</div>'
     + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
@@ -879,12 +931,18 @@ var TRASH_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><pa
 var LOCK_SVG_SMALL = '<svg width="11" height="11" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="13" stroke="#4e0000" stroke-width="2.2"/><rect x="11" y="15" width="10" height="7" rx="1.5" stroke="#4e0000" stroke-width="1.8"/><path d="M13 15v-2.5a3 3 0 016 0V15" stroke="#4e0000" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="19" r="1.2" fill="#4e0000"/></svg>';
 
 /* Innloggingsrad i bunnen av Søknader-panelet — vises alltid, uansett kurvinnhold */
-function buildAuthFooterRow() {
+function buildAuthFooterRow(awaitingChoice) {
   var auth = getAuthState();
   if (!auth) {
+    /* Venter panelet på et programvalg, skal «Logg inn» logge inn på stedet og
+       vurdere valget på nytt – ikke sende brukeren inn i søknadsskjemaet og
+       forlate emnet. Det er også det fotnoten lover. */
+    var loginBtn = awaitingChoice
+      ? '<button class="hk-btn-outline hk-btn-small" onclick="hkLoginAndRetryChoice()">Logg inn</button>'
+      : '<a href="' + getSokSkjemaPath() + '?steg=login" class="hk-btn-outline hk-btn-small">Logg inn</a>';
     return '<div class="hk-auth-row">'
       + '<p class="hk-auth-prompt">Logg inn for å finne påbegynte studieprogrammer</p>'
-      + '<a href="' + getSokSkjemaPath() + '?steg=login" class="hk-btn-outline hk-btn-small">Logg inn</a>'
+      + loginBtn
       + '</div>';
   }
   var parts = (auth.name || '').trim().split(/\s+/);
@@ -980,17 +1038,77 @@ function sendBasketSave() {
 /* Fyller innloggingsraden + viser/skjuler "Gå videre"-knappen. Kalles av alle
    visninger i #sok-panel (søknadsliste, velg-studieprogram, velg-campus) slik
    at bunnraden alltid er synlig og konsistent, uansett hva som vises i body. */
-function refreshSokPanelFooter() {
+/* awaitingChoice: panelet venter på at brukeren velger studieprogram for et
+   emne. Da skal «Gå videre» skjules – ellers kan man gå videre og
+   miste emnet som er i ferd med å bli lagt til. Innloggingsraden beholdes,
+   siden innlogging er en del av valget (den finner påbegynte program). */
+function refreshSokPanelFooter(awaitingChoice) {
   var authSlot = document.getElementById('hk-auth-slot');
-  if (authSlot) authSlot.innerHTML = buildAuthFooterRow();
+  if (authSlot) authSlot.innerHTML = buildAuthFooterRow(awaitingChoice);
+  var studyingSlot = document.getElementById('hk-studying-slot');
+  if (studyingSlot) studyingSlot.innerHTML = buildStudyingNowHtml();
   var ctaBtn = document.getElementById('hk-cta-btn');
   if (ctaBtn) {
     var b = getBasket();
     var totalItems = (b.programs || []).length + (b.looseEmner || []).length;
-    ctaBtn.style.display = totalItems > 0 ? 'block' : 'none';
+    ctaBtn.style.display = (!awaitingChoice && totalItems > 0) ? 'block' : 'none';
   }
   var footer = document.getElementById('hk-footer');
   if (footer) footer.style.display = 'flex';
+}
+
+var CHEVRON_RIGHT = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+/* Studieprogrammene studenten har påbegynt, som kort i samme stil som resten av
+   panelet. Vises bare innlogget – utlogget har vi ingen studiehistorikk. Hvert
+   kort lenker inn til studiesiden; de har ingen slett-knapp, siden dette er
+   pågående studier og ikke noe man har lagt i søknaden. */
+/* «Du studerer nå» – sammenleggbar stripe øverst i foten av panelet, over
+   innloggingsraden. Ligger i foten og ikke i kroppen, fordi kroppen handler om
+   søknaden man fyller ut nå; de påbegynte studiene er kontekst. */
+function buildStudyingNowHtml() {
+  var started = getStartedPrograms();
+  if (!started.length) return '';
+  return '<div class="hk-studying">'
+    + '<button type="button" class="hk-studying-bar" aria-expanded="false"'
+    + ' onclick="hkToggleStudyingNow(this)">'
+    + '<span><b>Du studerer nå</b> <span class="hk-studying-count">· ' + started.length
+    + ' program</span></span>'
+    + '<span class="hk-studying-toggle">Vis &#9662;</span>'
+    + '</button>'
+    + '<div class="hk-studying-list">' + buildStartedProgramCards() + '</div>'
+    + '</div>';
+}
+
+function hkToggleStudyingNow(btn) {
+  var wrap = btn.parentElement;
+  var list = wrap ? wrap.querySelector('.hk-studying-list') : null;
+  var label = btn.querySelector('.hk-studying-toggle');
+  if (!list) return;
+  var open = list.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  if (label) label.innerHTML = open ? 'Skjul &#9652;' : 'Vis &#9662;';
+}
+
+function buildStartedProgramCards() {
+  var started = getStartedPrograms();
+  if (!started.length) return '';
+  var cards = started.map(function(p) {
+    /* border:0 nullstiller Kristiania-CSS-ens understrek på <a>. */
+    return '<a class="hk-card" href="' + p.localUrl + '"'
+      + ' style="border:1px solid #e2e2e2;display:block;text-decoration:none;color:inherit;">'
+      + '<div class="hk-card-header">'
+      /* Studiepoengene studenten har tatt så langt – det sier mer om et
+         påbegynt studium enn programmets totale omfang. */
+      + '<div><div class="hk-card-meta">' + (p.level || '')
+      + (p.completedCredits ? ' · ' + p.completedCredits + ' studiepoeng' : '') + '</div>'
+      + '<div class="hk-card-name">' + p.name + '</div></div>'
+      + '<div class="hk-card-right">'
+      + '<span class="hk-badge hk-badge-nett">Nett</span>'
+      + '<span style="display:flex;align-items:center;color:#121212;">' + CHEVRON_RIGHT + '</span>'
+      + '</div></div></a>';
+  }).join('');
+  return cards;
 }
 
 function renderBasketPanel() {
@@ -1001,7 +1119,7 @@ function renderBasketPanel() {
   if (!body) return;
 
   var totalItems = b.programs.length + b.looseEmner.length;
-  if (title) title.textContent = 'Søknader';
+  if (title) title.textContent = 'Søknad';
   refreshSokPanelFooter();
 
   if (totalItems === 0) {
@@ -1308,6 +1426,17 @@ function normalizeProgName(s) {
   return (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
 }
 
+/* Identiteten til et studieprogram = stien i lenken (uten domene og
+   etterfølgende skråstrek). Brukes til å slå sammen dubletter i
+   «Dette emnet inngår i»-listen. */
+function programKeyFromHref(href) {
+  return (href || '')
+    .replace(/^https?:\/\/[^/]+/, '')
+    .replace(/[?#].*$/, '')
+    .replace(/\/+$/, '')
+    .toLowerCase();
+}
+
 function slugifyProgram(s) {
   return 'emne-prog-' + (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
@@ -1347,13 +1476,27 @@ function getEmneIncludedPrograms() {
         var href = links[j].getAttribute('href') || '';
         if (href.indexOf('/bachelor/') === -1) continue;
         var txt = (links[j].textContent || '').trim();
-        var key = normalizeProgName(txt);
+        /* Dedupliser på programmet lenken peker til, ikke på lenketeksten:
+           kristiania.no lister samme bachelorgrad under flere navn (f.eks.
+           «HR, ledelse og organisasjon» og «HR og personalledelse» peker
+           begge på /bachelor/hr-ledelse-og-organisasjon/). Første navn vinner. */
+        var key = programKeyFromHref(href);
         if (txt && !seen[key]) { seen[key] = 1; out.push({ name: txt, href: href }); }
       }
       return out;
     }
   }
   return [];
+}
+
+/* Studieprogrammer studenten har påbegynt OG som dette emnet inngår i.
+   `included` er listen fra getEmneIncludedPrograms(). Kobling skjer på
+   program-stien, ikke på navnet, siden samme grad opptrer under flere navn. */
+function getStartedProgramsForEmne(included) {
+  var keys = included.map(function(p) { return programKeyFromHref(p.href); });
+  return getStartedPrograms().filter(function(sp) {
+    return keys.indexOf(programKeyFromHref(sp.href)) !== -1;
+  });
 }
 
 /* Åpne riktig program-kort, scroll til den nye emne-raden og fremhev den */
@@ -1424,32 +1567,105 @@ function chooseEmneProgram(emne, programName, programId) {
 /* Sidebar-valg: hvilken grad skal emnet inn i? */
 var _emneChoiceState = null;
 
-function showEmneProgramChoice(emne, programs, inCart) {
+function showEmneProgramChoice(emne, programs, mode) {
   _emneChoiceState = { emne: emne, programs: programs };
   injectSidebarPanel();
   openSoknaderPanel();
   var body = document.getElementById('hk-body');
   var title = document.getElementById('hk-title');
   if (!body) return;
-  refreshSokPanelFooter();
-  if (title) title.textContent = 'Velg studieprogram';
+  refreshSokPanelFooter(true);
+  if (title) title.textContent = programs.length ? 'Velg studieprogram' : 'Legg til emne';
 
-  var intro = inCart
-    ? '<p style="font-size:18px;font-weight:500;margin:0 0 8px;color:#121212;line-height:1.4;">Emnet inngår i flere av studiene i søknaden din.</p>'
-      + '<p style="font-size:18px;font-weight:500;margin:0 0 24px;color:#121212;line-height:1.4;">Hvilken vil du legge det til i?</p>'
-    : '<p style="font-size:18px;font-weight:500;margin:0 0 8px;color:#121212;line-height:1.4;">Dette emnet tilhører flere studieprogrammer.</p>'
-      + '<p style="font-size:18px;font-weight:500;margin:0 0 24px;color:#121212;line-height:1.4;">Hvilket program ønsker du at emnet skal inngå i?</p>';
+  var P = '<p style="font-size:18px;font-weight:500;margin:0 0 %s;color:#121212;line-height:1.4;">%s</p>';
+  function line(text, last) { return P.replace('%s', last ? '24px' : '8px').replace('%s', text); }
+
+  var intro;
+  if (programs.length === 0) {
+    /* Over halvparten av enkeltemnene inngår ikke i noen bachelorgrad. Da er
+       frittstående det eneste reelle valget, og vi later ikke som noe annet. */
+    intro = line('Dette emnet inngår ikke i noen av bachelorgradene på nett.', false)
+          + line('Du kan ta det som et frittstående enkeltemne.', true);
+  } else if (mode === 'started') {
+    /* Studenten har påbegynt flere program som emnet inngår i – de ligger ikke
+       nødvendigvis i søknaden, så ordlyden må handle om studiehistorikken. */
+    intro = line('Du har startet på flere studieprogram som dette emnet inngår i.', false)
+          + line('Hvilket vil du legge det til i?', true);
+  } else if (mode === 'cart' || mode === true) {
+    intro = line('Emnet inngår i flere av studiene i søknaden din.', false)
+          + line('Hvilken vil du legge det til i?', true);
+  } else {
+    intro = line('Hvilket program ønsker du at emnet skal inngå i?', true);
+  }
+
+  var CHOICE_STYLE = 'display:block;width:100%;text-align:left;padding:20px;margin-bottom:12px;'
+    + 'border:1px solid #c7c8ca;border-radius:12px;background:#fff;font-size:18px;font-weight:500;'
+    + 'color:#121212;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;';
+  var HOVER_ON  = 'this.style.borderColor=\'#4e0000\';this.style.background=\'#faf5f5\'';
+  var HOVER_OFF = 'this.style.borderColor=\'#c7c8ca\';this.style.background=\'#fff\'';
+
+  /* Marker programmene studenten har påbegynt, så valget er opplyst. Valg som
+     kommer fra søknaden har ingen href, så vi matcher også på navn. */
+  var started = getStartedPrograms();
+  function isStartedProgram(p) {
+    return started.some(function(sp) {
+      return (p.href && programKeyFromHref(p.href) === programKeyFromHref(sp.href))
+          || normalizeProgName(p.name) === normalizeProgName(sp.name);
+    });
+  }
 
   var html = '<div style="padding:8px 0;">' + intro;
   programs.forEach(function(p, idx) {
+    var isStarted = isStartedProgram(p);
     html += '<button class="hk-prog-choice" onclick="pickEmneProgram(' + idx + ')"'
-      + ' style="display:block;width:100%;text-align:left;padding:20px;margin-bottom:12px;border:1px solid #c7c8ca;border-radius:12px;background:#fff;font-size:18px;font-weight:500;color:#121212;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;"'
-      + ' onmouseover="this.style.borderColor=\'#4e0000\';this.style.background=\'#faf5f5\'"'
-      + ' onmouseout="this.style.borderColor=\'#c7c8ca\';this.style.background=\'#fff\'"'
-      + '>' + p.name + '</button>';
+      + ' style="' + CHOICE_STYLE + '"'
+      + ' onmouseover="' + HOVER_ON + '" onmouseout="' + HOVER_OFF + '">'
+      + p.name
+      + (isStarted
+          ? '<span style="display:block;font-size:15px;font-weight:400;color:#5c1a1a;margin-top:4px;line-height:1.4;">'
+            + '&#10003; Du har startet på dette studieprogrammet</span>'
+          : '')
+      + '</button>';
   });
+  /* Emnet må kunne tas uten å binde seg til en grad – ellers står en som ikke
+     er innlogget, eller som ikke har påbegynt et nettstudium, uten vei videre. */
+  html += '<button class="hk-prog-choice hk-prog-choice-loose" onclick="pickEmneAsLoose()"'
+    + ' style="' + CHOICE_STYLE + '"'
+    + ' onmouseover="' + HOVER_ON + '" onmouseout="' + HOVER_OFF + '">'
+    + 'Som et frittstående enkeltemne'
+    + '<span style="display:block;font-size:15px;font-weight:400;color:#3f3f3f;margin-top:4px;line-height:1.4;">'
+    + 'Ta faget uten å starte på et helt studieprogram.</span>'
+    + '</button>';
   html += '</div>';
   body.innerHTML = html;
+}
+
+/* Emnet er allerede bestått – vis beskjed i sidepanelet i stedet for å legge
+   det til. Samme ordlyd som konflikt-varselet i søknadsskjemaet. */
+function showEmneAlreadyCompleted(emne, program) {
+  injectSidebarPanel();
+  openSoknaderPanel();
+  var body = document.getElementById('hk-body');
+  var title = document.getElementById('hk-title');
+  if (!body) return;
+  refreshSokPanelFooter();
+  if (title) title.textContent = 'Allerede bestått';
+
+  var iProgram = program
+    ? ' i <strong>' + program.name + '</strong>'
+    : '';
+
+  body.innerHTML = '<div style="padding:8px 0;">'
+    + '<div style="background:#f6ece3;border-radius:12px;padding:18px 20px;">'
+    + '<div style="display:flex;align-items:flex-start;gap:10px;">'
+    + '<span style="color:#5c1a1a;font-size:15px;font-weight:700;flex-shrink:0;margin-top:2px;">&#10003;</span>'
+    + '<p style="font-size:15px;font-weight:700;color:#5c1a1a;margin:0;">Du har allerede bestått ' + emne.name + '</p>'
+    + '</div>'
+    + '<p style="font-size:13.5px;color:#555;margin:10px 0 0;line-height:1.55;padding-left:25px;">'
+    + 'Emnet ble tatt' + iProgram + ' og kan ikke tas om igjen, så vi har ikke lagt det til. '
+    + 'Stemmer ikke dette, ta kontakt på <a href="mailto:opptaknettstudier@kristiania.no" style="color:#06f;">opptaknettstudier@kristiania.no</a> eller 21 09 30 00.'
+    + '</p>'
+    + '</div></div>';
 }
 
 function pickEmneProgram(idx) {
@@ -1459,12 +1675,57 @@ function pickEmneProgram(idx) {
   chooseEmneProgram(st.emne, p.name, p.id || null);
 }
 
+/* Logg inn uten å forlate valget, og kjør vurderingen på nytt: har studenten
+   påbegynt et program emnet inngår i, legges det rett dit – ellers kommer samme
+   panel tilbake, nå med de påbegynte programmene. */
+function hkLoginAndRetryChoice() {
+  setAuthState('feide', 'Lars Juster Eilefsen');
+  if (typeof handleKjopEmnet === 'function' && extractEmneSubject()) {
+    handleKjopEmnet();
+  }
+}
+
+/* Legg emnet i søknaden uten tilknytning til et studieprogram. Havner under
+   «Emner uten tilknytning til studieprogram» i søknadspanelet. */
+function pickEmneAsLoose() {
+  var st = _emneChoiceState;
+  if (!st || !st.emne) return;
+  addLooseEmne(st.emne);
+  openSoknaderPanel();
+  renderBasketPanel();
+}
+
 function handleKjopEmnet() {
   var subject = extractEmneSubject();
   if (!subject) return;
   var emne = buildEmneObj(subject);
   var included = getEmneIncludedPrograms();
   var includedNames = included.map(function(p) { return normalizeProgName(p.name); });
+
+  /* Innlogget og emnet er allerede bestått → det kan ikke tas om igjen. */
+  if (getAuthState() && isCompletedCourse(emne.code)) {
+    var owner = COMPLETED_BY_PROGRAM.filter(function(p) {
+      return p.codes.indexOf(String(emne.code)) > -1;
+    })[0];
+    showEmneAlreadyCompleted(emne, owner);
+    return;
+  }
+
+  /* Innlogget og emnet inngår i et studieprogram studenten allerede har
+     bestått emner i → vi antar at de vil fortsette på det programmet, og
+     legger emnet rett dit uten å spørre. Treffer flere påbegynte program,
+     må studenten velge. */
+  var startedMatches = getStartedProgramsForEmne(included);
+  if (startedMatches.length === 1) {
+    chooseEmneProgram(emne, startedMatches[0].name, startedMatches[0].id);
+    return;
+  }
+  if (startedMatches.length > 1) {
+    showEmneProgramChoice(emne, startedMatches.map(function(p) {
+      return { name: p.name, id: p.id, href: p.href };
+    }), 'started');
+    return;
+  }
 
   var b = getBasket();
   var cartProgs = b.programs.filter(function(p) { return p.level === 'Bachelor'; });
@@ -1477,11 +1738,12 @@ function handleKjopEmnet() {
     openSoknaderPanel();
     revealEmne(matches[0].id, emne.code);
   } else if (matches.length > 1) {
-    showEmneProgramChoice(emne, matches.map(function(p) { return { name: p.name, id: p.id }; }), true);
+    showEmneProgramChoice(emne, matches.map(function(p) { return { name: p.name, id: p.id }; }), 'cart');
   } else {
-    // Emnet inngår ikke i noen bachelorgrad i kurven – spør hvilken grad
-    var choices = included.length ? included : [{ name: subject.name }];
-    showEmneProgramChoice(emne, choices, false);
+    /* Emnet inngår ikke i noen bachelorgrad i søknaden – spør hvilken grad det
+       skal inn i. Er det ikke del av noen nett-bachelor i det hele tatt, står
+       bare frittstående igjen, og showEmneProgramChoice sier det rett ut. */
+    showEmneProgramChoice(emne, included, 'all');
   }
 }
 

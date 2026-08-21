@@ -1,0 +1,9 @@
+# Nedlastet live-HTML brukt av tools/build-enkeltemner.py – kan hentes på nytt
+.cache/
+
+# macOS
+.DS_Store
+
+# Midlertidige opplastingsarkiver
+.dropupload*.zip
+dropupload*.zip

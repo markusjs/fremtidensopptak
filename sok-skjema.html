@@ -105,6 +105,11 @@ body {
 
 .step-title { font-size: 28px; font-weight: 700; color: #4e0000; }
 .step-subtitle { font-size: 20px; font-weight: 600; color: #121212; }
+/* Seksjonsoverskrift inne i et skjemakort (Språk, Adresse) */
+.step-subtitle-section { font-size: 18px; color: #4e0000; margin: 0 0 4px; }
+.step-section-hint { font-size: 15px; color: #555; margin: 0 0 12px; }
+/* Wrapperen arver ikke form-col sin gap, så seksjonene må få den her */
+#step3EditableFields { display: flex; flex-direction: column; gap: 24px; }
 
 /* Inputs */
 .input-group { display: flex; flex-direction: column; gap: 16px; }
@@ -625,6 +630,16 @@ body {
   font-size: 12px; font-weight: 500;
   background: #f5e6e6; color: #6b2020;
 }
+/* Plassholderen i samme slot som oppstartsbadgen, før dato er valgt */
+.s0-badge-velg {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 12px;
+  font-size: 12px; font-weight: 500;
+  background: #fff; color: #121212;
+  border: 1px solid #c7c8ca; cursor: pointer;
+  font-family: 'Graphik', sans-serif;
+}
+.s0-badge-velg:hover { border-color: #4e0000; }
 .s0-badge-city { background: #F9CCD2; color: #121212; }
 .s0-program-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 4px; }
 .s0-program-meta { font-size: 13px; color: #888; }
@@ -835,6 +850,8 @@ body {
 .s0-faq-chevron.open { transform: rotate(180deg); }
 .s0-faq-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
 .s0-faq-body.open { max-height: 200px; }
+/* Oppstart-informasjonen har flere avsnitt enn FAQ-en på studievalg */
+.s0-faq-body-tall.open { max-height: 420px; }
 .s0-faq-answer { padding: 0 16px 14px; font-size: 14px; color: #555; line-height: 1.55; }
 
 /* ── Felles konvolutt ── */
@@ -1121,6 +1138,7 @@ body {
 
       <!-- Steg 3: Personopplysninger -->
       <div class="step" id="step3">
+        <h1 class="step-title" style="margin:0 0 20px;">Opplysninger</h1>
         <div class="form-col">
 
           <!-- Innlogget-kort med utloggingsmulighet (vises når brukeren er innlogget) -->
@@ -1130,53 +1148,64 @@ body {
           <div id="step3ReadonlyView" style="display:none;"></div>
 
           <div id="step3EditableFields">
-          <!-- Personopplysninger -->
-          <div>
-            <h2 class="step-subtitle" style="margin-bottom:16px;">Personopplysninger</h2>
-            <div class="input-group">
-              <div id="fnrFieldWrap">
-                <div class="input-wrap" id="wrap-fnr">
-                  <input type="text" id="fnr" placeholder=" " maxlength="11" inputmode="numeric" autocomplete="off">
-                  <label for="fnr">Fødselsnummer (eventuelt D-nummer)</label>
-                </div>
-                <div class="error-msg" id="err-fnr">Fyll inn et gyldig fødselsnummer</div>
+          <!-- Kontakt- og personopplysninger i ett felt-sett, uten egen
+               mellomtittel – rekkefølgen følger skissen. -->
+          <div class="input-group">
+            <div>
+              <div class="input-wrap" id="wrap-telefonPerson">
+                <input type="tel" id="telefonPerson" placeholder=" " autocomplete="tel">
+                <label for="telefonPerson">Telefonnummer</label>
               </div>
-              <div class="fields-row">
-                <div>
-                  <div class="input-wrap" id="wrap-fornavn">
-                    <input type="text" id="fornavn" placeholder=" " autocomplete="given-name">
-                    <label for="fornavn">Fornavn og mellomnavn</label>
-                  </div>
-                  <div class="error-msg" id="err-fornavn">Oppgi fornavn</div>
-                </div>
-                <div>
-                  <div class="input-wrap" id="wrap-etternavn">
-                    <input type="text" id="etternavn" placeholder=" " autocomplete="family-name">
-                    <label for="etternavn">Etternavn</label>
-                  </div>
-                  <div class="error-msg" id="err-etternavn">Oppgi etternavn</div>
-                </div>
+            </div>
+            <div>
+              <div class="input-wrap" id="wrap-epost">
+                <input type="email" id="epost" placeholder=" " autocomplete="email">
+                <label for="epost">E-postadresse</label>
               </div>
-              <div class="input-wrap input-wrap-select" id="wrap-land">
-                <select id="land">
-                  <option value="Norge" selected>Norge</option>
-                  <option value="Sverige">Sverige</option>
-                  <option value="Danmark">Danmark</option>
-                  <option value="Finland">Finland</option>
-                  <option value="Island">Island</option>
-                  <option value="Tyskland">Tyskland</option>
-                  <option value="Storbritannia">Storbritannia</option>
-                  <option value="USA">USA</option>
-                  <option value="Annet">Annet land</option>
-                </select>
-                <label for="land">Land</label>
-                <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#4e0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div id="fnrFieldWrap">
+              <div class="input-wrap" id="wrap-fnr">
+                <input type="text" id="fnr" placeholder=" " maxlength="11" inputmode="numeric" autocomplete="off">
+                <label for="fnr">Fødselsnummer (eventuelt D-nummer)</label>
               </div>
+              <div class="error-msg" id="err-fnr">Fyll inn et gyldig fødselsnummer</div>
+            </div>
+            <div class="fields-row">
+              <div>
+                <div class="input-wrap" id="wrap-fornavn">
+                  <input type="text" id="fornavn" placeholder=" " autocomplete="given-name">
+                  <label for="fornavn">Fornavn og mellomnavn</label>
+                </div>
+                <div class="error-msg" id="err-fornavn">Oppgi fornavn</div>
+              </div>
+              <div>
+                <div class="input-wrap" id="wrap-etternavn">
+                  <input type="text" id="etternavn" placeholder=" " autocomplete="family-name">
+                  <label for="etternavn">Etternavn</label>
+                </div>
+                <div class="error-msg" id="err-etternavn">Oppgi etternavn</div>
+              </div>
+            </div>
+            <div class="input-wrap input-wrap-select" id="wrap-land">
+              <select id="land">
+                <option value="Norge" selected>Norge</option>
+                <option value="Sverige">Sverige</option>
+                <option value="Danmark">Danmark</option>
+                <option value="Finland">Finland</option>
+                <option value="Island">Island</option>
+                <option value="Tyskland">Tyskland</option>
+                <option value="Storbritannia">Storbritannia</option>
+                <option value="USA">USA</option>
+                <option value="Annet">Annet land</option>
+              </select>
+              <label for="land">Land</label>
+              <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#4e0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
 
           <div>
-            <div style="font-size:16px;font-weight:600;color:#121212;margin-bottom:12px;">Språk</div>
+            <h2 class="step-subtitle step-subtitle-section">Språk</h2>
+            <p class="step-section-hint">Velg språk for kommunikasjon.</p>
             <div class="radio-row" id="spraakGroup">
               <label class="radio-option active" id="opt-spraak-norsk">
                 <input type="radio" name="spraak" value="norsk" style="display:none;" checked onchange="updateSpraakRadio(this)">
@@ -1192,7 +1221,7 @@ body {
           </div>
 
           <div>
-            <h2 class="step-subtitle" style="margin-bottom:16px;">Adresse</h2>
+            <h2 class="step-subtitle step-subtitle-section" style="margin-bottom:16px;">Adresse</h2>
             <div class="input-group">
               <div>
                 <div class="input-wrap" id="wrap-gate">
@@ -1219,28 +1248,12 @@ body {
               </div>
             </div>
           </div>
-
-          <div>
-            <h2 class="step-subtitle" style="margin-bottom:16px;">Kontaktinformasjon</h2>
-            <div class="input-group">
-              <div>
-                <div class="input-wrap" id="wrap-epost">
-                  <input type="email" id="epost" placeholder=" " autocomplete="email">
-                  <label for="epost">E-postadresse</label>
-                </div>
-              </div>
-              <div class="phone-row">
-                <div class="phone-prefix">+47</div>
-                <div class="input-wrap" id="wrap-telefonPerson">
-                  <input type="tel" id="telefonPerson" placeholder=" " autocomplete="tel" inputmode="numeric">
-                  <label for="telefonPerson">Telefonnummer</label>
-                </div>
-              </div>
-            </div>
-          </div>
           </div>
 
-          <button class="btn-primary" id="step3BottomDefault" onclick="gaVidereStep3()">Gå videre</button>
+          <div class="btn-row" id="step3BottomDefault">
+            <button class="btn-secondary" style="flex:1;" onclick="gaVidere(0)">Tilbake</button>
+            <button class="btn-primary" style="flex:1;" onclick="gaVidereStep3()">Gå videre</button>
+          </div>
 
           <div class="btn-row" id="step3BottomReadonly" style="display:none;">
             <button class="step3-tilbake-link" onclick="gaVidere(0)">Tilbake til studievalg</button>
@@ -1467,6 +1480,41 @@ body {
     </div>
 
     <!-- Sidebar -->
+    <!-- Informasjon for Oppstart-steget. Erstatter oppsummeringen i høyre
+         kolonne, slik at forklaringene står på siden og ikke i handlekurven. -->
+    <aside class="summary-col" id="oppstartInfoCol" style="display:none;">
+      <div class="s0-faq">
+        <button class="s0-faq-header" onclick="toggleS0Faq(this)">
+          <span class="s0-faq-question">Hvilken startdato bør jeg velge?</span>
+          <svg class="s0-faq-chevron open" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="s0-faq-body s0-faq-body-tall open">
+          <p class="s0-faq-answer">Startdatoen kan maksimalt settes tre måneder frem i tid og avgjør når du får tilgang til studiet.</p>
+          <p class="s0-faq-answer">Fristen for betaling og angrerett bestemmes av startdatoen du velger.</p>
+          <p class="s0-faq-answer">Du kan ikke endre startdato etter bestilling, da må du benytte angreretten og bestille emnet på nytt.</p>
+        </div>
+      </div>
+      <div class="s0-faq">
+        <button class="s0-faq-header" onclick="toggleS0Faq(this)">
+          <span class="s0-faq-question">Når får jeg tilgang til emnet?</span>
+          <svg class="s0-faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="s0-faq-body s0-faq-body-tall">
+          <p class="s0-faq-answer">Du får tilgang til læringsplattformen på startdatoen du velger. Da ligger pensum, forelesninger og oppgaver klart.</p>
+          <p class="s0-faq-answer">Bestiller du nærmere startdatoen, kan det ta opptil ett virkedøgn før tilgangen er aktiv.</p>
+        </div>
+      </div>
+      <div class="s0-faq">
+        <button class="s0-faq-header" onclick="toggleS0Faq(this)">
+          <span class="s0-faq-question">Lånekassen – viktig informasjon</span>
+          <svg class="s0-faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="s0-faq-body s0-faq-body-tall">
+          <p class="s0-faq-answer">For å få støtte fra Lånekassen må du normalt starte ved semesterstart og ta minst 50 % studiebelastning.</p>
+          <p class="s0-faq-answer">Velger du en valgfri oppstartsdato midt i semesteret, kan det påvirke retten til støtte. Sjekk med Lånekassen før du bestiller.</p>
+        </div>
+      </div>
+    </aside>
     <aside class="summary-col" id="summarySidebar">
       <div class="summary-header" onclick="toggleDesktopSummary()">
         <span class="summary-header-label" id="summaryHeaderLabel">Oppsummering</span>
@@ -1688,6 +1736,7 @@ function gaVidere(n) {
   document.getElementById('step3b').classList.remove('active');
   document.getElementById('step4b').classList.remove('active');
   document.getElementById('summarySidebar').style.display = '';
+  document.getElementById('oppstartInfoCol').style.display = 'none';
   document.getElementById('checkoutGrid').classList.remove('single-col');
   restorePaymentDetailNode();
   _currentStep = n;
@@ -2158,10 +2207,17 @@ function prefillFormData() {
   document.getElementById('postnr').value = '0177';
   document.getElementById('poststed').value = 'Oslo';
   document.getElementById('epost').value = 'lars.j.eilefsen@eksempel.no';
-  document.getElementById('telefonPerson').value = _phoneNumber || '98765432';
+  document.getElementById('telefonPerson').value = formatPhoneWithPrefix(_phoneNumber || '98765432');
   document.querySelectorAll('.input-wrap input').forEach(function(inp) {
     if (inp.value) inp.dispatchEvent(new Event('input'));
   });
+}
+
+/* Telefonfeltet har ikke lenger en egen +47-boks, så landkoden vises i verdien. */
+function formatPhoneWithPrefix(num) {
+  var digits = String(num || '').replace(/\D/g, '').replace(/^47/, '');
+  var grouped = digits.replace(/(\d{2})(?=\d)/g, '$1 ').trim();
+  return digits ? '+47 ' + grouped : '';
 }
 
 /* Steg 3: read-only personopplysninger når innlogget med FEIDE */
@@ -2398,6 +2454,9 @@ function buildOppstartEmneRow(e, idx) {
     oppstartBadge = '<span class="s0-badge">Oppstart ' + OPPSTART_DATES[dateIdx].badge + '</span>';
   } else if (_oppstartMode === 'same' && _sharedDateIdx !== null) {
     oppstartBadge = '<span class="s0-badge">Oppstart ' + OPPSTART_DATES[_sharedDateIdx].badge + '</span>';
+  } else if (_oppstartMode === 'individual') {
+    /* Samme slot som oppstartsbadgen, s\u00e5 raden viser hva som mangler */
+    oppstartBadge = '<button class="s0-badge-velg" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
   }
 
   var price = e.price || 0;
@@ -2416,9 +2475,6 @@ function buildOppstartEmneRow(e, idx) {
 
   // Per-emne datovalg — bare i «individuell»-modus
   if (_oppstartMode === 'individual') {
-    if (!hasDate) {
-      html += '<button class="opp-velg-link" style="margin-top:10px;" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
-    }
     html += '<div class="opp-inline-picker' + (isActive ? ' open' : '') + '" id="opp-picker-' + idx + '">'
       + '<p class="opp-section-title" style="margin-bottom:12px;">Velg oppstartsdato</p>'
       + renderDateCards('selectIndividualDate', idx, hasDate ? dateIdx : null)
@@ -2539,6 +2595,9 @@ function showOppstartStep() {
   renderOppstartSection();
   document.getElementById('step3').classList.remove('active');
   document.getElementById('step3b').classList.add('active');
+  /* Oppstart forklarer seg selv p\u00e5 siden \u2013 oppsummeringen tar plassen ellers. */
+  document.getElementById('summarySidebar').style.display = 'none';
+  document.getElementById('oppstartInfoCol').style.display = '';
   window.scrollTo(0, 0);
 }
 

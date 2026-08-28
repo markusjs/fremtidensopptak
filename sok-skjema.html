@@ -309,9 +309,12 @@ body {
   border: 1.5px solid #c7c8ca; border-radius: 8px; padding: 14px 16px;
 }
 .sp-badges { display: flex; gap: 6px; }
-.badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
-.badge-gray { background: #f0f0f0; color: #555; }
-.badge-city { background: #F9CCD2; color: #121212; }
+.badge {
+  display: inline-flex; align-items: center; padding: 7px 16px; border-radius: 999px;
+  font-size: 14px; font-weight: 500; line-height: 1.2; border: 1.5px solid transparent;
+}
+.badge-gray { background: #fdf7f7; border-color: #4e0000; color: #4e0000; }
+.badge-city { background: #eaf1ff; border-color: #1f6feb; color: #1258d3; }
 
 /* Timeline payment layout */
 .timeline-wrap { display: flex; flex-direction: column; margin-bottom: 24px; }
@@ -398,7 +401,7 @@ body {
 }
 
 .summary-label { font-size: 16px; font-weight: 600; color: #4e0000; }
-.summary-meta { font-size: 14px; color: #888; }
+.summary-meta { font-size: 14px; color: #4e0000; }
 .summary-section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px; }
 
 /* Emner groups */
@@ -428,15 +431,21 @@ body {
 .summary-header-label { font-size: 16px; font-weight: 700; color: #4e0000; }
 .summary-body { padding: 22px; display: flex; flex-direction: column; gap: 0; }
 
+/* Infokolonnen har ingen egen kortflate — info-boksene b\u00e6rer seg selv */
+.summary-col.info-col { background: none; border-radius: 0; overflow: visible; }
+.summary-col.info-col .s0-faq:last-child { margin-bottom: 0; }
+
 /* Sidebar: seksjonsoverskrifter og prisoppstilling (steg 4) */
 .sb-section-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
 .sb-section-label { font-size: 15px; font-weight: 700; color: #4e0000; }
 .sb-section-note { display: flex; align-items: center; gap: 5px; font-size: 13px; color: #4e0000; }
-.sb-section-amount { font-size: 15px; color: #121212; }
+.sb-section-amount { font-size: 15px; color: #4e0000; }
 .sb-divider { height: 1px; background: #eee; margin: 20px 0; }
-.sb-prio-label { font-size: 14px; font-weight: 700; color: #121212; margin-bottom: 3px; }
-.sb-prio-name { font-size: 15px; color: #121212; margin-bottom: 8px; }
-.sb-prio-block { margin-bottom: 14px; }
+.sb-prio-label { font-size: 15px; font-weight: 500; color: #888; margin-bottom: 2px; }
+.sb-prio-meta { font-size: 14px; color: #888; margin-bottom: 2px; }
+.sb-prio-name { font-size: 15px; font-weight: 700; color: #121212; margin-bottom: 10px; }
+.sb-prio-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.sb-prio-block { margin-bottom: 18px; }
 .sb-prio-block:last-child { margin-bottom: 0; }
 
 /* Payment expand sections */
@@ -623,24 +632,24 @@ body {
 }
 .s0-prioritet-label { font-size: 13px; color: #888; font-weight: 500; }
 .s0-prioritet-card { position: relative; }
-.s0-badges { display: flex; gap: 6px; margin-bottom: 8px; }
+.s0-badges { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
 .s0-badge {
   display: inline-flex; align-items: center;
-  padding: 3px 10px; border-radius: 12px;
-  font-size: 12px; font-weight: 500;
-  background: #f5e6e6; color: #6b2020;
+  padding: 5px 13px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; line-height: 1.2;
+  background: #fdf7f7; border: 1.5px solid #4e0000; color: #4e0000;
 }
 /* Plassholderen i samme slot som oppstartsbadgen, før dato er valgt */
 .s0-badge-velg {
   display: inline-flex; align-items: center;
-  padding: 3px 10px; border-radius: 12px;
-  font-size: 12px; font-weight: 500;
+  padding: 5px 13px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; line-height: 1.2;
   background: #fff; color: #121212;
-  border: 1px solid #c7c8ca; cursor: pointer;
+  border: 1.5px solid #c7c8ca; cursor: pointer;
   font-family: 'Graphik', sans-serif;
 }
-.s0-badge-velg:hover { border-color: #4e0000; }
-.s0-badge-city { background: #F9CCD2; color: #121212; }
+.s0-badge-velg:hover { border-color: #4e0000; color: #4e0000; }
+.s0-badge-city { background: #eaf1ff; border-color: #1f6feb; color: #1258d3; }
 .s0-program-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 4px; }
 .s0-program-meta { font-size: 13px; color: #888; }
 .s0-legg-til-btn {
@@ -720,13 +729,19 @@ body {
 .s0-emnegroup-list.open { display: block; }
 .s0-emne-row { padding: 18px 22px; border-top: 1px solid #eee; position: relative; }
 .s0-emnegroup-list > .s0-emne-row:first-of-type { border-top: none; }
-.s0-emne-badges { display: flex; gap: 8px; margin-bottom: 12px; }
-.s0-badge-nett { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; background: #E5CCF9; color: #121212; }
+.s0-badge-nett {
+  display: inline-flex; align-items: center;
+  padding: 5px 13px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; line-height: 1.2;
+  background: #f7eefd; border: 1.5px solid #7b2fbf; color: #6a25a8;
+}
 .s0-emne-remove { position: absolute; top: 16px; right: 18px; background: none; border: none; cursor: pointer; padding: 4px; color: #888; border-radius: 6px; }
 .s0-emne-remove:hover { background: #f5f5f5; color: #b60202; }
-.s0-emne-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 10px; padding-right: 32px; }
-.s0-emne-row-bottom { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-.s0-emne-meta { font-size: 14px; color: #7a5c56; }
+.s0-emne-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 4px; padding-right: 32px; }
+.s0-emne-row-bottom { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; }
+.s0-emne-meta { display: block; font-size: 14px; color: #7a5c56; margin-bottom: 2px; padding-right: 32px; }
+.s0-emne-oppstart { font-size: 14px; color: #7a5c56; }
+.s0-emne-oppstart strong { color: #121212; font-weight: 600; }
 .s0-emne-price { font-size: 18px; font-weight: 700; color: #121212; }
 .s0-emne-price-strike { text-decoration: line-through; color: #aaa; font-weight: 400; margin-right: 6px; }
 
@@ -843,16 +858,17 @@ body {
 }
 
 /* FAQ accordion */
-.s0-faq { border: 1.5px solid #f0d5d5; border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
-.s0-faq-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; background: none; width: 100%; border: none; font-family: 'Graphik', sans-serif; text-align: left; }
-.s0-faq-question { font-size: 14px; font-weight: 500; color: #121212; }
+.s0-faq { background: #fdf6f2; border: 1.5px solid #f0d5d5; border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+.s0-faq-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; cursor: pointer; background: none; width: 100%; border: none; font-family: 'Graphik', sans-serif; text-align: left; }
+.s0-faq-question { font-size: 14px; font-weight: 700; color: #121212; }
 .s0-faq-chevron { width: 20px; height: 20px; flex-shrink: 0; transition: transform 0.2s; }
 .s0-faq-chevron.open { transform: rotate(180deg); }
 .s0-faq-body { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
-.s0-faq-body.open { max-height: 200px; }
+.s0-faq-body.open { max-height: 280px; }
 /* Oppstart-informasjonen har flere avsnitt enn FAQ-en på studievalg */
-.s0-faq-body-tall.open { max-height: 420px; }
-.s0-faq-answer { padding: 0 16px 14px; font-size: 14px; color: #555; line-height: 1.55; }
+.s0-faq-body-tall.open { max-height: 500px; }
+.s0-faq-answer { padding: 0 18px 12px 32px; font-size: 14px; color: #555; line-height: 1.55; }
+.s0-faq-answer:last-child { padding-bottom: 18px; }
 
 /* ── Felles konvolutt ── */
 .env-svg { overflow: visible; filter: drop-shadow(0 14px 30px rgba(60,30,10,.18)); }
@@ -1482,7 +1498,7 @@ body {
     <!-- Sidebar -->
     <!-- Informasjon for Oppstart-steget. Erstatter oppsummeringen i høyre
          kolonne, slik at forklaringene står på siden og ikke i handlekurven. -->
-    <aside class="summary-col" id="oppstartInfoCol" style="display:none;">
+    <aside class="summary-col info-col" id="oppstartInfoCol" style="display:none;">
       <div class="s0-faq">
         <button class="s0-faq-header" onclick="toggleS0Faq(this)">
           <span class="s0-faq-question">Hvilken startdato bør jeg velge?</span>
@@ -1517,7 +1533,7 @@ body {
     </aside>
     <aside class="summary-col" id="summarySidebar">
       <div class="summary-header" onclick="toggleDesktopSummary()">
-        <span class="summary-header-label" id="summaryHeaderLabel">Oppsummering</span>
+        <span class="summary-header-label" id="summaryHeaderLabel">Sammendrag av søknad</span>
         <svg id="desktopChevron" width="24" height="24" viewBox="0 0 24 24" fill="none" style="transition:transform .2s;transform:rotate(180deg);">
           <path d="M6 9l6 6 6-6" stroke="#4e0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -1611,13 +1627,18 @@ var VALID_RABATTKODER = { 'RABATT20': 20, 'SOMMER15': 15 };
 /* Stepper */
 var STEPPER_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+/* Stegene nummereres etter synlig posisjon, så rekken alltid er 1, 2, 3 …
+   Innlogging har ikke eget punkt – den hører til Opplysninger. */
 var ALL_PHASES = [
   { key: 'studievalg',   label: 'Studievalg' },
-  { key: 'login',        label: 'Logg inn' },
   { key: 'opplysninger', label: 'Opplysninger' },
+  { key: 'oppstart',     label: 'Oppstart' },
   { key: 'betaling',     label: 'Betaling' },
   { key: 'sammendrag',   label: 'Sammendrag' }
 ];
+
+/* Oppstart er step3b i DOM-en, så den trenger en egen verdi mellom 3 og 4. */
+var STEP_OPPSTART = 3.5;
 
 // Betaling vises kun når kurven inneholder nettemner
 function basketHasEmner() {
@@ -1626,28 +1647,27 @@ function basketHasEmner() {
     ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
 }
 
-// Logg inn vises kun når brukeren ikke er innlogget. Siste fase er alltid
-// commit-punktet: Betaling når det er noe å betale, ellers Sammendrag.
+// Oppstart og Betaling handler bare om emner. Siste fase er commit-punktet:
+// Betaling når det er noe å betale, ellers Sammendrag.
 function getActivePhases() {
-  var isAuthed = !!getAuthState();
   var harEmner = basketHasEmner();
   return ALL_PHASES.filter(function(p) {
-    if (p.key === 'login' && isAuthed) return false;
-    if (p.key === 'betaling' && !harEmner) return false;
+    if ((p.key === 'oppstart' || p.key === 'betaling') && !harEmner) return false;
     if (p.key === 'sammendrag' && harEmner) return false;
     return true;
   });
 }
 
 function stepToPhaseKey(n) {
-  if (n === 1 || n === 2) return 'login';
-  if (n === 3) return 'opplysninger';
+  /* Innlogging (1 og 2) er veien inn til Opplysninger, og deler punkt med den. */
+  if (n === 1 || n === 2 || n === 3) return 'opplysninger';
+  if (n === STEP_OPPSTART) return 'oppstart';
   if (n === 4) return 'betaling';
   if (n === 5) return 'sammendrag';
   return 'studievalg';
 }
 
-var PHASE_TO_STEP = { studievalg: 0, login: 1, opplysninger: 3, betaling: 4, sammendrag: 5 };
+var PHASE_TO_STEP = { studievalg: 0, opplysninger: 3, oppstart: STEP_OPPSTART, betaling: 4, sammendrag: 5 };
 
 /* Én kilde til sannhet for «hvor går vi etter Studievalg»: innlogging hoppes over
    når brukeren allerede er innlogget. Brukes både av «Gå videre» på Studievalg og
@@ -1704,14 +1724,11 @@ function updateStepper(n) {
     var inner;
     var attrs = '';
     if (i < currentIdx) {
-      cls += ' done';
+      cls += ' done clickable';
       inner = STEPPER_CHECK;
-      // Fullførte steg (unntatt innlogging) kan klikkes for å gå tilbake
-      if (phases[i].key !== 'login') {
-        cls += ' clickable';
-        attrs = ' role="button" tabindex="0" onclick="goToPhase(\'' + phases[i].key + '\')"'
-          + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();goToPhase(\'' + phases[i].key + '\')}"';
-      }
+      // Fullførte steg kan klikkes for å gå tilbake
+      attrs = ' role="button" tabindex="0" onclick="goToPhase(\'' + phases[i].key + '\')"'
+        + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();goToPhase(\'' + phases[i].key + '\')}"';
     } else {
       inner = (i + 1); if (i === currentIdx) cls += ' current';
     }
@@ -1728,7 +1745,7 @@ function gaVidere(n) {
   // Hide current view
   if (_currentStep === 0) {
     document.getElementById('step0Page').style.display = 'none';
-  } else if (_currentStep >= 1 && _currentStep <= 4) {
+  } else if (_currentStep >= 1 && _currentStep <= 4 && _currentStep !== STEP_OPPSTART) {
     document.getElementById('step' + _currentStep).classList.remove('active');
   }
   document.getElementById('feide-step').classList.remove('active');
@@ -1747,6 +1764,16 @@ function gaVidere(n) {
     document.getElementById('checkoutGrid').style.display = 'none';
     document.getElementById('step5Page').style.display = 'none';
     renderStep0();
+  } else if (n === STEP_OPPSTART) {
+    /* Oppstart forklarer seg selv på siden – infokolonnen tar plassen til
+       oppsummeringen, som ellers står i høyre kolonne. */
+    document.getElementById('step0Page').style.display = 'none';
+    document.getElementById('checkoutGrid').style.display = '';
+    document.getElementById('step5Page').style.display = 'none';
+    renderOppstartSection();
+    document.getElementById('step3b').classList.add('active');
+    document.getElementById('summarySidebar').style.display = 'none';
+    document.getElementById('oppstartInfoCol').style.display = '';
   } else if (n === 5) {
     document.getElementById('step0Page').style.display = 'none';
     document.getElementById('checkoutGrid').style.display = 'none';
@@ -2041,8 +2068,8 @@ var ICON_INFO_SB = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" 
 /* Delt kort-oppbygging for redigerbare program/emner-lister (Studievalg + Betaling) */
 function buildPrioritetCardHtml(p, idx, total, removeFn, moveFn) {
   var badges = '';
-  if (p.city) badges += '<span class="s0-badge s0-badge-city">' + p.city + '</span>';
   if (p.startSemester) badges += '<span class="s0-badge">' + p.startSemester + '</span>';
+  if (p.city) badges += '<span class="s0-badge s0-badge-city">' + p.city + '</span>';
 
   var meta = '';
   if (p.points) meta += studiepoengTekst(p.points);
@@ -2071,24 +2098,32 @@ function buildPrioritetCardHtml(p, idx, total, removeFn, moveFn) {
     + '</div>';
 }
 
+/* Emnekortene skal se like ut overalt: emnekode og studiepoeng, navn, oppstart,
+   og formatbadge (+ eventuell pris) nederst. Delt av Studievalg, Betaling og Oppstart. */
+function emneKortPrisHtml(e) {
+  var price = e.price || 0;
+  var after = _rabattPercent > 0 ? price - Math.round(price * _rabattPercent / 100) : price;
+  return _rabattPercent > 0
+    ? '<span class="s0-emne-price-strike">' + price.toLocaleString('nb-NO') + ',-</span><span class="s0-emne-price">' + after.toLocaleString('nb-NO') + ',-</span>'
+    : '<span class="s0-emne-price">' + price.toLocaleString('nb-NO') + ',-</span>';
+}
+
+function emneKortInnholdHtml(e, oppstartHtml, priceHtml) {
+  return '<div class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</div>'
+    + '<div class="s0-emne-name">' + e.name + '</div>'
+    + (oppstartHtml ? '<div class="s0-emne-oppstart">' + oppstartHtml + '</div>' : '')
+    + '<div class="s0-emne-row-bottom">'
+    + '<span class="s0-badge-nett">Nett</span>'
+    + (priceHtml || '')
+    + '</div>';
+}
+
 function buildEmneRowHtml(e, removeFnCall, showPrice) {
   var oppstart = e.startDate ? e.startDate : (e.startSemester ? e.startSemester : '');
-  var priceHtml = '';
-  if (showPrice) {
-    var price = e.price || 0;
-    var after = _rabattPercent > 0 ? price - Math.round(price * _rabattPercent / 100) : price;
-    priceHtml = _rabattPercent > 0
-      ? '<span class="s0-emne-price-strike">' + price.toLocaleString('nb-NO') + ',-</span><span class="s0-emne-price">' + after.toLocaleString('nb-NO') + ',-</span>'
-      : '<span class="s0-emne-price">' + price.toLocaleString('nb-NO') + ',-</span>';
-  }
+  var oppstartHtml = oppstart ? 'Oppstart: <strong>' + oppstart + '</strong>' : '';
   return '<div class="s0-emne-row">'
     + '<button class="s0-emne-remove" onclick="' + removeFnCall + '" aria-label="Fjern">' + ICON_X_PLAIN + '</button>'
-    + '<div class="s0-emne-badges"><span class="s0-badge-nett">Nett</span>' + (oppstart ? '<span class="s0-badge">Oppstart ' + oppstart + '</span>' : '') + '</div>'
-    + '<div class="s0-emne-name">' + e.name + '</div>'
-    + '<div class="s0-emne-row-bottom">'
-    + '<span class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</span>'
-    + priceHtml
-    + '</div>'
+    + emneKortInnholdHtml(e, oppstartHtml, showPrice ? emneKortPrisHtml(e) : '')
     + '</div>';
 }
 
@@ -2448,30 +2483,19 @@ function buildOppstartEmneRow(e, idx) {
   var hasDate = dateIdx !== undefined;
   var isActive = _oppstartMode === 'individual' && idx === _activeEmneIdx && !hasDate;
 
-  // Oppstartsbadge vises først når datoen er kjent
-  var oppstartBadge = '';
+  // Oppstartslinjen viser datoen først når den er kjent
+  var oppstartHtml = '';
   if (_oppstartMode === 'individual' && hasDate) {
-    oppstartBadge = '<span class="s0-badge">Oppstart ' + OPPSTART_DATES[dateIdx].badge + '</span>';
+    oppstartHtml = 'Oppstart: <strong>' + OPPSTART_DATES[dateIdx].badge + '</strong>';
   } else if (_oppstartMode === 'same' && _sharedDateIdx !== null) {
-    oppstartBadge = '<span class="s0-badge">Oppstart ' + OPPSTART_DATES[_sharedDateIdx].badge + '</span>';
+    oppstartHtml = 'Oppstart: <strong>' + OPPSTART_DATES[_sharedDateIdx].badge + '</strong>';
   } else if (_oppstartMode === 'individual') {
-    /* Samme slot som oppstartsbadgen, s\u00e5 raden viser hva som mangler */
-    oppstartBadge = '<button class="s0-badge-velg" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
+    /* Samme slot som oppstartsdatoen, s\u00e5 raden viser hva som mangler */
+    oppstartHtml = '<button class="s0-badge-velg" onclick="activateIndividualPicker(' + idx + ')">Velg oppstart</button>';
   }
 
-  var price = e.price || 0;
-  var after = _rabattPercent > 0 ? price - Math.round(price * _rabattPercent / 100) : price;
-  var priceHtml = _rabattPercent > 0
-    ? '<span class="s0-emne-price-strike">' + price.toLocaleString('nb-NO') + ',-</span><span class="s0-emne-price">' + after.toLocaleString('nb-NO') + ',-</span>'
-    : '<span class="s0-emne-price">' + price.toLocaleString('nb-NO') + ',-</span>';
-
   var html = '<div class="s0-emne-row">'
-    + '<div class="s0-emne-badges"><span class="s0-badge-nett">Nett</span>' + oppstartBadge + '</div>'
-    + '<div class="s0-emne-name">' + e.name + '</div>'
-    + '<div class="s0-emne-row-bottom">'
-    + '<span class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</span>'
-    + priceHtml
-    + '</div>';
+    + emneKortInnholdHtml(e, oppstartHtml, emneKortPrisHtml(e));
 
   // Per-emne datovalg — bare i «individuell»-modus
   if (_oppstartMode === 'individual') {
@@ -2590,15 +2614,9 @@ function gaVidereStep3() {
   }
 }
 
-/* Steg 3b: Oppstart (eget steg, kun når kurven har emner) */
+/* Steg 3: Oppstart (eget steg i stepperen, kun når kurven har emner) */
 function showOppstartStep() {
-  renderOppstartSection();
-  document.getElementById('step3').classList.remove('active');
-  document.getElementById('step3b').classList.add('active');
-  /* Oppstart forklarer seg selv p\u00e5 siden \u2013 oppsummeringen tar plassen ellers. */
-  document.getElementById('summarySidebar').style.display = 'none';
-  document.getElementById('oppstartInfoCol').style.display = '';
-  window.scrollTo(0, 0);
+  gaVidere(STEP_OPPSTART);
 }
 
 function confirmOppstart() {
@@ -3066,12 +3084,12 @@ function renderStep5() {
       var badges = '';
       if (p.startSemester) badges += '<span class="badge badge-gray">' + p.startSemester + '</span>';
       if (p.city) badges += '<span class="badge badge-city">' + p.city + '</span>';
-      progHtml += '<div style="margin-bottom:10px;">'
-        + '<div class="sidebar-prioritet-label">' + (idx + 1) + '. prioritet</div>'
-        + '<div style="border:1.5px solid #e5e5e5;border-radius:10px;padding:12px 14px;">'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'
-        + '<span style="font-size:14px;font-weight:500;">' + programVisningsnavn(p) + '</span>'
-        + '<div style="display:flex;gap:4px;">' + badges + '</div></div></div></div>';
+      progHtml += '<div class="sb-prio-block">'
+        + '<div class="sb-prio-label">' + (idx + 1) + '. prioritet</div>'
+        + prioMetaHtml(p)
+        + '<div class="sb-prio-name">' + p.name + '</div>'
+        + '<div class="sb-prio-badges">' + badges + '</div>'
+        + '</div>';
     });
   }
   document.getElementById('step5Programs').innerHTML = progHtml;
@@ -3090,13 +3108,22 @@ function renderStep5() {
   if (allEmner.length > 0) {
     var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
     emnerHtml += '<div class="summary-section-header"><span class="summary-label">Emner</span>'
-      + '<span class="summary-meta">' + allEmner.length + ' emner · ' + total.toLocaleString('nb-NO') + ' kr</span></div>';
+      + '<span class="summary-meta">' + allEmner.length + (allEmner.length === 1 ? ' emne' : ' emner') + ' · ' + total.toLocaleString('nb-NO') + ' kr</span></div>';
     Object.keys(emnerByProg).forEach(function(pname) { emnerHtml += buildEmnerGroup(pname, emnerByProg[pname]); });
     if (loose.length > 0) emnerHtml += buildEmnerGroup('Emner uten tilknytning til studieprogram', loose);
   }
   document.getElementById('step5Emner').innerHTML = emnerHtml;
 
   renderStep5Betaling(allEmner);
+}
+
+/* Nivå og studiepoeng hører sammen som én metalinje over programnavnet i sammendraget */
+function prioMetaHtml(p) {
+  var deler = [];
+  if (p.level) deler.push(p.level);
+  var sp = studiepoengTekst(p.points);
+  if (sp) deler.push(sp);
+  return deler.length ? '<div class="sb-prio-meta">' + deler.join(' \u2022 ') + '</div>' : '';
 }
 
 /* p.points er noen ganger et tall (180) og noen ganger ferdig tekst («180 studiepoeng») */
@@ -3312,8 +3339,9 @@ function sendSoknad() {
       if (p.city) badges += '<span class="badge badge-city">' + p.city + '</span>';
       progHtml += '<div class="sb-prio-block">'
         + '<div class="sb-prio-label">' + (idx + 1) + '. prioritet</div>'
-        + '<div class="sb-prio-name">' + programVisningsnavn(p) + '</div>'
-        + '<div style="display:flex;gap:4px;flex-wrap:wrap;">' + badges + '</div>'
+        + prioMetaHtml(p)
+        + '<div class="sb-prio-name">' + p.name + '</div>'
+        + '<div class="sb-prio-badges">' + badges + '</div>'
         + '</div>';
     });
   }
@@ -3386,8 +3414,9 @@ function renderSidebar() {
       if (p.city) badges += '<span class="badge badge-city">' + p.city + '</span>';
       progHtml += '<div class="sb-prio-block">'
         + '<div class="sb-prio-label">' + (idx + 1) + '. prioritet</div>'
+        + prioMetaHtml(p)
         + '<div class="sb-prio-name">' + p.name + '</div>'
-        + '<div style="display:flex;gap:4px;flex-wrap:wrap;">' + badges + '</div>'
+        + '<div class="sb-prio-badges">' + badges + '</div>'
         + '</div>';
     });
     if (progHtml) {
@@ -3420,9 +3449,10 @@ function renderSidebar() {
       ? '<span style="text-decoration:line-through;color:#aaa;">' + total.toLocaleString('nb-NO') + '</span> <strong>' + after.toLocaleString('nb-NO') + '</strong>'
       : total.toLocaleString('nb-NO');
     if (progHtml) emnerHtml += '<div class="sb-divider"></div>';
+    var emneOrd = allEmner.length === 1 ? ' emne' : ' emner';
     emnerHtml += '<div class="sb-section-head">'
-      + '<span class="sb-section-label">Emner (' + allEmner.length + ' stk.)</span>'
-      + '<span class="sb-section-amount">' + priceStr + '</span></div>';
+      + '<span class="sb-section-label">Emner</span>'
+      + '<span class="sb-section-amount">' + allEmner.length + emneOrd + ' \u00b7 ' + priceStr + ' kr</span></div>';
     emnerHtml += buildConflictBannerHtml();
     Object.keys(emnerByProg).forEach(function(pname) { emnerHtml += buildSidebarGroup(pname, emnerByProg[pname]); });
     if (loose.length > 0) emnerHtml += buildSidebarGroup('Emner uten tilknytning til studieprogram', loose);

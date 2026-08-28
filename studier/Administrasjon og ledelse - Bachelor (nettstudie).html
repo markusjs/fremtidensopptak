@@ -2090,14 +2090,41 @@ function spAddCourse(btn) {
   var code = row.dataset.code;
   if (spCompletedCourses.indexOf(code) > -1) return;
   if (spCart[code]) { spRemoveCourse(code); return; }
-  openStudiestartModal([{
+  spVelgProgramOgBestill([spEmneFraRad(btn, row)]);
+}
+
+/* Siden planleggeren står på – alltid et av valgene, siden emnene her
+   tilhører dette programmet av natur. */
+var SP_SIDENS_PROGRAM = { id: 'adm-ledelse-nett', name: 'Administrasjon og ledelse', href: '/studier/nettstudier/bachelor/administrasjon-og-ledelse/' };
+
+/* Programmet som ble valgt for den siste bestillingen. Oppstartsmodalen
+   kjenner ikke valget, så spSyncToBasket merker emnene med det. */
+var spValgtProgram = null;
+var spSkrevneProgramIder = {};
+
+function spEmneFraRad(btn, row) {
+  return {
     btn: btn,
-    code: code,
+    code: row.dataset.code,
     name: row.dataset.name,
     pts: parseFloat(row.dataset.pts),
-    price: parseInt(row.dataset.price)
-  }], spScenarioOverride, { skipAll: true });
-  if (typeof revealEmne === 'function') setTimeout(function() { revealEmne('adm-ledelse-nett', code); }, 150);
+    price: parseInt(row.dataset.price),
+    url: row.dataset.url
+  };
+}
+
+/* Emnet kan inngå i flere grader, så studenten velger hvilken det skal telle
+   mot før oppstartsdatoen settes. Ett valg gjelder hele bestillingen. */
+function spVelgProgramOgBestill(pending) {
+  velgProgramForPlanlegger(pending, SP_SIDENS_PROGRAM, function(p) {
+    if (typeof closeSoknaderPanel === 'function') closeSoknaderPanel();
+    spValgtProgram = { id: programIdFor(p), name: p.name };
+    openStudiestartModal(pending, spScenarioOverride, { skipAll: true });
+    var lastCode = pending[pending.length - 1].code;
+    if (typeof revealEmne === 'function') {
+      setTimeout(function() { revealEmne(spValgtProgram.id, lastCode); }, 150);
+    }
+  });
 }
 
 function spRemoveCourse(code) {
@@ -2113,19 +2140,9 @@ function spBestillAlle(btn) {
   sem.querySelectorAll('.sp-add-btn:not(.added):not(.completed)').forEach(function(b) {
     var row = b.closest('.sp-course-row');
     if (!row) return;
-    pending.push({
-      btn: b,
-      code: row.dataset.code,
-      name: row.dataset.name,
-      pts: parseFloat(row.dataset.pts),
-      price: parseInt(row.dataset.price)
-    });
+    pending.push(spEmneFraRad(b, row));
   });
-  if (pending.length > 0) {
-    openStudiestartModal(pending, spScenarioOverride, { skipAll: true });
-    var lastCode = pending[pending.length - 1].code;
-    if (typeof revealEmne === 'function') setTimeout(function() { revealEmne('adm-ledelse-nett', lastCode); }, 150);
-  }
+  if (pending.length > 0) spVelgProgramOgBestill(pending);
 }
 
 function spUpdateSummary() {
@@ -2133,43 +2150,80 @@ function spUpdateSummary() {
   spSyncToBasket();
 }
 
+/* removeProgram → spRemoveCourse → spSyncToBasket, så synkingen må ikke
+   kunne kalle seg selv. */
+var _spSyncing = false;
+
 function spSyncToBasket() {
-  var keys = Object.keys(spCart);
-  if (keys.length === 0) {
-    if (typeof removeProgram === 'function') removeProgram('adm-ledelse-nett');
-    return;
-  }
-  var emner = keys.map(function(k) {
+  if (_spSyncing) return;
+  _spSyncing = true;
+  try { spSyncToBasketInner(); } finally { _spSyncing = false; }
+}
+
+function spSyncToBasketInner() {
+  /* Emnene fra siste bestilling får programmet som ble valgt for dem */
+  var maal = spValgtProgram || SP_SIDENS_PROGRAM;
+  Object.keys(spCart).forEach(function(k) {
+    if (!spCart[k].program) spCart[k].program = { id: maal.id, name: maal.name };
+  });
+
+  /* Grupper på program – ulike bestillinger kan peke på ulike grader */
+  var grupper = {};
+  Object.keys(spCart).forEach(function(k) {
+    var pr = spCart[k].program;
+    if (!grupper[pr.id]) grupper[pr.id] = { prog: pr, emner: [] };
     var e = { code: k, name: spCart[k].name, pts: spCart[k].pts, price: spCart[k].price };
     if (spCart[k].startDate) e.startDate = spCart[k].startDate;
-    return e;
+    grupper[pr.id].emner.push(e);
   });
-  var totalPts = 0;
-  emner.forEach(function(e) { totalPts += e.pts; });
-  var ptsStr = totalPts % 1 === 0 ? totalPts + '' : totalPts.toFixed(1);
-  addProgramWithEmner({
-    id: 'adm-ledelse-nett',
-    name: 'Administrasjon og ledelse',
-    level: 'Bachelor',
-    points: ptsStr + ' studiepoeng',
-    type: 'nett',
-    emner: emner
+
+  /* Program planleggeren har skrevet, men som ikke har emner igjen, ut av søknaden */
+  Object.keys(spSkrevneProgramIder).forEach(function(id) {
+    if (!grupper[id] && typeof removeProgram === 'function') {
+      delete spSkrevneProgramIder[id];
+      removeProgram(id);
+    }
+  });
+
+  Object.keys(grupper).forEach(function(id) {
+    var g = grupper[id];
+    var totalPts = 0;
+    g.emner.forEach(function(e) { totalPts += e.pts; });
+    var ptsStr = totalPts % 1 === 0 ? totalPts + '' : totalPts.toFixed(1);
+    spSkrevneProgramIder[id] = 1;
+    addProgramWithEmner({
+      id: id,
+      name: g.prog.name,
+      level: 'Bachelor',
+      points: ptsStr + ' studiepoeng',
+      type: 'nett',
+      emner: g.emner
+    });
   });
 }
 
 function spSyncFromBasket() {
   if (typeof getBasket !== 'function') return;
   var b = getBasket();
-  var prog = b.programs.find(function(p) { return p.id === 'adm-ledelse-nett'; });
-  if (!prog || !prog.emner || prog.emner.length === 0) return;
-  prog.emner.forEach(function(e) {
-    if (spCompletedCourses.indexOf(e.code) > -1) return;
-    if (!spCart[e.code]) {
-      spCart[e.code] = { name: e.name, pts: e.pts, price: e.price || 0, startDate: e.startDate || null };
-      document.querySelectorAll('.sp-course-row[data-code="' + e.code + '"] .sp-add-btn').forEach(function(btn) {
-        btn.classList.add('added'); btn.textContent = '\u2713';
+  /* Emner kan ligge under flere program nå, så vi leser fra alle nett-program
+     og tar med de som finnes som rader i planleggeren. */
+  (b.programs || []).forEach(function(prog) {
+    if (prog.type !== 'nett' || !prog.emner) return;
+    prog.emner.forEach(function(e) {
+      if (spCompletedCourses.indexOf(e.code) > -1) return;
+      if (spCart[e.code]) return;
+      var rader = document.querySelectorAll('.sp-course-row[data-code="' + e.code + '"]');
+      if (!rader.length) return;
+      spCart[e.code] = { name: e.name, pts: e.pts, price: e.price || 0,
+                         startDate: e.startDate || null,
+                         program: { id: prog.id, name: prog.name } };
+      spSkrevneProgramIder[prog.id] = 1;
+      rader.forEach(function(row) {
+        row.querySelectorAll('.sp-add-btn').forEach(function(btn) {
+          btn.classList.add('added'); btn.textContent = '\u2713';
+        });
       });
-    }
+    });
   });
   /* Don't call spUpdateSummary() here — it triggers spSyncToBasket → addProgramWithEmner → openSoknaderPanel */
 }

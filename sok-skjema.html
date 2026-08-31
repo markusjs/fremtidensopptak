@@ -735,6 +735,8 @@ body {
   font-size: 13px; font-weight: 500; line-height: 1.2;
   background: #f7eefd; border: 1.5px solid #7b2fbf; color: #6a25a8;
 }
+.s0-emne-change { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; color: #4e0000; text-decoration: underline; text-underline-offset: 3px; }
+.s0-emne-change:hover { color: #7a1010; }
 .s0-emne-remove { position: absolute; top: 16px; right: 18px; background: none; border: none; cursor: pointer; padding: 4px; color: #888; border-radius: 6px; }
 .s0-emne-remove:hover { background: #f5f5f5; color: #b60202; }
 .s0-emne-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 4px; padding-right: 32px; }
@@ -867,7 +869,11 @@ body {
 .s0-faq-body.open { max-height: 280px; }
 /* Oppstart-informasjonen har flere avsnitt enn FAQ-en på studievalg */
 .s0-faq-body-tall.open { max-height: 500px; }
+.s0-faq-body-xtall.open { max-height: 900px; }
 .s0-faq-answer { padding: 0 18px 12px 32px; font-size: 14px; color: #555; line-height: 1.55; }
+.s0-faq-list { margin: 0; padding: 0 18px 12px 50px; font-size: 14px; color: #555; line-height: 1.55; }
+.s0-faq-list li { margin-bottom: 6px; }
+.s0-faq-link { display: inline-block; padding: 0 18px 18px 32px; font-size: 14px; font-weight: 500; color: #4e0000; }
 .s0-faq-answer:last-child { padding-bottom: 18px; }
 
 /* ── Felles konvolutt ── */
@@ -920,6 +926,7 @@ body {
 .opp-date-sub { font-size:13px; color:#555; line-height:1.5; margin-bottom:6px; }
 .opp-date-meta { font-size:13px; color:#888; display:flex; align-items:center; gap:5px; }
 .opp-section-title { font-size:15px; font-weight:600; color:#121212; margin-bottom:14px; }
+.opp-intro { font-size:15px; color:#555; line-height:1.55; margin:0 0 20px; max-width:60ch; }
 .opp-err { display:none; font-size:13px; color:#b60202; margin-top:8px; }
 .opp-err.show { display:block; }
 
@@ -1290,7 +1297,8 @@ body {
       <div class="step" id="step3b">
         <div class="form-col">
           <div id="oppstartSection">
-            <h2 class="step-subtitle" style="margin-bottom:20px;">Oppstart</h2>
+            <h2 class="step-subtitle" style="margin-bottom:8px;">Oppstart</h2>
+            <p class="opp-intro">Startdatoen kan maksimalt settes tre måneder frem i tid og avgjør når du får tilgang til studiet.</p>
             <div id="oppstartEmnerList" style="margin-bottom:16px;"></div>
             <div class="checkbox-row" style="margin-bottom:16px;" id="sammeDatoRow">
               <div class="checkbox-box checked" id="cb-sammedato" onclick="toggleSammeDato()">
@@ -1516,18 +1524,24 @@ body {
           <svg class="s0-faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="s0-faq-body s0-faq-body-tall">
-          <p class="s0-faq-answer">Du får tilgang til læringsplattformen på startdatoen du velger. Da ligger pensum, forelesninger og oppgaver klart.</p>
-          <p class="s0-faq-answer">Bestiller du nærmere startdatoen, kan det ta opptil ett virkedøgn før tilgangen er aktiv.</p>
+          <p class="s0-faq-answer">Du får en e-post når emnet er klart i læringsportalen Canvas.</p>
+          <p class="s0-faq-answer">Har emnet opptakskrav, må du laste opp vitnemål og attester i Mitt Kristiania innen 30 dager. Tilgangen åpnes når dokumentasjonen er godkjent.</p>
         </div>
       </div>
       <div class="s0-faq">
         <button class="s0-faq-header" onclick="toggleS0Faq(this)">
-          <span class="s0-faq-question">Lånekassen – viktig informasjon</span>
+          <span class="s0-faq-question">Viktig informasjon om Lånekassen</span>
           <svg class="s0-faq-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#121212" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="s0-faq-body s0-faq-body-tall">
-          <p class="s0-faq-answer">For å få støtte fra Lånekassen må du normalt starte ved semesterstart og ta minst 50 % studiebelastning.</p>
-          <p class="s0-faq-answer">Velger du en valgfri oppstartsdato midt i semesteret, kan det påvirke retten til støtte. Sjekk med Lånekassen før du bestiller.</p>
+        <div class="s0-faq-body s0-faq-body-xtall">
+          <p class="s0-faq-answer">Du kan søke om lån/stipend hos Lånekassen når du har meldt deg på ett eller flere emner hos oss. Når man bestiller emner på nett, anbefales det at man er tidlig ute med bestilling, da Lånekassen har periodevis lang behandlingstid.</p>
+          <p class="s0-faq-answer" style="padding-bottom:6px;">Lån/stipend vurderes ut fra:</p>
+          <ol class="s0-faq-list">
+            <li>Studiebelastning – hvor mange studiepoeng du tar i din studieperiode, i tilknytning til Lånekassen sine semestre.</li>
+            <li>Studieperiode – når du starter og når du avslutter emnet/emnene (avlegger eksamen).</li>
+          </ol>
+          <p class="s0-faq-answer">NB! Studieperioden din må være på minimum 4 måneder fra startdato til sluttdato (når du skal avlegge eksamen). Høstsemesteret hos Lånekassen går fra 16. august til 15. januar og vårsemesteret går fra 16. januar til 15. juni.</p>
+          <a class="s0-faq-link" href="https://www.kristiania.no/studere-hos-oss/opptaksinformasjon/lanekassen/" target="_blank" rel="noopener">Les mer om Lånekassen</a>
         </div>
       </div>
     </aside>
@@ -2043,14 +2057,36 @@ function renderStep0() {
     var emnerHtml = '';
     nettPrograms.forEach(function(p) {
       var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : '';
-      var meta = (p.points ? studiepoengTekst(p.points) + ' · ' : '') + (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '');
-      emnerHtml += buildEmnegroupHtml(p.name, meta, p.emner || [], safeId, false, 's0RemoveEmne', false);
+      var meta = (p.points ? studiepoengTekst(p.points) + ' · ' : '') + (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '')
+        + gjennomforingSuffix(p);
+      emnerHtml += buildEmnegroupHtml(p.name, meta, p.emner || [], safeId, false, 's0RemoveEmne', false, 's0EndreProgram');
     });
     if (looseEmner.length > 0) {
-      emnerHtml += buildEmnegroupHtml('Emner uten tilknytning til studieprogram', looseEmner.length + ' emne' + (looseEmner.length !== 1 ? 'r' : ''), looseEmner, null, true, 's0RemoveEmne', false);
+      emnerHtml += buildEmnegroupHtml('Emner uten tilknytning til studieprogram', looseEmner.length + ' emne' + (looseEmner.length !== 1 ? 'r' : ''), looseEmner, null, true, 's0RemoveEmne', false, 's0EndreProgram');
     }
     document.getElementById('step0EmnerList').innerHTML = emnerHtml;
   }
+}
+
+/* Emnet skal kunne bytte grad uten \u00e5 tas ut og legges inn p\u00e5 nytt \u2013 samme
+   valgpanel som n\u00e5r det ble lagt til, men her flyttes det. */
+function s0EndreProgram(programId, code, isLoose) {
+  var b = getBasket();
+  var emne = null;
+  if (isLoose) {
+    emne = (b.looseEmner || []).find(function(e) { return e.code === code; });
+  } else {
+    var prog = (b.programs || []).find(function(p) { return p.id === programId; });
+    emne = prog && (prog.emner || []).find(function(e) { return e.code === code; });
+  }
+  if (!emne) return;
+  /* Gjennomføringen hører til det gamle valget og settes på nytt i panelet. */
+  var kopi = JSON.parse(JSON.stringify(emne));
+  delete kopi.studieform; delete kopi.studiekode;
+  startEndreStudieprogram(kopi, function() {
+    if (isLoose) removeLooseEmne(code);
+    else removeEmne(programId, code);
+  });
 }
 
 function s0RemoveEmne(programId, code, isLoose) {
@@ -2109,7 +2145,8 @@ function emneKortPrisHtml(e) {
 }
 
 function emneKortInnholdHtml(e, oppstartHtml, priceHtml) {
-  return '<div class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng</div>'
+  return '<div class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng'
+    + gjennomforingSuffix(e) + '</div>'
     + '<div class="s0-emne-name">' + e.name + '</div>'
     + (oppstartHtml ? '<div class="s0-emne-oppstart">' + oppstartHtml + '</div>' : '')
     + '<div class="s0-emne-row-bottom">'
@@ -2118,20 +2155,24 @@ function emneKortInnholdHtml(e, oppstartHtml, priceHtml) {
     + '</div>';
 }
 
-function buildEmneRowHtml(e, removeFnCall, showPrice) {
+function buildEmneRowHtml(e, removeFnCall, showPrice, changeFnCall) {
   var oppstart = e.startDate ? e.startDate : (e.startSemester ? e.startSemester : '');
   var oppstartHtml = oppstart ? 'Oppstart: <strong>' + oppstart + '</strong>' : '';
   return '<div class="s0-emne-row">'
     + '<button class="s0-emne-remove" onclick="' + removeFnCall + '" aria-label="Fjern">' + ICON_X_PLAIN + '</button>'
     + emneKortInnholdHtml(e, oppstartHtml, showPrice ? emneKortPrisHtml(e) : '')
+    + (changeFnCall ? '<button class="s0-emne-change" onclick="' + changeFnCall + '">Endre studieprogram</button>' : '')
     + '</div>';
 }
 
-function buildEmnegroupHtml(label, meta, emner, groupId, isLoose, removeFn, showPrice) {
+/* changeFn settes bare fra Studievalg \u2013 der studievalget fortsatt er \u00e5pent
+   for endring. Betaling og Oppstart viser de samme kortene uten den. */
+function buildEmnegroupHtml(label, meta, emner, groupId, isLoose, removeFn, showPrice, changeFn) {
   var rows = emner.map(function(e) {
     var safeCode = e.code ? e.code.toString().replace(/'/g, "\\'") : '';
-    var removeFnCall = removeFn + "(" + (groupId ? "'" + groupId + "'" : 'null') + ",'" + safeCode + "'," + (isLoose ? 'true' : 'false') + ")";
-    return buildEmneRowHtml(e, removeFnCall, showPrice);
+    var args = "(" + (groupId ? "'" + groupId + "'" : 'null') + ",'" + safeCode + "'," + (isLoose ? 'true' : 'false') + ")";
+    var removeFnCall = removeFn + args;
+    return buildEmneRowHtml(e, removeFnCall, showPrice, changeFn ? changeFn + args : null);
   }).join('');
   return '<div class="s0-emnegroup">'
     + '<div class="s0-emnegroup-header" onclick="toggleS0EmnegroupOpen(this)">'
@@ -2413,9 +2454,12 @@ function saveStep3Person() {
 }
 
 /* Step 3 – Oppstart */
+/* Tekstene er kontrollert mot kristiania.no/nettstudier/ofte-stilte-sporsmal:
+   startdato velges ved bestilling og kan settes inntil 3 måneder frem, og
+   studieretten er 18 måneder fra du får tilgang. */
 var OPPSTART_DATES = [
-  { label: '16. august 2026', sub: 'Anbefalt hvis du ønsker å søke lån/stipend hos Lånekassen.', meta: 'Studierett til 15. august 2027', badge: '16. aug 2026' },
-  { label: 'Valgfri oppstartsdato', sub: 'Du kan starte når som helst innen 3 måneder fra dagens dato.', meta: '12 måneder studierett', badge: 'Valgfri' }
+  { label: '16. august 2026', sub: 'Anbefalt hvis du skal søke lån eller stipend.', meta: 'Studierett til 15. februar 2028', badge: '16. aug 2026' },
+  { label: 'Valgfri oppstartsdato', sub: 'Velg en dato innen 3 måneder fra i dag.', meta: '18 måneder studierett', badge: 'Valgfri' }
 ];
 var _oppstartMode = 'same';
 var _sharedDateIdx = null;
@@ -2713,7 +2757,8 @@ function renderBetalingEmnerGroups(nettPrograms, looseEmner) {
   var html = '';
   nettPrograms.forEach(function(p) {
     var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : '';
-    var meta = (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '');
+    var meta = (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '')
+      + gjennomforingSuffix(p);
     html += buildEmnegroupHtml(p.name, meta, p.emner || [], safeId, false, 'btRemoveEmne', true);
   });
   if (looseEmner.length > 0) {

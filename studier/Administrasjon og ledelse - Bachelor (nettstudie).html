@@ -2102,6 +2102,11 @@ var SP_SIDENS_PROGRAM = { id: 'adm-ledelse-nett', name: 'Administrasjon og ledel
 var spValgtProgram = null;
 var spSkrevneProgramIder = {};
 
+/* Bestillingen kan like gjerne være frittstående emner. Da står gjennomføringen
+   studenten valgte her, siden den ikke følger av noe program. */
+var spValgtLoose = null;
+var spSkrevneLooseKoder = {};
+
 function spEmneFraRad(btn, row) {
   return {
     btn: btn,
@@ -2109,20 +2114,30 @@ function spEmneFraRad(btn, row) {
     name: row.dataset.name,
     pts: parseFloat(row.dataset.pts),
     price: parseInt(row.dataset.price),
-    url: row.dataset.url
+    /* Absolutt sti: emnesiden leses igjen fra søknadsskjemaet, som ligger på
+       et annet nivå enn denne siden. */
+    url: (typeof absEmneUrl === 'function' ? absEmneUrl(row.dataset.url) : row.dataset.url)
   };
 }
 
 /* Emnet kan inngå i flere grader, så studenten velger hvilken det skal telle
    mot før oppstartsdatoen settes. Ett valg gjelder hele bestillingen. */
 function spVelgProgramOgBestill(pending) {
-  velgProgramForPlanlegger(pending, SP_SIDENS_PROGRAM, function(p) {
+  velgProgramForPlanlegger(pending, SP_SIDENS_PROGRAM, function(p, opts) {
     if (typeof closeSoknaderPanel === 'function') closeSoknaderPanel();
-    spValgtProgram = { id: programIdFor(p), name: p.name };
+    /* p === null: studenten valgte å ta emnene som frittstående enkeltemner.
+       opts bærer gjennomføringen (heltid/deltid) og studiekoden for den. */
+    opts = opts || {};
+    spValgtProgram = p ? { id: programIdFor(p), name: p.name,
+                           studieform: opts.studieform || null,
+                           code: opts.code || null } : null;
+    spValgtLoose = p ? null : opts;
     openStudiestartModal(pending, spScenarioOverride, { skipAll: true });
     var lastCode = pending[pending.length - 1].code;
+    var kortId = p ? spValgtProgram.id
+                   : (typeof HK_LOOSE_CARD_ID !== 'undefined' ? HK_LOOSE_CARD_ID : '__loose');
     if (typeof revealEmne === 'function') {
-      setTimeout(function() { revealEmne(spValgtProgram.id, lastCode); }, 150);
+      setTimeout(function() { revealEmne(kortId, lastCode); }, 150);
     }
   });
 }
@@ -2161,21 +2176,54 @@ function spSyncToBasket() {
 }
 
 function spSyncToBasketInner() {
-  /* Emnene fra siste bestilling får programmet som ble valgt for dem */
-  var maal = spValgtProgram || SP_SIDENS_PROGRAM;
+  /* Emnene fra siste bestilling får programmet som ble valgt for dem – eller
+     merkes frittstående, hvis det var valget. */
+  var maal = spValgtLoose ? null : (spValgtProgram || SP_SIDENS_PROGRAM);
   Object.keys(spCart).forEach(function(k) {
-    if (!spCart[k].program) spCart[k].program = { id: maal.id, name: maal.name };
+    if (spCart[k].program || spCart[k].loose) {
+      /* Velger studenten ny gjennomføring for et program de alt har emner i,
+         gjelder valget hele kortet – ikke bare emnene i siste bestilling. */
+      var pr = spCart[k].program;
+      if (maal && maal.studieform && pr && pr.id === maal.id) {
+        pr.studieform = maal.studieform;
+        pr.code = maal.code || pr.code;
+      }
+      return;
+    }
+    if (maal) spCart[k].program = { id: maal.id, name: maal.name,
+                                    studieform: maal.studieform || null,
+                                    code: maal.code || null };
+    else spCart[k].loose = spValgtLoose || {};
   });
 
-  /* Grupper på program – ulike bestillinger kan peke på ulike grader */
+  /* Grupper på program – ulike bestillinger kan peke på ulike grader. De
+     frittstående hører ikke hjemme på noe kort og samles for seg. */
   var grupper = {};
+  var frittstaaende = [];
   Object.keys(spCart).forEach(function(k) {
-    var pr = spCart[k].program;
-    if (!grupper[pr.id]) grupper[pr.id] = { prog: pr, emner: [] };
     var e = { code: k, name: spCart[k].name, pts: spCart[k].pts, price: spCart[k].price };
     if (spCart[k].startDate) e.startDate = spCart[k].startDate;
+    if (spCart[k].url) e.url = spCart[k].url;
+    if (spCart[k].loose) {
+      if (spCart[k].loose.studieform) e.studieform = spCart[k].loose.studieform;
+      if (spCart[k].loose.code) e.studiekode = spCart[k].loose.code;
+      frittstaaende.push(e);
+      return;
+    }
+    var pr = spCart[k].program;
+    if (!grupper[pr.id]) grupper[pr.id] = { prog: pr, emner: [] };
     grupper[pr.id].emner.push(e);
   });
+
+  /* Frittstående emner planleggeren har skrevet, men som er fjernet igjen */
+  Object.keys(spSkrevneLooseKoder).forEach(function(code) {
+    if (spCart[code] && spCart[code].loose) return;
+    delete spSkrevneLooseKoder[code];
+    if (typeof removeLooseEmne === 'function') removeLooseEmne(code);
+  });
+
+  frittstaaende.forEach(function(e) { spSkrevneLooseKoder[e.code] = 1; });
+  if (typeof addLooseEmnerFromPlanner === 'function') addLooseEmnerFromPlanner(frittstaaende);
 
   /* Program planleggeren har skrevet, men som ikke har emner igjen, ut av søknaden */
   Object.keys(spSkrevneProgramIder).forEach(function(id) {
@@ -2197,6 +2245,8 @@ function spSyncToBasketInner() {
       level: 'Bachelor',
       points: ptsStr + ' studiepoeng',
       type: 'nett',
+      studieform: g.prog.studieform || null,
+      programCode: g.prog.code || null,
       emner: g.emner
     });
   });
@@ -2205,6 +2255,23 @@ function spSyncToBasketInner() {
 function spSyncFromBasket() {
   if (typeof getBasket !== 'function') return;
   var b = getBasket();
+  /* Frittstående emner ligger utenfor programkortene, men kan godt være rader
+     i planleggeren – de skal vises som lagt til her også. */
+  (b.looseEmner || []).forEach(function(e) {
+    if (spCompletedCourses.indexOf(e.code) > -1) return;
+    if (spCart[e.code]) return;
+    var rader = document.querySelectorAll('.sp-course-row[data-code="' + e.code + '"]');
+    if (!rader.length) return;
+    spCart[e.code] = { name: e.name, pts: e.pts, price: e.price || 0,
+                       startDate: e.startDate || null, url: e.url || null,
+                       loose: { studieform: e.studieform || null, code: e.studiekode || null } };
+    spSkrevneLooseKoder[e.code] = 1;
+    rader.forEach(function(row) {
+      row.querySelectorAll('.sp-add-btn').forEach(function(btn) {
+        btn.classList.add('added'); btn.textContent = '\u2713';
+      });
+    });
+  });
   /* Emner kan ligge under flere program nå, så vi leser fra alle nett-program
      og tar med de som finnes som rader i planleggeren. */
   (b.programs || []).forEach(function(prog) {
@@ -2215,8 +2282,10 @@ function spSyncFromBasket() {
       var rader = document.querySelectorAll('.sp-course-row[data-code="' + e.code + '"]');
       if (!rader.length) return;
       spCart[e.code] = { name: e.name, pts: e.pts, price: e.price || 0,
-                         startDate: e.startDate || null,
-                         program: { id: prog.id, name: prog.name } };
+                         startDate: e.startDate || null, url: e.url || null,
+                         program: { id: prog.id, name: prog.name,
+                                    studieform: prog.studieform || null,
+                                    code: prog.programCode || null } };
       spSkrevneProgramIder[prog.id] = 1;
       rader.forEach(function(row) {
         row.querySelectorAll('.sp-add-btn').forEach(function(btn) {

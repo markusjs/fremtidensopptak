@@ -261,6 +261,11 @@ function addProgramWithEmner(prog) {
   if (existing) {
     existing.emner = prog.emner;
     existing.name = prog.name;
+    /* Studiepoengsummen f\u00f8lger emnene, s\u00e5 den m\u00e5 skrives om ogs\u00e5. */
+    if (prog.points) existing.points = prog.points;
+    /* Gjennomf\u00f8ringen kan v\u00e6re valgt p\u00e5 nytt for denne bestillingen. */
+    if (prog.studieform) existing.studieform = prog.studieform;
+    if (prog.programCode) existing.programCode = prog.programCode;
   } else {
     b.programs.push(prog);
   }
@@ -296,9 +301,23 @@ function removeEmne(programId, code) {
 
 function addLooseEmne(emne) {
   var b = getBasket();
-  if (b.looseEmner.find(function(e) { return e.code === emne.code; })) return;
-  b.looseEmner.push(emne);
+  /* Emnet kan skrives p\u00e5 nytt (oppstartsdato fra studiestart-modalen), s\u00e5
+     eksisterende rad oppdateres i stedet for \u00e5 dupliseres. */
+  var eksisterende = b.looseEmner.find(function(e) { return e.code === emne.code; });
+  if (eksisterende) {
+    Object.keys(emne).forEach(function(k) { eksisterende[k] = emne[k]; });
+  } else {
+    b.looseEmner.push(emne);
+  }
   saveBasket(b);
+}
+
+/* Studieplanleggeren skriver frittst\u00e5ende emner samlet, slik
+   addProgramWithEmner gj\u00f8r for programkortene. */
+function addLooseEmnerFromPlanner(emner) {
+  if (!emner || !emner.length) return;
+  emner.forEach(addLooseEmne);
+  openSoknaderPanel();
 }
 
 function removeLooseEmne(code) {
@@ -306,6 +325,8 @@ function removeLooseEmne(code) {
   b.looseEmner = b.looseEmner.filter(function(e) { return e.code !== code; });
   saveBasket(b);
   renderBasketPanel();
+  // Sync studieplanlegger: remove this emne from SP if present
+  if (typeof spRemoveCourse === 'function') { spRemoveCourse(code); }
 }
 
 function clearBasket() {
@@ -666,10 +687,14 @@ function renderNettCard(prog) {
     + '<div class="hk-emner-list">' + emnerHtml + '</div></div>';
 }
 
+/* Kortet med frittst\u00e5ende emner har ingen program-id, men trenger en krok
+   revealEmne kan sl\u00e5 opp p\u00e5 n\u00e5r et emne legges til. */
+var HK_LOOSE_CARD_ID = '__loose';
+
 function renderLooseEmner(emner) {
   var inner = '';
   emner.forEach(function(e) {
-    inner += '<div class="hk-emne-row">'
+    inner += '<div class="hk-emne-row" data-code="' + (e.code || '') + '">'
       + '<div class="hk-emne-left"><div class="hk-emne-meta">' + (e.program || 'Enkeltemne') + ' · ' + (e.pts || 0) + ' stp.'
       + gjennomforingSuffix(e) + '</div>'
       + '<div class="hk-emne-name">' + e.name + '</div>'
@@ -679,7 +704,7 @@ function renderLooseEmner(emner) {
       + '<button class="hk-trash" onclick="hkRemoveLooseEmne(\'' + e.code + '\')" aria-label="Fjern">' + TRASH_SVG + '</button>'
       + '</div></div>';
   });
-  return '<div class="hk-card"><div class="hk-card-header hk-clickable" onclick="toggleHkEmner(this)">'
+  return '<div class="hk-card" data-prog-id="' + HK_LOOSE_CARD_ID + '"><div class="hk-card-header hk-clickable" onclick="toggleHkEmner(this)">'
     + '<div><div class="hk-section-title">Emner uten tilknytning til studieprogram</div>'
     + '<div style="font-weight:700;font-size:14px;">' + emner.length + ' emne' + (emner.length > 1 ? 'r' : '') + '</div></div>'
     + '<div class="hk-card-right"><button class="hk-chevron">' + CHEVRON_DOWN + '</button></div>'
@@ -910,8 +935,16 @@ function buildEmneObj(subject) {
     code: subject.code,
     name: subject.name || '',
     pts: subject.credits || 0,
-    price: (subject.price && subject.price.amount) || 0
+    price: (subject.price && subject.price.amount) || 0,
+    url: absEmneUrl(location.pathname)
   };
+}
+
+/* Emne-URL-er settes p\u00e5 sider med ulik dybde (/studier/..., /enkeltemner/...)
+   men leses igjen fra s\u00f8knadsskjemaet, s\u00e5 de lagres absolutte. */
+function absEmneUrl(url) {
+  if (!url) return '';
+  try { return new URL(url, location.href).pathname; } catch (e) { return url; }
 }
 
 /* Programmene emnet inngår i («Dette emnet inngår i»-listen).
@@ -1009,6 +1042,7 @@ function chooseEmneProgram(emne, programName, programId, opts) {
   saveBasket(b);
   openSoknaderPanel();
   revealEmne(prog.id, emne.code);
+  refreshSoknadsskjemaOmTilstede();
 }
 
 /* Studieform pr. studieprogram og programkoden vi viser i s\u00f8knaden. N\u00f8kkelen
@@ -1049,8 +1083,19 @@ function fallbackCodes(name) {
 
 function getProgramCodes(p) {
   if (!p) return LOOSE_CODES;
-  var fraTabell = p.href ? PROGRAM_CODES[programKeyFromHref(p.href)] : null;
+  var fraTabell = p.href ? PROGRAM_CODES[programKeyFromHref(p.href)] : kodetabellFraNavn(p.name);
   return fraTabell || fallbackCodes(p.name);
+}
+
+/* Program som kommer fra s\u00f8knaden i stedet for en emneside har ingen lenke.
+   Da sl\u00e5r vi opp p\u00e5 navnet, men bare n\u00e5r \u00e9n sti matcher \u2013 en oppdiktet kode er
+   bedre enn feil kode. */
+function kodetabellFraNavn(name) {
+  var slug = String(name || '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  if (!slug) return null;
+  var treff = Object.keys(PROGRAM_CODES).filter(function(k) { return k.indexOf(slug) > -1; });
+  return treff.length === 1 ? PROGRAM_CODES[treff[0]] : null;
 }
 
 /* Sidebar-valg: hvilken grad skal emnet inn i? */
@@ -1058,16 +1103,18 @@ var _emneChoiceState = null;
 
 function showEmneProgramChoice(emne, programs, opts) {
   opts = opts || {};
-  _emneChoiceState = { emne: emne, programs: programs,
+  _emneChoiceState = { emne: emne, programs: programs, opts: opts,
                        skipGjennomforing: !!opts.skipGjennomforing,
-                       onPick: opts.onPick || null };
+                       onPick: opts.onPick || null,
+                       onCommit: opts.onCommit || null };
   injectSidebarPanel();
   openSoknaderPanel();
   var body = document.getElementById('hk-body');
   var title = document.getElementById('hk-title');
   if (!body) return;
   refreshSokPanelFooter(true);
-  if (title) title.textContent = programs.length ? 'Velg studieprogram' : 'Legg til emne';
+  if (title) title.textContent = opts.title
+    || (programs.length ? 'Velg studieprogram' : 'Legg til emne');
 
   var intro;
   if (programs.length === 0) {
@@ -1090,7 +1137,8 @@ function showEmneProgramChoice(emne, programs, opts) {
   var paagaaende = indeksert.filter(function(x) { return isStartedProgram(x.p); });
   var nye = indeksert.filter(function(x) { return !isStartedProgram(x.p); });
 
-  var html = '<div style="padding:8px 0;">' + intro;
+  var html = '<div style="padding:8px 0;">'
+    + (opts.onCommit ? hkEmneContextCard(emne) : '') + intro;
 
   paagaaende.forEach(function(x) {
     html += hkChoiceButton('openEmneProgramDetail(' + x.idx + ')', x.p.name, null, null, HK_BADGE_PAAGAAR);
@@ -1107,11 +1155,11 @@ function showEmneProgramChoice(emne, programs, opts) {
     html += hkChoiceButton('openEmneProgramDetail(' + x.idx + ')', x.p.name, null, null, null);
   });
 
-  /* Emnet inng\u00e5r ikke i noen grad \u2013 da er frittst\u00e5ende eneste vei videre. */
-  if (!programs.length) {
-    html += hkChoiceButton('openLooseGjennomforing()', 'Som et frittst\u00e5ende enkeltemne',
-                           'Ta faget uten \u00e5 starte p\u00e5 et helt studieprogram', null, null);
-  }
+  /* Frittst\u00e5ende er alltid et alternativ \u2013 ogs\u00e5 n\u00e5r emnet inng\u00e5r i grader.
+     Da st\u00e5r det nederst, etter programmene, med \u00abEller\u00bb som skille. */
+  if (programs.length) html += hkOrDivider();
+  html += hkChoiceButton('openLooseGjennomforing()', 'Som et frittst\u00e5ende enkeltemne',
+                         'Ta faget uten \u00e5 starte p\u00e5 et helt studieprogram', null, null);
 
   html += '</div>';
   body.innerHTML = html;
@@ -1224,10 +1272,11 @@ function programIdFor(p) {
   return KNOWN_PROGRAM_IDS[norm] || slugifyProgram(p.name);
 }
 
-/* Studieformen følger av programsiden, så heltid/deltid spørres det ikke om
-   her. Ett valg gjelder hele bestillingen, så listen er programmene *alle*
-   emnene inngår i – pluss programmet siden handler om, som de tilhører av
-   natur og derfor alltid skal være et valg. */
+/* Ett valg gjelder hele bestillingen, så listen er programmene *alle* emnene
+   inngår i – pluss programmet siden handler om, som de tilhører av natur og
+   derfor alltid skal være et valg. Gjennomføringen spørres det om her også:
+   den står ingen steder på programsiden, og søknaden må vise om studenten
+   studerer heltid eller deltid. */
 function velgProgramForPlanlegger(emner, sidensProgram, onValgt) {
   if (!emner.length) return;
   var lister = [];
@@ -1255,10 +1304,7 @@ function velgProgramForPlanlegger(emner, sidensProgram, onValgt) {
       felles.unshift({ name: sidensProgram.name, href: sidensProgram.href });
     }
 
-    showEmneProgramChoice(emner[0], felles, {
-      skipGjennomforing: true,
-      onPick: onValgt
-    });
+    showEmneProgramChoice(emner[0], felles, { onPick: onValgt });
   }
 }
 
@@ -1324,20 +1370,48 @@ function hkBackLink(onclick, text) {
 function hkPickStudieform(form) {
   var v = _emneProgramView, st = _emneChoiceState;
   if (!v || !st) return;
-  var kode = v.codes[form];
+  var valg = { studieform: STUDIEFORM[form].label, code: v.codes[form] };
   _emneProgramView = null;
-  if (!v.program) {
-    pickEmneAsLoose(STUDIEFORM[form].label, kode);
-    return;
-  }
-  chooseEmneProgram(st.emne, v.program.name, v.program.id || null,
-    { studieform: STUDIEFORM[form].label, code: kode });
+  /* Fra studieplanleggeren eier kalleren bestillingen \u2013 den legger emnene i
+     kurven selv, og trenger b\u00e5de programmet (null = frittst\u00e5ende) og valget. */
+  if (st.onPick) { st.onPick(v.program, valg); return; }
+  if (st.onCommit) st.onCommit();
+  if (!v.program) { pickEmneAsLoose(valg.studieform, valg.code); return; }
+  chooseEmneProgram(st.emne, v.program.name, v.program.id || null, valg);
 }
 
 function backToEmneProgramList() {
   var st = _emneChoiceState;
   _emneProgramView = null;
-  if (st) showEmneProgramChoice(st.emne, st.programs);
+  if (st) showEmneProgramChoice(st.emne, st.programs, st.opts);
+}
+
+/* \u00abEndre studieprogram\u00bb fra s\u00f8knaden: samme valgpanel som ellers, men emnet
+   skal flyttes \u2013 derfor rydder «fjern» det bort fra der det l\u00e5 f\u00f8rst n\u00e5r
+   studenten har valgt ferdig. */
+function startEndreStudieprogram(emne, fjern) {
+  emneProgramKandidater(emne, function(programs) {
+    showEmneProgramChoice(emne, programs, { onCommit: fjern, title: 'Endre studieprogram' });
+  });
+}
+
+/* Kandidatene er gradene emnet inng\u00e5r i (hentet fra emnesiden) pluss
+   nett-programmene som allerede ligger i s\u00f8knaden. Eldre kurv-rader mangler
+   emne-URL, s\u00e5 listen m\u00e5 t\u00e5le \u00e5 st\u00e5 uten den. */
+function emneProgramKandidater(emne, cb) {
+  hentEmneProgrammer(emne && emne.url, function(fraEmnet) {
+    var ut = (fraEmnet || []).slice();
+    var sett = {};
+    ut.forEach(function(p) { sett[normalizeProgName(p.name)] = 1; });
+    (getBasket().programs || []).forEach(function(p) {
+      if (p.type !== 'nett') return;
+      var n = normalizeProgName(p.name);
+      if (sett[n]) return;
+      sett[n] = 1;
+      ut.push({ name: p.name, href: null, id: p.id });
+    });
+    cb(ut);
+  });
 }
 
 
@@ -1390,6 +1464,8 @@ function pickEmneAsLoose(studieform, studiekode) {
   addLooseEmne(emne);
   openSoknaderPanel();
   renderBasketPanel();
+  revealEmne(HK_LOOSE_CARD_ID, emne.code);
+  refreshSoknadsskjemaOmTilstede();
 }
 
 function handleKjopEmnet() {

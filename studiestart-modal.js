@@ -534,7 +534,7 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride, options
   if (options && options.skipAll) {
     _ssPending.forEach(function(c) {
       if (typeof spCart !== 'undefined' && !spCart[c.code]) {
-        spCart[c.code] = { name: c.name, pts: c.pts, price: c.price, startDate: '' };
+        spCart[c.code] = { name: c.name, pts: c.pts, price: c.price, startDate: '', url: c.url || null };
         document.querySelectorAll('.sp-course-row[data-code="' + c.code + '"] .sp-add-btn').forEach(function(b) {
           b.classList.add('added'); b.textContent = '✓';
         });
@@ -734,7 +734,7 @@ window.confirmStudiestart = function() {
   // Add all pending courses with start date
   _ssPending.forEach(function(c) {
     if (typeof spCart !== 'undefined' && !spCart[c.code]) {
-      spCart[c.code] = { name: c.name, pts: c.pts, price: c.price, startDate: dateStr };
+      spCart[c.code] = { name: c.name, pts: c.pts, price: c.price, startDate: dateStr, url: c.url || null };
       document.querySelectorAll('.sp-course-row[data-code="' + c.code + '"] .sp-add-btn').forEach(function(b) {
         b.classList.add('added');
         b.textContent = '\u2713';

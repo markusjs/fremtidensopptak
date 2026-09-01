@@ -417,12 +417,12 @@ function injectSidebarPanel() {
     + '</button></div>'
     + '<div class="hk-body" id="hk-body"></div>'
     + '<div class="hk-footer" id="hk-footer">'
+    /* Foten står nederst i sidebaren uansett steg. Rekkefølgen går fra det
+       uforpliktende til det som fører søknaden videre: lagre, logg inn, gå videre. */
+    + '<div id="hk-save-slot"></div>'
     + '<div id="hk-auth-slot"></div>'
     // Fra handlekurven er studievalget allerede gjort → hopp rett til innlogging
     + '<a href="' + getSokSkjemaPath() + '?steg=login" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre</a>'
-    /* «Lagre og fortsett senere» står nederst i sidebaren, under knappene, slik at
-       den er tilgjengelig uansett hvilket steg panelet viser. */
-    + '<div id="hk-save-slot"></div>'
     + '</div>'
     + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);

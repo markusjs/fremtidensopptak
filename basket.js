@@ -185,6 +185,8 @@ var BASKET_CSS = '\
 .hk-btn-primary:hover{background:#0052cc}\
 .hk-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px;padding:64px 16px 16px;color:#888}\
 .hk-save-card{background:#fbeee4;border:1px solid #f0dfd2;border-radius:12px;margin-bottom:16px;overflow:hidden}\
+#hk-save-slot .hk-save-card{margin-bottom:0}\
+#hk-save-slot .hk-save-body{max-height:46vh;overflow-y:auto}\
 .hk-save-card .hk-card-header{padding:16px;align-items:center}\
 .hk-save-title{font-size:16px;font-weight:700;color:#121212;margin:0}\
 .hk-save-body{padding:0 16px 20px}\
@@ -207,6 +209,18 @@ var BASKET_CSS = '\
 .hk-save-privacy a{color:#121212}\
 .hk-save-success-row{display:flex;gap:10px;align-items:flex-start}\
 .hk-save-success{font-size:15px;color:#121212;font-weight:400;margin:0;line-height:1.5}\
+/* Programvalget: ett kort per studieprogram, med niv\u00e5, hva som legges til og\
+   hvor langt studenten er kommet. */\
+.hk-prog-card{display:block;width:100%;text-align:left;padding:18px 20px;margin-bottom:14px;border:1px solid #d8d8d8;border-radius:12px;background:#fff;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s}\
+.hk-prog-card:hover{border-color:#4e0000;background:#faf5f5}\
+.hk-prog-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}\
+.hk-prog-meta{font-size:15px;font-weight:400;color:#5c5c5c;line-height:1.35}\
+.hk-prog-name{display:block;font-size:18px;font-weight:700;color:#121212;line-height:1.3;margin-top:2px}\
+.hk-prog-progress{display:block;font-size:15px;font-weight:400;color:#5c5c5c;line-height:1.35;margin-top:8px}\
+.hk-prog-sub{display:block;font-size:15px;font-weight:400;color:#3f3f3f;line-height:1.4;margin-top:4px}\
+.hk-prog-heading{font-size:19px;font-weight:700;color:#121212;margin:0 0 12px}\
+.hk-prog-heading + .hk-prog-card{margin-top:0}\
+.hk-prog-heading.hk-prog-heading-next{margin-top:26px}\
 .hk-city-popover{position:fixed;z-index:1300;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);padding:16px;min-width:200px}\
 .hk-city-popover h4{margin:0 0 12px;font-size:15px;font-weight:700;color:#111}\
 .hk-city-btn{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:6px;border:1.5px solid #ddd;border-radius:8px;background:none;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}\
@@ -406,6 +420,9 @@ function injectSidebarPanel() {
     + '<div id="hk-auth-slot"></div>'
     // Fra handlekurven er studievalget allerede gjort → hopp rett til innlogging
     + '<a href="' + getSokSkjemaPath() + '?steg=login" id="hk-cta-btn" class="hk-btn-primary" style="display:none;">Gå videre</a>'
+    /* «Lagre og fortsett senere» står nederst i sidebaren, under knappene, slik at
+       den er tilgjengelig uansett hvilket steg panelet viser. */
+    + '<div id="hk-save-slot"></div>'
     + '</div>'
     + '</div>';
   document.body.insertAdjacentHTML('beforeend', html);
@@ -476,11 +493,18 @@ var CHEVRON_UP = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><p
 var _hkSaveOpen = false;
 var _hkSaveMethod = 'epost'; // 'epost' | 'sms'
 var _hkSaveConsent = false;
+/* Kvitteringen må overleve at foten tegnes på nytt – boksen står i foten, og
+   den bygges om hver gang panelet bytter steg. */
+var _hkSaveSentTo = null;
 
 function hkSaveBoxHtml() {
   var isEpost = _hkSaveMethod === 'epost';
   var body = '';
-  if (_hkSaveOpen) {
+  if (_hkSaveOpen && _hkSaveSentTo) {
+    body = '<div class="hk-save-body"><div class="hk-save-success-row">' + CHECK_SVG_DARK
+      + '<p class="hk-save-success">En lenke har blitt sendt til «' + _hkSaveSentTo + '». Bruk den for å fortsette søknaden senere.</p>'
+      + '</div></div>';
+  } else if (_hkSaveOpen) {
     body = '<div class="hk-save-body">'
       + '<div class="hk-radio-group">'
       + '<label class="hk-radio-option"><input type="radio" name="hk-save-method"' + (isEpost ? ' checked' : '') + ' onchange="setHkSaveMethod(\'epost\')"><span class="hk-radio-dot"></span>Send på e-post</label>'
@@ -540,9 +564,9 @@ function sendBasketSave() {
   if (!valid) { input.style.borderColor = '#b60202'; input.focus(); return; }
   var body = input.closest('.hk-save-body');
   if (!body) return;
-  var safeVal = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  _hkSaveSentTo = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
   body.innerHTML = '<div class="hk-save-success-row">' + CHECK_SVG_DARK
-    + '<p class="hk-save-success">En lenke har blitt sendt til «' + safeVal + '». Bruk den for å fortsette søknaden senere.</p>'
+    + '<p class="hk-save-success">En lenke har blitt sendt til «' + _hkSaveSentTo + '». Bruk den for å fortsette søknaden senere.</p>'
     + '</div>';
 }
 
@@ -562,6 +586,12 @@ function refreshSokPanelFooter(awaitingChoice) {
     var b = getBasket();
     var totalItems = (b.programs || []).length + (b.looseEmner || []).length;
     ctaBtn.style.display = (!awaitingChoice && totalItems > 0) ? 'block' : 'none';
+  }
+  /* Ingenting å lagre når søknaden er tom og panelet ikke står midt i et valg. */
+  var saveSlot = document.getElementById('hk-save-slot');
+  if (saveSlot) {
+    var harNoe = awaitingChoice || (getBasket().programs || []).length + (getBasket().looseEmner || []).length > 0;
+    saveSlot.innerHTML = (getAuthState() || !harNoe) ? '' : hkSaveBoxHtml();
   }
   var footer = document.getElementById('hk-footer');
   if (footer) footer.style.display = 'flex';
@@ -600,8 +630,6 @@ function renderBasketPanel() {
   if (b.looseEmner.length > 0) {
     html += renderLooseEmner(b.looseEmner);
   }
-
-  if (!getAuthState()) html += hkSaveBoxHtml();
 
   body.innerHTML = html;
 }
@@ -1105,6 +1133,9 @@ function showEmneProgramChoice(emne, programs, opts) {
   opts = opts || {};
   _emneChoiceState = { emne: emne, programs: programs, opts: opts,
                        skipGjennomforing: !!opts.skipGjennomforing,
+                       /* 'heltid' | 'deltid' n\u00e5r kalleren alt vet gjennomf\u00f8ringen \u2013
+                          da er det steget hoppet over her. */
+                       gjennomforing: opts.gjennomforing || null,
                        onPick: opts.onPick || null,
                        onCommit: opts.onCommit || null };
   injectSidebarPanel();
@@ -1116,63 +1147,117 @@ function showEmneProgramChoice(emne, programs, opts) {
   if (title) title.textContent = opts.title
     || (programs.length ? 'Velg studieprogram' : 'Legg til emne');
 
-  var intro;
-  if (programs.length === 0) {
-    intro = hkChoiceLine('Dette emnet inng\u00e5r ikke i noen av bachelorgradene p\u00e5 nett.', false)
-          + hkChoiceLine('Du kan ta det som et frittst\u00e5ende enkeltemne.', true);
-  } else {
-    intro = hkChoiceLine('Hvilket program \u00f8nsker du at emnet skal inng\u00e5 i?', true);
-  }
+  /* Ett valg gjelder hele bestillingen, så kortene viser summen av det som
+     legges til – ikke bare det første emnet. */
+  var bestilling = opts.emner && opts.emner.length ? opts.emner : (emne ? [emne] : []);
+  var leggerTilPts = bestilling.reduce(function(sum, e) {
+    return sum + (parseFloat(e && e.pts) || 0);
+  }, 0);
 
   var started = getStartedPrograms();
-  function isStartedProgram(p) {
-    return started.some(function(sp) {
-      return (p.href && programKeyFromHref(p.href) === programKeyFromHref(sp.href))
-          || normalizeProgName(p.name) === normalizeProgName(sp.name);
+  function startetProgram(p) {
+    var treff = null;
+    started.forEach(function(sp) {
+      if ((p.href && programKeyFromHref(p.href) === programKeyFromHref(sp.href))
+          || normalizeProgName(p.name) === normalizeProgName(sp.name)) treff = sp;
     });
+    return treff;
   }
 
-  /* Indeksen mot st.programs m\u00e5 f\u00f8lge kortet, siden listen sorteres om. */
+  /* Indeksen mot st.programs må følge kortet, siden listen sorteres om. */
   var indeksert = programs.map(function(p, idx) { return { p: p, idx: idx }; });
-  var paagaaende = indeksert.filter(function(x) { return isStartedProgram(x.p); });
-  var nye = indeksert.filter(function(x) { return !isStartedProgram(x.p); });
+  var paagaaende = indeksert.filter(function(x) { return !!startetProgram(x.p); });
+  var nye = indeksert.filter(function(x) { return !startetProgram(x.p); });
 
-  var html = '<div style="padding:8px 0;">'
-    + (opts.onCommit ? hkEmneContextCard(emne) : '') + intro;
-
-  paagaaende.forEach(function(x) {
-    html += hkChoiceButton('openEmneProgramDetail(' + x.idx + ')', x.p.name, null, null, HK_BADGE_PAAGAAR);
-  });
-
-  /* Skillet mellom \u00abfortsett der du er\u00bb og \u00abstart p\u00e5 nytt\u00bb gir bare mening
-     n\u00e5r vi vet hva som er p\u00e5begynt \u2013 utlogget er listen flat, og foten
-     tilbyr innlogging i stedet. */
-  if (paagaaende.length && nye.length) {
-    html += hkOrDivider() + hkSectionHeading('Start p\u00e5 nytt program');
+  function kort(x) {
+    return hkProgramCard(x.p, startetProgram(x.p), leggerTilPts,
+                         'openEmneProgramDetail(' + x.idx + ')');
   }
 
-  nye.forEach(function(x) {
-    html += hkChoiceButton('openEmneProgramDetail(' + x.idx + ')', x.p.name, null, null, null);
-  });
+  var html = '<div style="padding:8px 0;">' + (opts.onCommit ? hkEmneContextCard(emne) : '');
 
-  /* Frittst\u00e5ende er alltid et alternativ \u2013 ogs\u00e5 n\u00e5r emnet inng\u00e5r i grader.
-     Da st\u00e5r det nederst, etter programmene, med \u00abEller\u00bb som skille. */
+  if (programs.length === 0) {
+    html += hkChoiceLine('Dette emnet inngår ikke i noen av bachelorgradene på nett.', false)
+          + hkChoiceLine('Du kan ta det som et frittstående enkeltemne.', true);
+  } else {
+    /* Skillet mellom «fortsett der du er» og «start på nytt» gir bare mening
+       når vi vet hva som er påbegynt – utlogget er listen flat, og foten
+       tilbyr innlogging i stedet. */
+    if (paagaaende.length) {
+      html += hkProgramHeading('Fortsett', false);
+      paagaaende.forEach(function(x) { html += kort(x); });
+    }
+    if (nye.length) {
+      html += hkProgramHeading('Start på et nytt program', paagaaende.length > 0);
+      nye.forEach(function(x) { html += kort(x); });
+    }
+  }
+
+  /* Frittstående er alltid et alternativ – også når emnet inngår i grader.
+     Da står det nederst, etter programmene, med «Eller» som skille. */
   if (programs.length) html += hkOrDivider();
-  html += hkChoiceButton('openLooseGjennomforing()', 'Som et frittst\u00e5ende enkeltemne',
-                         'Ta faget uten \u00e5 starte p\u00e5 et helt studieprogram', null, null);
+  html += '<button class="hk-prog-card" onclick="openLooseGjennomforing()">'
+    + '<span class="hk-prog-name">Som et frittstående enkeltemne</span>'
+    + '<span class="hk-prog-sub">Ta faget uten å starte på et helt studieprogram</span>'
+    + '</button>';
 
   html += '</div>';
   body.innerHTML = html;
 }
 
+function hkProgramHeading(tekst, harSeksjonOver) {
+  return '<p class="hk-prog-heading' + (harSeksjonOver ? ' hk-prog-heading-next' : '') + '">'
+    + tekst + '</p>';
+}
+
+/* Bachelorgradene i «Dette emnet inngår i» er alle 180 studiepoeng. Har vi
+   studiekatalogen for hånden, brukes tallene derfra i stedet. */
+function hkProgramFakta(p) {
+  var fra = null;
+  if (typeof window !== 'undefined' && window.STUDIETILBUD_ITEMS && p.href) {
+    var key = programKeyFromHref(p.href);
+    window.STUDIETILBUD_ITEMS.forEach(function(it) {
+      if (!fra && it.linkUrl && programKeyFromHref(it.linkUrl) === key) fra = it;
+    });
+  }
+  var poeng = fra && fra.points ? parseFloat(String(fra.points).replace(',', '.')) : NaN;
+  return {
+    level: (fra && fra.levelLabel) || 'Bachelor',
+    total: isNaN(poeng) ? 180 : poeng
+  };
+}
+
+/* Ett programkort: nivå og hva bestillingen legger til øverst, navnet i midten,
+   og hvor langt studenten er kommet nederst. */
+function hkProgramCard(p, startet, leggerTilPts, onclick) {
+  var fakta = hkProgramFakta(p);
+  var level = (startet && startet.level) || fakta.level;
+  var total = (startet && startet.totalCredits) || fakta.total;
+  var tatt = (startet && startet.completedCredits) || 0;
+
+  var meta = level;
+  if (leggerTilPts > 0) meta += ' • ' + hkPts(leggerTilPts) + ' studiepoeng';
+
+  return '<button class="hk-prog-card" onclick="' + onclick + '">'
+    + '<span class="hk-prog-top">'
+    + '<span class="hk-prog-meta">' + meta + '</span>'
+    + (startet ? HK_BADGE_PAAGAAR : '')
+    + '</span>'
+    + '<span class="hk-prog-name">' + p.name + '</span>'
+    + '<span class="hk-prog-progress">' + hkPts(tatt) + ' / ' + hkPts(total) + ' studiepoeng</span>'
+    + '</button>';
+}
+
+/* 7.5 → «7,5», 30 → «30» */
+function hkPts(n) {
+  var v = parseFloat(n) || 0;
+  return (v % 1 === 0 ? String(v) : v.toFixed(1)).replace('.', ',');
+}
+
 /* \u00abStudie p\u00e5g\u00e5r\u00bb \u2013 markerer programmet studenten allerede holder p\u00e5 med */
 var HK_BADGE_PAAGAAR = '<span style="flex-shrink:0;display:inline-flex;align-items:center;'
-  + 'background:#06f;color:#fff;border-radius:999px;padding:5px 13px;'
-  + 'font-size:13px;font-weight:600;white-space:nowrap;">Studie p\u00e5g\u00e5r</span>';
-
-function hkSectionHeading(text) {
-  return '<p style="font-size:18px;font-weight:700;margin:0 0 12px;color:#121212;">' + text + '</p>';
-}
+  + 'background:#06f;color:#fff;border-radius:999px;padding:7px 16px;'
+  + 'font-size:14px;font-weight:700;line-height:1.2;white-space:nowrap;">Studie p\u00e5g\u00e5r</span>';
 
 /* ─── Byggeklosser for valgpanelet ─── */
 
@@ -1277,7 +1362,7 @@ function programIdFor(p) {
    derfor alltid skal være et valg. Gjennomføringen spørres det om her også:
    den står ingen steder på programsiden, og søknaden må vise om studenten
    studerer heltid eller deltid. */
-function velgProgramForPlanlegger(emner, sidensProgram, onValgt) {
+function velgProgramForPlanlegger(emner, sidensProgram, onValgt, gjennomforing) {
   if (!emner.length) return;
   var lister = [];
   var igjen = emner.length;
@@ -1304,7 +1389,8 @@ function velgProgramForPlanlegger(emner, sidensProgram, onValgt) {
       felles.unshift({ name: sidensProgram.name, href: sidensProgram.href });
     }
 
-    showEmneProgramChoice(emner[0], felles, { onPick: onValgt });
+    showEmneProgramChoice(emner[0], felles, { onPick: onValgt, emner: emner,
+                                              gjennomforing: gjennomforing || null });
   }
 }
 
@@ -1316,6 +1402,7 @@ function openEmneProgramDetail(idx) {
   if (!st || !st.programs[idx]) return;
   var p = st.programs[idx];
   if (st.skipGjennomforing && st.onPick) { st.onPick(p); return; }
+  if (hkGjennomforingAlleredeValgt(p, getProgramCodes(p))) return;
   _emneProgramView = { idx: idx, program: p, codes: getProgramCodes(p) };
   renderGjennomforingStep();
 }
@@ -1324,8 +1411,21 @@ function openEmneProgramDetail(idx) {
    studiekoder der ogs\u00e5, s\u00e5 valget kan ikke hoppes over. */
 function openLooseGjennomforing() {
   if (!_emneChoiceState) return;
+  if (hkGjennomforingAlleredeValgt(null, LOOSE_CODES)) return;
   _emneProgramView = { idx: null, program: null, codes: LOOSE_CODES };
   renderGjennomforingStep();
+}
+
+/* Kommer valget fra studieplanleggeren, er heltid/deltid allerede bestemt av
+   fanen studenten st\u00e5r i. Da skal ikke panelet sp\u00f8rre om det en gang til \u2013
+   det gir bare et steg der svaret er gitt p\u00e5 forh\u00e5nd. */
+function hkGjennomforingAlleredeValgt(program, codes) {
+  var st = _emneChoiceState;
+  if (!st || !st.gjennomforing || !st.onPick) return false;
+  var form = STUDIEFORM[st.gjennomforing] ? st.gjennomforing : 'deltid';
+  _emneProgramView = null;
+  st.onPick(program, { studieform: STUDIEFORM[form].label, code: codes[form] });
+  return true;
 }
 
 /* Gjennomf\u00f8ring er et eget steg \u2013 heltid og deltid som likestilte valg,
@@ -1375,9 +1475,60 @@ function hkPickStudieform(form) {
   /* Fra studieplanleggeren eier kalleren bestillingen \u2013 den legger emnene i
      kurven selv, og trenger b\u00e5de programmet (null = frittst\u00e5ende) og valget. */
   if (st.onPick) { st.onPick(v.program, valg); return; }
+  /* Ellers tas studiestart her, som siste steg \u2013 samme valg som fra en
+     studieprogramside. */
+  hkVelgStudiestart(st.emne, function() { hkFullforEmnevalg(v, st, valg); });
+}
+
+function hkFullforEmnevalg(v, st, valg) {
   if (st.onCommit) st.onCommit();
   if (!v.program) { pickEmneAsLoose(valg.studieform, valg.code); return; }
   chooseEmneProgram(st.emne, v.program.name, v.program.id || null, valg);
+}
+
+/* Studiestart-steget i panelet. Emner som allerede har en dato \u2013 for eksempel
+   n\u00e5r studenten bare bytter studieprogram \u2013 beholder sin og spørres ikke igjen. */
+function hkVelgStudiestart(emne, ferdig) {
+  var body = document.getElementById('hk-body');
+  if (!body || !emne || emne.startDate || typeof renderStudiestartStep !== 'function') {
+    ferdig();
+    return;
+  }
+  refreshSokPanelFooter(true);
+  renderStudiestartStep(body, null, {
+    skipStudiestotte: true,
+    onTitle: function(tekst) {
+      var el = document.getElementById('hk-title');
+      if (el) el.textContent = tekst;
+    },
+    onConfirm: function(datoStr) {
+      if (datoStr) emne.startDate = datoStr;
+      ferdig();
+    },
+    onNotify: function(epost) { hkVisVarselKvittering(epost); }
+  });
+}
+
+/* Studenten ba om varsel i stedet for \u00e5 bestille n\u00e5 \u2013 emnet legges ikke til. */
+function hkVisVarselKvittering(epost) {
+  var body = document.getElementById('hk-body');
+  var title = document.getElementById('hk-title');
+  if (!body) return;
+  if (title) title.textContent = 'Vi gir deg beskjed';
+  refreshSokPanelFooter(true);
+  var mottaker = epost
+    ? '\u00ab' + String(epost).replace(/</g, '&lt;').replace(/>/g, '&gt;') + '\u00bb'
+    : 'e-postadressen din';
+  body.innerHTML = '<div style="padding:8px 0;">'
+    + '<div style="background:#f6ece3;border-radius:12px;padding:18px 20px;">'
+    + '<p style="font-size:15px;font-weight:700;color:#5c1a1a;margin:0;">Vi sender deg en e-post n\u00e5r du kan bestille</p>'
+    + '<p style="font-size:13.5px;color:#555;margin:10px 0 0;line-height:1.55;">'
+    + 'Vi varsler ' + mottaker + ' s\u00e5 snart bestillingen \u00e5pner for neste semester. '
+    + 'Emnet er ikke lagt til i s\u00f8knaden.</p>'
+    + '</div>'
+    + '<button onclick="closeSoknaderPanel()" style="background:none;border:none;padding:0;margin:20px 0 0;'
+    + 'cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;color:#4e0000;">\u2190 Tilbake</button>'
+    + '</div>';
 }
 
 function backToEmneProgramList() {

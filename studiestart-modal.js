@@ -11,6 +11,8 @@ var _ssStyleInjected = false;
 var _ssCalYear, _ssCalMonth, _ssCalSelected = null;
 var _ssCalMin, _ssCalMax;
 var _ssWantsLanekassen = null;
+/* Satt når studiestart-steget rendres inne i søknadspanelet i stedet for i skuffen. */
+var _ssInline = null;
 
 /* ── CSS injection ── */
 function injectStyles() {
@@ -140,9 +142,50 @@ function injectStyles() {
 .ss-between-lk-card.selected{border-color:#e0c0c0;background:#fff8f5}\
 .ss-between-lk-card:hover{background:#fff4f0}\
 .ss-warning-email{width:100%;border:1.5px solid #c7c8ca;border-radius:8px;padding:12px 14px;font-size:15px;font-family:inherit;outline:none;background:#fff;box-sizing:border-box;min-height:44px;transition:border-color .15s}\
-.ss-warning-email:focus{border-color:#06f}';
+.ss-warning-email:focus{border-color:#06f}\
+/* Inline-modus: samme innhold rendret rett i s\u00f8knadspanelet i stedet for i en egen skuff */\
+.ss-backdrop.ss-inline-host{position:static;inset:auto;background:none;z-index:auto;display:block;opacity:1;transition:none}\
+.ss-inline-host .ss-modal{position:static;height:auto;width:auto;max-width:none;box-shadow:none;transform:none;display:block;overflow:visible;transition:none}\
+.ss-inline-host .ss-header,.ss-inline-host .ss-title{display:none}\
+.ss-inline-host .ss-subtitle{padding:4px 0 0;font-size:18px;font-weight:500;color:#121212;line-height:1.4}\
+.ss-inline-host .ss-body{padding:16px 0 0;overflow:visible;flex:none;min-height:0}\
+.ss-inline-host .ss-faq-section{padding:8px 0 0}\
+.ss-inline-host .ss-footer{padding:20px 0 0;border-top:none;background:none}\
+.ss-inline-host .ss-cal-day{max-width:38px}\
+/* Varsel under «Valgfri oppstartsdato»: oppstart midt i semesteret kan koste\
+   studiest\u00f8tten, s\u00e5 alternativet – \u00e5 vente p\u00e5 neste semester – st\u00e5r rett under. */\
+.ss-startvarsel{margin-top:14px;padding:0;background:none;border:none}\
+.ss-dato-lead{margin:18px 0 8px;font-size:13.5px;color:#555;line-height:1.5}\
+.ss-startvarsel p{margin:0 0 8px;font-size:13.5px;color:#555;line-height:1.5}\
+.ss-startvarsel p:last-child{margin-bottom:0}\
+.ss-startvarsel strong{color:#121212;font-weight:700}\
+.ss-varsel-box{margin-top:14px;padding-top:14px;border-top:1px solid #e6e6e6}\
+.ss-varsel-title{font-size:14px;font-weight:700;color:#121212;margin:0 0 8px;line-height:1.35}\
+.ss-varsel-row{display:flex;gap:8px}\
+.ss-varsel-row .ss-warning-email{flex:1;min-width:0}\
+.ss-varsel-btn{flex-shrink:0;min-height:44px;padding:0 20px;border:none;border-radius:8px;background:#06f;color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s}\
+.ss-varsel-btn:hover{background:#0052cc}\
+.ss-varsel-ok{display:flex;align-items:flex-start;gap:9px;margin:0;font-size:13.5px;color:#121212;line-height:1.5}\
+.ss-varsel-ok svg{flex-shrink:0;margin-top:2px;color:#1a7f37}';
   document.head.appendChild(css);
 }
+
+/* Standardscenariet i prototypen. Sider som har sitt eget (spScenarioOverride)
+   sender det inn i stedet – ellers er valget likt overalt. */
+window.STUDIESTART_SCENARIO = {
+  id: 'approaching',
+  semesterLabel: '16. august 2026',
+  studierettLabel: 'Studierett til 15. august 2027',
+  semesterDateStr: '16.08.26',
+  loanInfo: 'Anbefalt hvis du ønsker å søke lån/stipend hos Lånekassen.',
+  loanLink: 'Les mer: Lånekassen: Nettstudier og samlingsbasert',
+  calendarMin: '2026-06-16',
+  calendarMax: '2026-09-16',
+  /* Brukes i varselet under «Valgfri oppstartsdato». */
+  nextSemester: 'høstsemesteret',
+  nextDate: '16. august',
+  orderOpens: '16. mai'
+};
 
 /* ── Date scenario logic ── */
 function getStudiestartScenario() {
@@ -376,6 +419,44 @@ window.ssToggleInfo = function(header) {
 };
 
 /* ── Build modal HTML ── */
+/* Vises når studenten åpner «Valgfri oppstartsdato». Krever at scenariet vet
+   når neste semester starter og når det kan bestilles. */
+function harStartVarsel(sc) {
+  return !!(sc && sc.nextSemester && sc.nextDate && sc.orderOpens);
+}
+
+function buildStartVarsel(sc) {
+  if (!harStartVarsel(sc)) return '';
+  return '<div class="ss-startvarsel" onclick="event.stopPropagation()">'
+    + '<p>Semesteret er i gang, og oppstart nå vil muligens ikke gi støtte fra Lånekassen.</p>'
+    + '<p>Neste semester (' + sc.nextSemester + ') har oppstart <strong>' + sc.nextDate
+    + '</strong> og kan bestilles fra <strong>' + sc.orderOpens + '</strong>.</p>'
+    + '<div class="ss-varsel-box" id="ss-varsel-box">'
+    + '<p class="ss-varsel-title">Bli varslet når du kan bestille for ' + sc.nextSemester + '</p>'
+    + '<div class="ss-varsel-row">'
+    + '<input type="email" class="ss-warning-email" id="ss-varsel-epost" placeholder="mail@epost.no">'
+    + '<button type="button" class="ss-varsel-btn" onclick="ssSendStartVarsel()">Send</button>'
+    + '</div>'
+    + '</div>'
+    + '</div>';
+}
+
+window.ssSendStartVarsel = function() {
+  var felt = document.getElementById('ss-varsel-epost');
+  var boks = document.getElementById('ss-varsel-box');
+  if (!felt || !boks) return;
+  var val = felt.value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+    felt.style.borderColor = '#b60202';
+    felt.focus();
+    return;
+  }
+  var trygg = val.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  boks.innerHTML = '<p class="ss-varsel-ok">'
+    + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    + '<span>Vi sender en e-post til «' + trygg + '» når bestillingen åpner.</span></p>';
+};
+
 function buildApproachingHTML(sc) {
   var mm = getCalendarMinMax();
   var calMin = sc.calendarMin || mm.min;
@@ -400,6 +481,10 @@ function buildApproachingHTML(sc) {
     + '<p class="ss-radio-desc">Du kan starte når som helst innen 3 måneder fra dagens dato.</p>'
     + '<div class="ss-radio-sub"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#888" stroke-width="1.5"/><path d="M12 6v6l4 2" stroke="#888" stroke-width="1.5" stroke-linecap="round"/></svg> 12 måneder studierett</div>'
     + '<div class="ss-calendar-wrap" id="ss-cal-wrap">'
+    + buildStartVarsel(sc)
+    + (harStartVarsel(sc)
+        ? '<p class="ss-dato-lead">Du kan likevel velge en startdato og studere uten støtte:</p>'
+        : '')
     + '<input type="date" class="ss-date-input" id="ss-custom-date" min="' + calMin + '" max="' + calMax + '">'
     + '</div>'
     + '</div></div>'
@@ -517,6 +602,7 @@ window.ssStudiestotteSelect = function(val, card) {
   setTimeout(function() {
     var html = (sc.id === 'approaching') ? buildApproachingHTML(sc) : buildBetweenHTML(sc);
     modal.innerHTML = html;
+    if (_ssInline && _ssInline.onTitle) _ssInline.onTitle('Velg studiestart');
     if (sc.id === 'between' && !_ssWantsLanekassen) {
       ssInitCalendarState();
       ssRenderCalendar();
@@ -585,9 +671,57 @@ window.openStudiestartModal = function(pendingCourses, scenarioOverride, options
   });
 };
 
+/* Samme steg som skuffen, men rendret rett i en beholder – søknadspanelet.
+   opts: { onConfirm(datoStr), onNotify(epost), onTitle(tekst), skipStudiestotte } */
+window.renderStudiestartStep = function(container, scenarioOverride, opts) {
+  if (!container) return;
+  opts = opts || {};
+  injectStyles();
+
+  /* En skuff som står åpen ville ellers krangle om id-ene under. */
+  var old = document.getElementById('ss-backdrop');
+  if (old) old.remove();
+
+  _ssPending = [];
+  _ssWantsLanekassen = null;
+  _ssInline = {
+    onConfirm: opts.onConfirm || null,
+    onNotify: opts.onNotify || null,
+    onTitle: opts.onTitle || null
+  };
+
+  var sc = scenarioOverride || window.STUDIESTART_SCENARIO || getStudiestartScenario();
+  var skipStudiestotte = !!opts.skipStudiestotte;
+  var initialHTML = skipStudiestotte
+    ? (sc.id === 'approaching' ? buildApproachingHTML(sc) : buildBetweenHTML(sc))
+    : buildStudiestotteHTML();
+
+  var host = document.createElement('div');
+  host.className = 'ss-backdrop ss-inline-host open';
+  host.id = 'ss-backdrop';
+  host.innerHTML = '<div class="ss-modal ss-inline" id="ss-modal">' + initialHTML + '</div>';
+  container.innerHTML = '';
+  container.appendChild(host);
+  host._ssScenario = sc;
+
+  if (_ssInline.onTitle) _ssInline.onTitle(skipStudiestotte ? 'Velg studiestart' : 'Studiestøtte');
+  if (skipStudiestotte && sc.id === 'between') {
+    ssInitCalendarState();
+    ssRenderCalendar();
+  }
+};
+
+function ssClearInline() {
+  var inline = _ssInline;
+  _ssInline = null;
+  return inline || {};
+}
+
 window.closeStudiestartModal = function() {
   var backdrop = document.getElementById('ss-backdrop');
   if (!backdrop) return;
+  /* Inline-steget eies av panelet det står i – det lukkes ikke herfra. */
+  if (backdrop.classList.contains('ss-inline-host')) return;
   backdrop.classList.remove('open');
   setTimeout(function() { backdrop.remove(); }, 250);
   _ssPending = [];
@@ -711,7 +845,13 @@ window.confirmStudiestart = function() {
       var selectedCard = document.querySelector('.ss-radio-card.selected');
       var isSemesterCard = selectedCard && selectedCard.classList.contains('ss-between-lk-card');
       if (isSemesterCard) {
-        // User wants to be notified for the upcoming semester — just close
+        // User wants to be notified for the upcoming semester — no order is placed
+        if (_ssInline) {
+          var epostFelt = document.getElementById('ss-notify-email');
+          var inline = ssClearInline();
+          if (inline.onNotify) inline.onNotify(epostFelt ? epostFelt.value.trim() : '');
+          return;
+        }
         closeStudiestartModal();
         return;
       }
@@ -729,6 +869,13 @@ window.confirmStudiestart = function() {
       var yyy = String(_ssCalSelected.getFullYear()).slice(-2);
       dateStr = ddd + '.' + mmm + '.' + yyy;
     }
+  }
+
+  /* Inline-modus: kalleren eier emnene og legger dem i søknaden selv. */
+  if (_ssInline) {
+    var inlineState = ssClearInline();
+    if (inlineState.onConfirm) inlineState.onConfirm(dateStr);
+    return;
   }
 
   // Add all pending courses with start date

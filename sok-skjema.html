@@ -712,6 +712,28 @@ body {
 .bt-trust-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; font-size: 13.5px; color: #7a4a4a; flex-wrap: wrap; }
 .bt-fineprint { font-size: 13px; color: #8a6a6a; margin-top: 14px; }
 
+/* Kort på betalingssiden: studieprogram og nettemner */
+.bt-card { border: 1.5px solid #eee; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+.bt-card-header { background: #f4eae6; padding: 16px 22px; }
+.bt-card-header-title { display: block; font-size: 15px; font-weight: 700; color: #4e0000; margin-bottom: 3px; }
+.bt-card-header-sub { font-size: 14px; color: #8a6a63; }
+.bt-prog { padding: 18px 22px; }
+.bt-prog + .bt-prog { border-top: 1px solid #eee; }
+.bt-prog-name { font-size: 18px; font-weight: 700; color: #121212; margin-bottom: 6px; }
+.bt-prog-meta-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.bt-prog-meta { font-size: 14px; color: #7a5c56; }
+.bt-prog-price { font-size: 14px; font-weight: 500; color: #121212; white-space: nowrap; }
+.bt-invoice-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; padding: 14px 16px; border-radius: 10px; background: #eef4fd; font-size: 13.5px; color: #1f3350; line-height: 1.5; }
+.bt-invoice-note svg { flex-shrink: 0; margin-top: 1px; color: #1f6feb; }
+.s0-badge-filled { background: #4e0000; border-color: #4e0000; color: #fff; }
+.bt-lanekassen { display: flex; align-items: flex-start; gap: 12px; margin-top: 18px; padding: 16px 18px; border: 1.5px solid #eee; border-radius: 12px; }
+.bt-lanekassen svg { flex-shrink: 0; margin-top: 2px; color: #4e0000; }
+.bt-lanekassen-title { font-size: 15px; font-weight: 700; color: #4e0000; margin: 0 0 4px; }
+.bt-lanekassen p { font-size: 14px; color: #5a4a46; line-height: 1.55; margin: 0; }
+.bt-lanekassen a { color: #06f; }
+/* Emnekortets metalinje står nederst i raden, ikke som egen blokk over navnet */
+.s0-emne-row-bottom .s0-emne-meta { margin: 0; padding: 0; }
+
 .s0-card-actions { display: flex; align-items: center; gap: 2px; }
 .s0-reorder-btn { background: none; border: none; cursor: pointer; padding: 4px 6px; color: #888; border-radius: 6px; display: flex; align-items: center; }
 .s0-reorder-btn:hover { background: #f5f5f5; color: #121212; }
@@ -747,15 +769,15 @@ body {
 .s0-emne-price { font-size: 18px; font-weight: 700; color: #121212; }
 .s0-emne-price-strike { text-decoration: line-through; color: #aaa; font-weight: 400; margin-right: 6px; }
 
-.s0-rabatt-toggle { display: flex; align-items: center; gap: 6px; color: #06f; font-size: 14px; font-weight: 500; background: none; border: none; cursor: pointer; padding: 10px 0 0; font-family: 'Graphik', sans-serif; }
-.s0-rabatt-toggle:hover { text-decoration: underline; }
-.s0-rabatt-row { display: none; gap: 8px; margin-top: 10px; }
-.s0-rabatt-row.open { display: flex; }
+.s0-rabatt-heading { display: flex; align-items: center; gap: 8px; margin: 22px 0 0; color: #121212; font-size: 15px; font-weight: 600; }
+.s0-rabatt-row { display: flex; gap: 12px; margin-top: 12px; }
 .s0-rabatt-row input { flex: 1; border: 1.5px solid #c7c8ca; border-radius: 8px; padding: 10px 12px; font-size: 14px; font-family: 'Graphik', sans-serif; outline: none; }
 .s0-rabatt-row input:focus { border-color: #06f; }
-.s0-rabatt-row button { padding: 0 18px; background: #06f; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; }
-.s0-rabatt-feedback { font-size: 13px; margin-top: 8px; }
-.s0-rabatt-applied { display: inline-flex; align-items: center; gap: 10px; margin-top: 12px; padding: 9px 14px; border-radius: 8px; background: #f6f0ec; font-size: 14px; color: #333; }
+.s0-rabatt-row button { padding: 0 22px; background: #fff; color: #06f; border: 1.5px solid #06f; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; transition: background .15s; }
+.s0-rabatt-row button:hover { background: #f2f7ff; }
+.s0-rabatt-feedback { font-size: 13px; margin-top: 10px; }
+.s0-rabatt-hint { font-size: 14px; color: #121212; line-height: 1.4; margin: 12px 0 22px; }
+.s0-rabatt-applied { display: inline-flex; align-items: center; gap: 10px; margin: 22px 0; padding: 9px 14px; border-radius: 8px; background: #f6f0ec; font-size: 14px; color: #333; }
 .s0-rabatt-applied-remove { background: none; border: none; color: #06f; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Graphik', sans-serif; padding: 0; }
 
 .s0-summary-betnow-title { font-size: 15px; font-weight: 700; color: #121212; margin-bottom: 10px; }
@@ -1330,9 +1352,11 @@ body {
             <div id="betalingSokerRow"></div>
 
             <div id="betalingEmnerSection" style="display:none;">
+              <div id="betalingProgramSection"></div>
               <div id="betalingEmnerGroups"></div>
 
-              <h2 class="bt-section-title">Betalingsmåte</h2>
+              <div id="betalingMetodeBlokk">
+              <h2 class="bt-section-title">Betalingsmåte for nettemner</h2>
               <div class="emner-payment-box">
                 <div id="betalingMetoderSection">
                   <div class="payment-options" id="betalingGroup" style="overflow:visible;border-radius:10px;">
@@ -1452,8 +1476,12 @@ body {
                   <div class="error-msg" id="err-betaling" style="display:none;padding:4px 16px 8px;">Velg en betalingsmetode</div>
                 </div><!-- /betalingMetoderSection -->
               </div><!-- /emner-payment-box -->
+              <p class="bt-fineprint" id="betalingMetodeFotnote" style="display:none;">Valget gjelder nettemnene. Studieavgiften for studieprogrammet faktureres uansett per semester.</p>
+              </div><!-- /betalingMetodeBlokk -->
 
-              <div class="bt-trust-row">
+              <div id="betalingLanekassen"></div>
+
+              <div class="bt-trust-row" id="betalingTrustRow">
                 <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px;margin-right:5px;"><rect x="5" y="11" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V7a4 4 0 018 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Sikker betaling</span>
                 <span>Alltid 14 dagers angrerett</span>
               </div>
@@ -1643,16 +1671,14 @@ var STEPPER_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"
 
 /* Stegene nummereres etter synlig posisjon, så rekken alltid er 1, 2, 3 …
    Innlogging har ikke eget punkt – den hører til Opplysninger. */
+/* Oppstart er ikke lenger et steg her – studiestart velges i søknadspanelet
+   når emnet legges til, så datoen er satt lenge før utsjekk. */
 var ALL_PHASES = [
   { key: 'studievalg',   label: 'Studievalg' },
   { key: 'opplysninger', label: 'Opplysninger' },
-  { key: 'oppstart',     label: 'Oppstart' },
   { key: 'betaling',     label: 'Betaling' },
   { key: 'sammendrag',   label: 'Sammendrag' }
 ];
-
-/* Oppstart er step3b i DOM-en, så den trenger en egen verdi mellom 3 og 4. */
-var STEP_OPPSTART = 3.5;
 
 // Betaling vises kun når kurven inneholder nettemner
 function basketHasEmner() {
@@ -1661,12 +1687,12 @@ function basketHasEmner() {
     ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
 }
 
-// Oppstart og Betaling handler bare om emner. Siste fase er commit-punktet:
+// Betaling handler bare om emner. Siste fase er commit-punktet:
 // Betaling når det er noe å betale, ellers Sammendrag.
 function getActivePhases() {
   var harEmner = basketHasEmner();
   return ALL_PHASES.filter(function(p) {
-    if ((p.key === 'oppstart' || p.key === 'betaling') && !harEmner) return false;
+    if (p.key === 'betaling' && !harEmner) return false;
     if (p.key === 'sammendrag' && harEmner) return false;
     return true;
   });
@@ -1675,13 +1701,12 @@ function getActivePhases() {
 function stepToPhaseKey(n) {
   /* Innlogging (1 og 2) er veien inn til Opplysninger, og deler punkt med den. */
   if (n === 1 || n === 2 || n === 3) return 'opplysninger';
-  if (n === STEP_OPPSTART) return 'oppstart';
   if (n === 4) return 'betaling';
   if (n === 5) return 'sammendrag';
   return 'studievalg';
 }
 
-var PHASE_TO_STEP = { studievalg: 0, opplysninger: 3, oppstart: STEP_OPPSTART, betaling: 4, sammendrag: 5 };
+var PHASE_TO_STEP = { studievalg: 0, opplysninger: 3, betaling: 4, sammendrag: 5 };
 
 /* Én kilde til sannhet for «hvor går vi etter Studievalg»: innlogging hoppes over
    når brukeren allerede er innlogget. Brukes både av «Gå videre» på Studievalg og
@@ -1759,7 +1784,7 @@ function gaVidere(n) {
   // Hide current view
   if (_currentStep === 0) {
     document.getElementById('step0Page').style.display = 'none';
-  } else if (_currentStep >= 1 && _currentStep <= 4 && _currentStep !== STEP_OPPSTART) {
+  } else if (_currentStep >= 1 && _currentStep <= 4) {
     document.getElementById('step' + _currentStep).classList.remove('active');
   }
   document.getElementById('feide-step').classList.remove('active');
@@ -1778,16 +1803,6 @@ function gaVidere(n) {
     document.getElementById('checkoutGrid').style.display = 'none';
     document.getElementById('step5Page').style.display = 'none';
     renderStep0();
-  } else if (n === STEP_OPPSTART) {
-    /* Oppstart forklarer seg selv på siden – infokolonnen tar plassen til
-       oppsummeringen, som ellers står i høyre kolonne. */
-    document.getElementById('step0Page').style.display = 'none';
-    document.getElementById('checkoutGrid').style.display = '';
-    document.getElementById('step5Page').style.display = 'none';
-    renderOppstartSection();
-    document.getElementById('step3b').classList.add('active');
-    document.getElementById('summarySidebar').style.display = 'none';
-    document.getElementById('oppstartInfoCol').style.display = '';
   } else if (n === 5) {
     document.getElementById('step0Page').style.display = 'none';
     document.getElementById('checkoutGrid').style.display = 'none';
@@ -2145,19 +2160,22 @@ function emneKortPrisHtml(e) {
 }
 
 function emneKortInnholdHtml(e, oppstartHtml, priceHtml) {
-  return '<div class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5') + ' studiepoeng'
-    + gjennomforingSuffix(e) + '</div>'
-    + '<div class="s0-emne-name">' + e.name + '</div>'
-    + (oppstartHtml ? '<div class="s0-emne-oppstart">' + oppstartHtml + '</div>' : '')
-    + '<div class="s0-emne-row-bottom">'
+  return '<div class="s0-badges">'
     + '<span class="s0-badge-nett">Nett</span>'
+    + (oppstartHtml || '')
+    + '</div>'
+    + '<div class="s0-emne-name">' + e.name + '</div>'
+    + '<div class="s0-emne-row-bottom">'
+    + '<span class="s0-emne-meta">' + (e.code ? '#' + e.code + ' · ' : '') + (e.pts || '7,5')
+    + ' studiepoeng' + gjennomforingSuffix(e) + '</span>'
     + (priceHtml || '')
     + '</div>';
 }
 
 function buildEmneRowHtml(e, removeFnCall, showPrice, changeFnCall) {
   var oppstart = e.startDate ? e.startDate : (e.startSemester ? e.startSemester : '');
-  var oppstartHtml = oppstart ? 'Oppstart: <strong>' + oppstart + '</strong>' : '';
+  /* Oppstart står som merke ved siden av «Nett», ikke som egen linje. */
+  var oppstartHtml = oppstart ? '<span class="s0-badge">Oppstart ' + oppstart + '</span>' : '';
   return '<div class="s0-emne-row">'
     + '<button class="s0-emne-remove" onclick="' + removeFnCall + '" aria-label="Fjern">' + ICON_X_PLAIN + '</button>'
     + emneKortInnholdHtml(e, oppstartHtml, showPrice ? emneKortPrisHtml(e) : '')
@@ -2652,15 +2670,11 @@ function gaVidereStep3() {
   var hasEmner = (b.looseEmner && b.looseEmner.length > 0) ||
     ((b.programs || []).some(function(p) { return p.type === 'nett' && p.emner && p.emner.length > 0; }));
   if (hasEmner) {
-    showOppstartStep();
+    renderPaymentStep();
+    gaVidere(4);
   } else {
     gaVidere(5);
   }
-}
-
-/* Steg 3: Oppstart (eget steg i stepperen, kun når kurven har emner) */
-function showOppstartStep() {
-  gaVidere(STEP_OPPSTART);
 }
 
 function confirmOppstart() {
@@ -2705,24 +2719,41 @@ function renderPaymentStep() {
   var programs = b.programs || [];
   var loose = b.looseEmner || [];
 
-  // Nett emner (nettprogram + løse emner) → redigerbare emnegrupper
+  /* Studieprogram på campus faktureres per semester og betales ikke her.
+     Nettemnene betales nå. De to vises hver for seg, og siden viser bare det
+     søknaden faktisk inneholder. */
+  var campusPrograms = programs.filter(function(p) { return p.type !== 'nett'; });
   var nettPrograms = programs.filter(function(p) { return p.type === 'nett'; });
   var allEmner = getAllCartEmner().map(function(x) { return x.e; });
-  var emnerSection = document.getElementById('betalingEmnerSection');
   var total = allEmner.reduce(function(s, e) { return s + (e.price || 0); }, 0);
   var after = _rabattPercent > 0 ? total - Math.round(total * _rabattPercent / 100) : total;
   _betalingTotal = after;
 
-  if (allEmner.length > 0) {
-    emnerSection.style.display = 'block';
-    renderBetalingEmnerGroups(nettPrograms, loose);
-  } else {
-    emnerSection.style.display = 'none';
-  }
+  var harEmner = allEmner.length > 0;
+  var harCampus = campusPrograms.length > 0;
+
+  var emnerSection = document.getElementById('betalingEmnerSection');
+  emnerSection.style.display = (harEmner || harCampus) ? 'block' : 'none';
+
+  renderBetalingProgramCard(campusPrograms);
+  renderBetalingEmnerGroups(nettPrograms, loose);
+  renderBetalingLanekassen(campusPrograms);
+
+  /* Betalingsmåte, rabattkode og «sikker betaling» hører til det som betales nå.
+     Er det bare studieprogram i søknaden, er det ingenting å betale her. */
+  btVis('betalingMetodeBlokk', harEmner);
+  btVis('betalingMetodeFotnote', harEmner && harCampus);
+  btVis('betalingTrustRow', harEmner);
+  btVis('betalingRabattSection', harEmner);
 
   renderBetalingRabattSection();
   renderBetalingSokerRow();
   updateStep4Cta();
+}
+
+function btVis(id, vis) {
+  var el = document.getElementById(id);
+  if (el) el.style.display = vis ? '' : 'none';
 }
 
 /* Søkeren, slik at man kan verifisere seg selv rett før innsending */
@@ -2753,18 +2784,120 @@ function updateStep4Cta() {
   note.textContent = commitNoteText(checked ? checked.value : null);
 }
 
+/* Alle nettemner i ett kort – det er de som betales nå, uansett hvilket
+   studieprogram de teller mot. Grupperingen per program står i sammendraget. */
 function renderBetalingEmnerGroups(nettPrograms, looseEmner) {
-  var html = '';
+  var el = document.getElementById('betalingEmnerGroups');
+  if (!el) return;
+
+  var poster = [];
   nettPrograms.forEach(function(p) {
-    var safeId = p.id ? p.id.toString().replace(/'/g, "\\'") : '';
-    var meta = (p.emner || []).length + ' emne' + ((p.emner || []).length !== 1 ? 'r' : '')
-      + gjennomforingSuffix(p);
-    html += buildEmnegroupHtml(p.name, meta, p.emner || [], safeId, false, 'btRemoveEmne', true);
+    (p.emner || []).forEach(function(e) { poster.push({ e: e, groupId: p.id, loose: false }); });
   });
-  if (looseEmner.length > 0) {
-    html += buildEmnegroupHtml('Emner uten tilknytning til studieprogram', looseEmner.length + ' emne' + (looseEmner.length !== 1 ? 'r' : ''), looseEmner, null, true, 'btRemoveEmne', true);
-  }
-  document.getElementById('betalingEmnerGroups').innerHTML = html;
+  (looseEmner || []).forEach(function(e) { poster.push({ e: e, groupId: null, loose: true }); });
+
+  if (!poster.length) { el.innerHTML = ''; return; }
+
+  var rader = poster.map(function(x) {
+    var safeCode = x.e.code ? x.e.code.toString().replace(/'/g, "\\'") : '';
+    var safeId = x.groupId ? "'" + x.groupId.toString().replace(/'/g, "\\'") + "'" : 'null';
+    var args = '(' + safeId + ",'" + safeCode + "'," + (x.loose ? 'true' : 'false') + ')';
+    return buildEmneRowHtml(x.e, 'btRemoveEmne' + args, true);
+  }).join('');
+
+  el.innerHTML = '<div class="bt-card">'
+    + '<div class="bt-card-header">'
+    + '<span class="bt-card-header-title">Nettemner</span>'
+    + '<span class="bt-card-header-sub">' + poster.length + ' emne'
+    + (poster.length !== 1 ? 'r' : '') + ' &bull; betales nå</span>'
+    + '</div>'
+    + rader
+    + '</div>';
+}
+
+/* Semesterprisen ligger ikke i kurvdataene – prototypen bruker én sats. */
+var CAMPUS_SEMESTERPRIS = 56600;
+
+var BT_INFO_SVG = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.25" stroke="currentColor" stroke-width="1.6"/><path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.9" r="1.05" fill="currentColor"/></svg>';
+var BT_TAG_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="1.1" fill="currentColor"/></svg>';
+
+function renderBetalingProgramCard(campusPrograms) {
+  var el = document.getElementById('betalingProgramSection');
+  if (!el) return;
+  if (!campusPrograms.length) { el.innerHTML = ''; return; }
+
+  el.innerHTML = '<div class="bt-card">'
+    + '<div class="bt-card-header">'
+    + '<span class="bt-card-header-title">Studieprogram</span>'
+    + '<span class="bt-card-header-sub">Faktureres per semester</span>'
+    + '</div>'
+    + campusPrograms.map(btProgramHtml).join('')
+    + '</div>';
+}
+
+function btProgramHtml(p) {
+  var badges = '';
+  if (p.city) badges += '<span class="s0-badge s0-badge-filled">' + p.city + '</span>';
+  if (p.semester) badges += '<span class="s0-badge">' + p.semester + '</span>';
+  if (p.studieform) badges += '<span class="s0-badge">' + p.studieform + '</span>';
+
+  var meta = [];
+  if (p.programCode) meta.push(p.programCode);
+  if (p.points) meta.push(p.points);
+  var semestre = btAntallSemestre(p);
+  if (semestre) meta.push(semestre + ' semestre');
+
+  return '<div class="bt-prog">'
+    + (badges ? '<div class="s0-badges">' + badges + '</div>' : '')
+    + '<div class="bt-prog-name">' + btProgramTittel(p) + '</div>'
+    + '<div class="bt-prog-meta-row">'
+    + '<span class="bt-prog-meta">' + meta.join(' &bull; ') + '</span>'
+    + '<span class="bt-prog-price">' + CAMPUS_SEMESTERPRIS.toLocaleString('nb-NO') + ' kr pr semester</span>'
+    + '</div>'
+    + btFakturaNote(p)
+    + '</div>';
+}
+
+/* «Bachelor» + «Cybersikkerhet» → «Bachelor i Cybersikkerhet», men uten å
+   gjenta nivået når navnet alt har det. */
+function btProgramTittel(p) {
+  var navn = p.name || '';
+  var niva = p.level || '';
+  if (!niva || navn.toLowerCase().indexOf(niva.toLowerCase()) === 0) return navn;
+  return niva + ' i ' + navn;
+}
+
+function btAntallSemestre(p) {
+  var stp = parseFloat(String(p.points || '').replace(',', '.'));
+  if (!stp) return 0;
+  return Math.round(stp / (p.studieform === 'Deltid' ? 15 : 30));
+}
+
+/* «Høst 2026» → 01.08.2026, «Vår 2027» → 01.01.2027 */
+function btForsteFaktura(semester) {
+  var aar = String(semester || '').match(/(\d{4})/);
+  if (!aar) return null;
+  return (/v[åa]r/i.test(semester) ? '01.01.' : '01.08.') + aar[1];
+}
+
+function btFakturaNote(p) {
+  var dato = btForsteFaktura(p.semester);
+  return '<div class="bt-invoice-note">' + BT_INFO_SVG
+    + '<span>Studieavgiften betales ikke nå.'
+    + (dato ? ' Første faktura sendes ' + dato + ' med 14 dagers betalingsfrist.' : '')
+    + '</span></div>';
+}
+
+function renderBetalingLanekassen(campusPrograms) {
+  var el = document.getElementById('betalingLanekassen');
+  if (!el) return;
+  if (!campusPrograms.length) { el.innerHTML = ''; return; }
+  el.innerHTML = '<div class="bt-lanekassen">' + BT_TAG_SVG
+    + '<div>'
+    + '<p class="bt-lanekassen-title">Støtte fra Lånekassen</p>'
+    + '<p>Studiet kvalifiserer til <a href="https://www.kristiania.no/studere-hos-oss/opptaksinformasjon/lanekassen/" target="_blank" rel="noopener">støtte fra Lånekassen</a>. '
+    + 'Du søker selv om lån og stipend, og må semesterregistrere deg i StudentWeb for å få utbetaling.</p>'
+    + '</div></div>';
 }
 
 function btRemoveEmne(programId, code, isLoose) {
@@ -2787,22 +2920,17 @@ function renderBetalingRabattSection() {
       + '<span><strong style="font-weight:600;">' + _rabattCode.toLowerCase() + '</strong> &nbsp;&minus;' + discountAmt.toLocaleString('nb-NO') + ',-</span>'
       + '<button class="s0-rabatt-applied-remove" onclick="clearRabattkode()">Fjern</button></div>';
   } else {
-    el.innerHTML = '<button class="s0-rabatt-toggle" onclick="toggleRabattkode()">'
+    /* Feltet står åpent – rabattkoden er ikke noe studenten skal lete etter. */
+    el.innerHTML = '<p class="s0-rabatt-heading">'
       + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="7" r="1" fill="currentColor"/></svg>'
-      + 'Har du en rabattkode?</button>'
+      + 'Har du en rabattkode?</p>'
       + '<div class="s0-rabatt-row" id="rabattkodeRow">'
       + '<input type="text" id="rabattkode" placeholder="Skriv inn rabattkode">'
       + '<button onclick="applyRabattkode()">Bruk</button>'
       + '</div>'
-      + '<div id="rabattkodeFeedback" class="s0-rabatt-feedback" style="display:none;"></div>';
+      + '<div id="rabattkodeFeedback" class="s0-rabatt-feedback" style="display:none;"></div>'
+      + '<p class="s0-rabatt-hint">Gjelder for OBOS-medlemmer, kampanjer eller bedriftsavtaler.</p>';
   }
-}
-
-function toggleRabattkode() {
-  var row = document.getElementById('rabattkodeRow');
-  if (!row) return;
-  row.classList.toggle('open');
-  if (row.classList.contains('open')) document.getElementById('rabattkode').focus();
 }
 
 function applyRabattkode() {
